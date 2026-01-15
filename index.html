@@ -2,96 +2,594 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>IND vs USA | Jinx8004</title>
+    <title>IND vs USA | Jinx8004 - Enhanced Live Stream</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Consolas', monospace; }
-        video { width: 100%; height: 100%; }
-        #hud {
-            position: absolute; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.7);
-            padding: 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
-            color: #0f0; font-size: 12px; pointer-events: none; z-index: 100;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .shaka-range-element { color: #e50914 !important; }
+        
+        body, html {
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            overflow: hidden;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #fff;
+        }
+        
+        /* Main container with background pattern */
+        .main-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+        }
+        
+        /* Header section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(10, 15, 25, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .match-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .match-title {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff4d4d, #ff9a3d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+        
+        .match-subtitle {
+            font-size: 14px;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ff4d4d;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .live-pulse {
+            width: 8px;
+            height: 8px;
+            background: #ff4d4d;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #ddd;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        /* Video container */
+        .video-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        /* Enhanced HUD/Stats panel */
+        .stats-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(10, 15, 25, 0.85);
+            border-radius: 12px;
+            padding: 18px;
+            width: 280px;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .stats-panel:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stats-title {
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stats-title i {
+            color: #4dabf7;
+        }
+        
+        .stats-refresh {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+        
+        .stats-refresh:hover {
+            color: #4dabf7;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.2s;
+        }
+        
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #aaa;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .stat-icon {
+            color: #4dabf7;
+            font-size: 14px;
+        }
+        
+        .latency-warning {
+            color: #ffc107;
+        }
+        
+        .latency-good {
+            color: #4caf50;
+        }
+        
+        /* Controls customization */
+        .shaka-bottom-controls {
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        }
+        
+        .shaka-range-element {
+            color: #e50914 !important;
+        }
+        
+        .shaka-play-button-container button {
+            background: rgba(229, 9, 20, 0.9);
+            border-radius: 50%;
+        }
+        
+        /* Footer with additional info */
+        .footer {
+            padding: 15px 25px;
+            background: rgba(10, 15, 25, 0.85);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .connection-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4caf50;
+        }
+        
+        .connection-text {
+            color: #aaa;
+        }
+        
+        .connection-text strong {
+            color: #ddd;
+        }
+        
+        .timestamp {
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Toggle button for stats panel */
+        .stats-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 40;
+            background: rgba(10, 15, 25, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+        
+        .stats-toggle:hover {
+            background: rgba(20, 25, 40, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+            }
+            
+            .match-title {
+                font-size: 18px;
+            }
+            
+            .stats-panel {
+                width: 250px;
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 <body>
-
-    <div id="hud">
-        <div style="color:#fff; font-weight:bold; border-bottom:1px solid #444; margin-bottom:5px">IND vs USA | Jinx8004</div>
-        <div>RES: <span id="stat-res">--</span> | FPS: <span id="stat-fps">--</span></div>
-        <div>LATENCY: <span id="stat-lat" style="color:yellow">--</span>s | BW: <span id="stat-bw">--</span> Mbps</div>
+    <div class="main-container">
+        <!-- Header with match and user info -->
+        <div class="header">
+            <div class="match-info">
+                <div class="match-title">INDIA vs USA LIVE</div>
+                <div class="match-subtitle">
+                    <span class="live-indicator">
+                        <span class="live-pulse"></span>
+                        LIVE
+                    </span>
+                    <span>ICC Men's T20 World Cup 2024</span>
+                </div>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar">J</div>
+                <div class="user-name">Jinx8004</div>
+            </div>
+        </div>
+        
+        <!-- Video container -->
+        <div class="video-container" data-shaka-player-container>
+            <!-- Stats toggle button -->
+            <div class="stats-toggle" id="statsToggle">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            
+            <!-- Enhanced stats panel -->
+            <div class="stats-panel" id="statsPanel">
+                <div class="stats-header">
+                    <div class="stats-title">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Stream Analytics
+                    </div>
+                    <button class="stats-refresh" id="refreshStats">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Resolution</div>
+                        <div class="stat-value">
+                            <i class="fas fa-expand-alt stat-icon"></i>
+                            <span id="stat-res">1920x1080</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">Frame Rate</div>
+                        <div class="stat-value">
+                            <i class="fas fa-film stat-icon"></i>
+                            <span id="stat-fps">60 FPS</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">Latency</div>
+                        <div class="stat-value">
+                            <i class="fas fa-clock stat-icon"></i>
+                            <span id="stat-lat" class="latency-good">20.0s</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">Bandwidth</div>
+                        <div class="stat-value">
+                            <i class="fas fa-bolt stat-icon"></i>
+                            <span id="stat-bw">8.42 Mbps</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item" style="grid-column: span 2;">
+                        <div class="stat-label">Buffer Health</div>
+                        <div class="stat-value">
+                            <i class="fas fa-shield-alt stat-icon"></i>
+                            <span id="stat-buffer">30.0s</span>
+                        </div>
+                        <div style="margin-top: 8px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+                            <div id="bufferBar" style="height: 100%; width: 100%; background: linear-gradient(90deg, #4caf50, #8bc34a); border-radius: 2px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <video data-shaka-player id="video" autoplay crossorigin="anonymous"></video>
+        </div>
+        
+        <!-- Footer with connection info -->
+        <div class="footer">
+            <div class="connection-status">
+                <div class="connection-dot"></div>
+                <div class="connection-text">
+                    Stream: <strong>Akamai CDN</strong> • Protocol: <strong>DASH</strong> • Status: <strong>Stable</strong>
+                </div>
+            </div>
+            
+            <div class="timestamp">
+                <i class="far fa-clock"></i>
+                <span id="currentTime">--:--:--</span>
+            </div>
+        </div>
     </div>
 
-    <div class="container" data-shaka-player-container>
-        <video data-shaka-player id="video" autoplay crossorigin="anonymous"></video>
-    </div>
+    <script>
+        const config = {
+            manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd',
+            keys: { 'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2' }
+        };
 
-<script>
-    const config = {
-        manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd',
-        keys: { 'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2' }
-    };
+        async function init() {
+            const video = document.getElementById('video');
+            const player = new shaka.Player(video);
+            const ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
-    async function init() {
-        const video = document.getElementById('video');
-        const player = new shaka.Player(video);
-        const ui = new shaka.ui.Overlay(player, video.parentElement, video);
+            player.configure({
+                streaming: {
+                    bufferingGoal: 30,
+                    rebufferingGoal: 5,
+                    bufferBehind: 30,
+                    jumpLargeGaps: true,
+                    lowLatencyMode: false
+                },
+                manifest: {
+                    dash: {
+                        ignoreMinBufferTime: true,
+                        autoCorrectDrift: true,
+                        initialSegmentLimit: 20
+                    }
+                },
+                ads: { enabled: false },
+                drm: { clearKeys: config.keys }
+            });
 
-        player.configure({
-            streaming: {
-                bufferingGoal: 30,           // Buffer up to 30s of video
-                rebufferingGoal: 5,          // Start playing after 5s is loaded
-                bufferBehind: 30,
-                jumpLargeGaps: true,
-                lowLatencyMode: false        // Disable low latency to prioritize stability
-            },
-            manifest: {
-                dash: {
-                    ignoreMinBufferTime: true,
-                    autoCorrectDrift: true,
-                    // Force a 20-second delay from the live edge
-                    initialSegmentLimit: 20 
-                }
-            },
-            // This is the key setting for a 20s buffer
-            ads: { enabled: false },
-            drm: { clearKeys: config.keys }
-        });
+            player.configure('streaming.presentationDelay', 20);
 
-        // Set the suggested delay to 20 seconds
-        player.configure('streaming.presentationDelay', 20);
+            ui.configure({
+                'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
+                'overflowMenuButtons': ['quality'] 
+            });
 
-        ui.configure({
-            'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
-            'overflowMenuButtons': ['quality'] 
-        });
-
-        try {
-            await player.load(config.manifest);
-            
-            // Periodically check stats and latency
-            setInterval(() => {
-                const stats = player.getStats();
-                const tracks = player.getVariantTracks().find(t => t.active);
-                const liveEdge = player.seekRange().end;
+            try {
+                await player.load(config.manifest);
                 
-                document.getElementById('stat-res').innerText = tracks ? `${tracks.width}x${tracks.height}` : '--';
-                document.getElementById('stat-fps').innerText = tracks ? Math.round(tracks.frameRate) : '--';
-                document.getElementById('stat-bw').innerText = (stats.estimatedBandwidth / 1000000).toFixed(2);
-                document.getElementById('stat-lat').innerText = (liveEdge - video.currentTime).toFixed(1);
-                
-                // If the player accidentally gets too close to live (< 10s), jump back to 20s
-                if ((liveEdge - video.currentTime) < 10) {
-                    video.currentTime = liveEdge - 20;
+                // Stats update function
+                function updateStats() {
+                    const stats = player.getStats();
+                    const tracks = player.getVariantTracks().find(t => t.active);
+                    const liveEdge = player.seekRange().end;
+                    
+                    // Update resolution
+                    if (tracks) {
+                        document.getElementById('stat-res').innerText = `${tracks.width}x${tracks.height}`;
+                        document.getElementById('stat-fps').innerText = `${Math.round(tracks.frameRate)} FPS`;
+                    }
+                    
+                    // Update bandwidth
+                    const bw = (stats.estimatedBandwidth / 1000000).toFixed(2);
+                    document.getElementById('stat-bw').innerText = `${bw} Mbps`;
+                    
+                    // Update latency
+                    const latency = (liveEdge - video.currentTime).toFixed(1);
+                    const latencyElement = document.getElementById('stat-lat');
+                    latencyElement.innerText = `${latency}s`;
+                    
+                    // Color code latency
+                    if (latency < 15) {
+                        latencyElement.className = 'latency-warning';
+                    } else {
+                        latencyElement.className = 'latency-good';
+                    }
+                    
+                    // Update buffer health
+                    const bufferHealth = Math.min(30, player.getBufferedInfo().total[0]?.end - video.currentTime || 0).toFixed(1);
+                    document.getElementById('stat-buffer').innerText = `${bufferHealth}s`;
+                    
+                    // Update buffer bar
+                    const bufferPercent = Math.min(100, (bufferHealth / 30) * 100);
+                    document.getElementById('bufferBar').style.width = `${bufferPercent}%`;
+                    
+                    // Update current time
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString([], {hour12: false});
+                    document.getElementById('currentTime').innerText = timeString;
+                    
+                    // If the player accidentally gets too close to live (< 10s), jump back to 20s
+                    if ((liveEdge - video.currentTime) < 10) {
+                        video.currentTime = liveEdge - 20;
+                    }
                 }
-            }, 1000);
-            
-        } catch (e) { console.error(e); }
-    }
+                
+                // Initial stats update
+                updateStats();
+                
+                // Set up periodic stats updates
+                const statsInterval = setInterval(updateStats, 1000);
+                
+                // Set up manual refresh button
+                document.getElementById('refreshStats').addEventListener('click', updateStats);
+                
+                // Set up stats panel toggle
+                const statsPanel = document.getElementById('statsPanel');
+                const statsToggle = document.getElementById('statsToggle');
+                
+                statsToggle.addEventListener('click', () => {
+                    const isVisible = statsPanel.style.display !== 'none';
+                    statsPanel.style.display = isVisible ? 'none' : 'block';
+                    statsToggle.innerHTML = isVisible ? '<i class="fas fa-chart-bar"></i>' : '<i class="fas fa-times"></i>';
+                });
+                
+                // Handle player errors
+                player.addEventListener('error', (event) => {
+                    console.error('Player error:', event.detail);
+                });
+                
+            } catch (e) { 
+                console.error('Error initializing player:', e);
+                
+                // Show error in stats panel
+                document.getElementById('stat-res').innerText = 'Error';
+                document.getElementById('stat-fps').innerText = '--';
+                document.getElementById('stat-bw').innerText = '--';
+                document.getElementById('stat-lat').innerText = '--';
+                document.getElementById('stat-buffer').innerText = '--';
+                document.getElementById('bufferBar').style.width = '0%';
+            }
+        }
 
-    document.addEventListener('shaka-ui-loaded', init);
-</script>
+        document.addEventListener('shaka-ui-loaded', init);
+    </script>
 </body>
 </html>
