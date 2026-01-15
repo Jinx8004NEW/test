@@ -1,0 +1,57 @@
+<script>
+    // UPDATED CONFIG WITH YOUR NEW KEYS AND MANIFEST
+    const config = {
+        manifest: 'https://otte.live.fly.ww.aiv-cdn.net/syd-nitro/startover/clients/dash/manipulated-manifest-syd-prod/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/33372623-a7fe-4df5-b878-e03fba003dbe-cenc.mpd',
+        keys: {
+            'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2',
+            'b770d5b4bb6b594daf985845aae9aa5f': 'b0cb46d2d31cf044bc73db71e9865f6f'
+        }
+    };
+
+    async function initPlayer() {
+        const video = document.getElementById('video');
+        const player = new shaka.Player(video);
+        const ui = new shaka.ui.Overlay(player, video.parentElement, video);
+
+        // ZERO-DELAY CONFIGURATION FOR MINIMAL STARTUP
+        player.configure({
+            streaming: {
+                bufferingGoal: 1.5,
+                rebufferingGoal: 0.3,
+                lowLatencyMode: true,
+                jumpLargeGaps: true
+            },
+            manifest: {
+                dash: { ignoreMinBufferTime: true } 
+            },
+            drm: { clearKeys: config.keys }
+        });
+
+        ui.configure({
+            'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
+            'overflowMenuButtons': ['quality'] 
+        });
+
+        try {
+            await player.load(config.manifest);
+            document.getElementById('stat-name').innerText = "LIVE (SYD-NITRO)";
+            
+            setInterval(() => {
+                const stats = player.getStats();
+                const tracks = player.getVariantTracks().find(t => t.active);
+                if (tracks) {
+                    document.getElementById('stat-res').innerText = `${tracks.width}x${tracks.height}`;
+                    document.getElementById('stat-fps').innerText = Math.round(tracks.frameRate || 0);
+                    document.getElementById('stat-bw').innerText = (stats.estimatedBandwidth / 1000000).toFixed(2);
+                    document.getElementById('stat-drop').innerText = stats.droppedFrames;
+                }
+            }, 1000);
+            
+        } catch (e) {
+            document.getElementById('stat-name').innerText = "ERROR / OFFLINE";
+            console.error(e);
+        }
+    }
+
+    document.addEventListener('shaka-ui-loaded', initPlayer);
+</script>
