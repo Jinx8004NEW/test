@@ -2,18 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IND vs USA | Jinx8004</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.compiled.js"></script>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Consolas', monospace; }
-        /* Native Video Styling */
-        video { width: 100%; height: 100%; object-fit: contain; }
+        /* This fixes the alignment and prevents the 'weird' stretched look */
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: #000; overflow: hidden; font-family: sans-serif; 
+        }
         
-        /* Minimal HUD for Stats */
+        /* Flexbox centers the video perfectly */
+        .video-container {
+            display: flex; justify-content: center; align-items: center;
+            width: 100vw; height: 100vh;
+        }
+
+        video { 
+            max-width: 100%; max-height: 100%; 
+            background: #000; 
+        }
+
+        /* Technical HUD - Cleaned up */
         #hud {
-            position: absolute; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.6);
-            padding: 8px 12px; border-radius: 4px; color: #0f0; font-size: 12px;
-            pointer-events: none; z-index: 10; border: 1px solid rgba(255,255,255,0.1);
+            position: absolute; top: 15px; left: 15px; background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px; border-radius: 6px; color: #0f0; font-size: 12px;
+            pointer-events: none; z-index: 100; border: 1px solid rgba(255,255,255,0.1);
+            font-family: monospace;
         }
     </style>
 </head>
@@ -25,11 +40,13 @@
         LATENCY: <span id="stat-lat">--</span>s | BW: <span id="stat-bw">--</span> Mbps
     </div>
 
-    <video id="video" controls autoplay crossorigin="anonymous"></video>
+    <div class="video-container">
+        <video id="video" controls autoplay crossorigin="anonymous"></video>
+    </div>
 
 <script>
     const config = {
-        manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd',
+        manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0res/cenc.mpd',
         keys: { 'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2' }
     };
 
@@ -39,31 +56,24 @@
 
         player.configure({
             streaming: {
-                bufferingGoal: 30,           // Pre-load 30s for stability
-                rebufferingGoal: 5,          // Buffer 5s before starting
-                presentationDelay: 20,       // Force 20s stable delay
+                bufferingGoal: 30,
+                rebufferingGoal: 5,
+                presentationDelay: 20, // 20s stability gap
                 jumpLargeGaps: true
             },
-            manifest: {
-                dash: { 
-                    ignoreMinBufferTime: true,
-                    autoCorrectDrift: true 
-                }
-            },
+            manifest: { dash: { ignoreMinBufferTime: true, autoCorrectDrift: true } },
             drm: { clearKeys: config.keys }
         });
 
-        // Set high quality automatically to prevent buffering during resolution swaps
+        // Ensure highest quality is locked for 1080p
         player.addEventListener('variantchanged', () => {
-            const tracks = player.getVariantTracks();
-            const highest = tracks.sort((a, b) => b.bandwidth - a.bandwidth)[0];
-            player.selectVariantTrack(highest, true);
+            const tracks = player.getVariantTracks().sort((a, b) => b.bandwidth - a.bandwidth);
+            player.selectVariantTrack(tracks[0], true);
         });
 
         try {
             await player.load(config.manifest);
             
-            // Stats Update
             setInterval(() => {
                 const stats = player.getStats();
                 const tracks = player.getVariantTracks().find(t => t.active);
@@ -74,13 +84,12 @@
                 document.getElementById('stat-bw').innerText = (stats.estimatedBandwidth / 1000000).toFixed(2);
                 document.getElementById('stat-lat').innerText = (liveEdge - video.currentTime).toFixed(1);
 
-                // Auto-sync if it drifts too close to live
                 if ((liveEdge - video.currentTime) < 10) {
                     video.currentTime = liveEdge - 20;
                 }
             }, 1000);
             
-        } catch (e) { console.error('Error:', e); }
+        } catch (e) { console.error(e); }
     }
 
     document.addEventListener('DOMContentLoaded', init);
