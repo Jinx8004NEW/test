@@ -2,88 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IND vs USA | Jinx8004</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.compiled.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.js"></script>
     <style>
-        /* This fixes the alignment and prevents the 'weird' stretched look */
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            background: #000; overflow: hidden; font-family: sans-serif; 
-        }
-        
-        /* Flexbox centers the video perfectly */
-        .video-container {
-            display: flex; justify-content: center; align-items: center;
-            width: 100vw; height: 100vh;
-        }
-
-        video { 
-            max-width: 100%; max-height: 100%; 
-            background: #000; 
-        }
-
-        /* Technical HUD - Cleaned up */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Consolas', monospace; }
+        video { width: 100%; height: 100%; }
         #hud {
-            position: absolute; top: 15px; left: 15px; background: rgba(0, 0, 0, 0.7);
-            padding: 10px 15px; border-radius: 6px; color: #0f0; font-size: 12px;
-            pointer-events: none; z-index: 100; border: 1px solid rgba(255,255,255,0.1);
-            font-family: monospace;
+            position: absolute; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.7);
+            padding: 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
+            color: #0f0; font-size: 12px; pointer-events: none; z-index: 100;
         }
+        .shaka-range-element { color: #e50914 !important; }
     </style>
 </head>
 <body>
 
     <div id="hud">
-        <b style="color:#fff">IND vs USA | Jinx8004</b><br>
-        RES: <span id="stat-res">--</span> | FPS: <span id="stat-fps">--</span><br>
-        LATENCY: <span id="stat-lat">--</span>s | BW: <span id="stat-bw">--</span> Mbps
+        <div style="color:#fff; font-weight:bold; border-bottom:1px solid #444; margin-bottom:5px">IND vs USA | Jinx8004</div>
+        <div>RES: <span id="stat-res">--</span> | FPS: <span id="stat-fps">--</span></div>
+        <div>LATENCY: <span id="stat-lat" style="color:yellow">--</span>s | BW: <span id="stat-bw">--</span> Mbps</div>
     </div>
 
-    <div class="video-container">
-        <video id="video" controls autoplay crossorigin="anonymous"></video>
+    <div class="container" data-shaka-player-container>
+        <video data-shaka-player id="video" autoplay crossorigin="anonymous"></video>
     </div>
 
 <script>
     const config = {
-        manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0res/cenc.mpd',
+        manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd',
         keys: { 'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2' }
     };
 
     async function init() {
         const video = document.getElementById('video');
         const player = new shaka.Player(video);
+        const ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
         player.configure({
             streaming: {
-                bufferingGoal: 30,
-                rebufferingGoal: 5,
-                presentationDelay: 20, // 20s stability gap
-                jumpLargeGaps: true
+                bufferingGoal: 30,           // Buffer up to 30s of video
+                rebufferingGoal: 5,          // Start playing after 5s is loaded
+                bufferBehind: 30,
+                jumpLargeGaps: true,
+                lowLatencyMode: false        // Disable low latency to prioritize stability
             },
-            manifest: { dash: { ignoreMinBufferTime: true, autoCorrectDrift: true } },
+            manifest: {
+                dash: {
+                    ignoreMinBufferTime: true,
+                    autoCorrectDrift: true,
+                    // Force a 20-second delay from the live edge
+                    initialSegmentLimit: 20 
+                }
+            },
+            // This is the key setting for a 20s buffer
+            ads: { enabled: false },
             drm: { clearKeys: config.keys }
         });
 
-        // Ensure highest quality is locked for 1080p
-        player.addEventListener('variantchanged', () => {
-            const tracks = player.getVariantTracks().sort((a, b) => b.bandwidth - a.bandwidth);
-            player.selectVariantTrack(tracks[0], true);
+        // Set the suggested delay to 20 seconds
+        player.configure('streaming.presentationDelay', 20);
+
+        ui.configure({
+            'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
+            'overflowMenuButtons': ['quality'] 
         });
 
         try {
             await player.load(config.manifest);
             
+            // Periodically check stats and latency
             setInterval(() => {
                 const stats = player.getStats();
                 const tracks = player.getVariantTracks().find(t => t.active);
                 const liveEdge = player.seekRange().end;
                 
-                document.getElementById('stat-res').innerText = tracks ? tracks.width + 'x' + tracks.height : '--';
+                document.getElementById('stat-res').innerText = tracks ? `${tracks.width}x${tracks.height}` : '--';
                 document.getElementById('stat-fps').innerText = tracks ? Math.round(tracks.frameRate) : '--';
                 document.getElementById('stat-bw').innerText = (stats.estimatedBandwidth / 1000000).toFixed(2);
                 document.getElementById('stat-lat').innerText = (liveEdge - video.currentTime).toFixed(1);
-
+                
+                // If the player accidentally gets too close to live (< 10s), jump back to 20s
                 if ((liveEdge - video.currentTime) < 10) {
                     video.currentTime = liveEdge - 20;
                 }
@@ -92,7 +91,7 @@
         } catch (e) { console.error(e); }
     }
 
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('shaka-ui-loaded', init);
 </script>
 </body>
 </html>
