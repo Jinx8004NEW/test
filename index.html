@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>IND vs USA | Jinx8004 - Enhanced Live Stream</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IND vs USA | Jinx8004 - Live Stream</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,22 +17,19 @@
         body, html {
             width: 100%;
             height: 100%;
-            background: #0a0a0f;
+            background: #000;
             overflow: hidden;
             font-family: 'Segoe UI', system-ui, sans-serif;
             color: #fff;
         }
         
-        /* Main container with background pattern */
+        /* Main container */
         .main-container {
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+            background: #000;
         }
         
         /* Header section */
@@ -39,48 +37,57 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 25px;
-            background: rgba(10, 15, 25, 0.85);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .match-info {
             display: flex;
             flex-direction: column;
+            min-width: 200px;
         }
         
         .match-title {
-            font-size: 22px;
+            font-size: clamp(16px, 2.5vw, 22px);
             font-weight: 700;
             background: linear-gradient(90deg, #ff4d4d, #ff9a3d);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .match-subtitle {
-            font-size: 14px;
+            font-size: clamp(12px, 1.5vw, 14px);
             color: #aaa;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            flex-wrap: wrap;
         }
         
         .live-indicator {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             color: #ff4d4d;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 11px;
+            padding: 2px 8px;
+            background: rgba(255, 77, 77, 0.1);
+            border-radius: 12px;
         }
         
         .live-pulse {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: #ff4d4d;
             border-radius: 50%;
             animation: pulse 1.5s infinite;
@@ -95,183 +102,76 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.05);
-            padding: 8px 16px;
-            border-radius: 30px;
+            padding: 6px 12px;
+            border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 140px;
         }
         
         .user-name {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             color: #ddd;
         }
         
         .user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
         }
         
-        /* Video container */
+        /* Video container - Responsive */
         .video-container {
             flex: 1;
             position: relative;
             overflow: hidden;
+            display: flex;
+            background: #000;
         }
         
         video {
             width: 100%;
             height: 100%;
             object-fit: contain;
+            background: #000;
         }
         
-        /* Enhanced HUD/Stats panel */
-        .stats-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(10, 15, 25, 0.85);
-            border-radius: 12px;
-            padding: 18px;
-            width: 280px;
-            z-index: 50;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .stats-panel:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-        }
-        
-        .stats-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .stats-title {
-            font-weight: 600;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .stats-title i {
-            color: #4dabf7;
-        }
-        
-        .stats-refresh {
-            background: transparent;
-            border: none;
-            color: #aaa;
-            cursor: pointer;
-            font-size: 12px;
-            transition: color 0.2s;
-        }
-        
-        .stats-refresh:hover {
-            color: #4dabf7;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        
-        .stat-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            transition: background 0.2s;
-        }
-        
-        .stat-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .stat-label {
-            font-size: 11px;
-            color: #aaa;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .stat-icon {
-            color: #4dabf7;
-            font-size: 14px;
-        }
-        
-        .latency-warning {
-            color: #ffc107;
-        }
-        
-        .latency-good {
-            color: #4caf50;
-        }
-        
-        /* Controls customization */
-        .shaka-bottom-controls {
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-        }
-        
-        .shaka-range-element {
-            color: #e50914 !important;
-        }
-        
-        .shaka-play-button-container button {
-            background: rgba(229, 9, 20, 0.9);
-            border-radius: 50%;
-        }
-        
-        /* Footer with additional info */
+        /* Footer - Always visible */
         .footer {
-            padding: 15px 25px;
-            background: rgba(10, 15, 25, 0.85);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+            z-index: 10;
         }
         
         .connection-status {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            flex: 1;
+            min-width: 200px;
         }
         
         .connection-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #4caf50;
+            animation: pulse 2s infinite;
         }
         
         .connection-text {
@@ -286,77 +186,86 @@
             color: #aaa;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            white-space: nowrap;
         }
         
-        /* Toggle button for stats panel */
-        .stats-toggle {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 40;
-            background: rgba(10, 15, 25, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.2s;
-        }
-        
-        .stats-toggle:hover {
-            background: rgba(20, 25, 40, 0.9);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Responsive adjustments */
+        /* Mobile-specific styles */
         @media (max-width: 768px) {
             .header {
-                padding: 12px 15px;
+                padding: 10px 15px;
             }
             
-            .match-title {
-                font-size: 18px;
+            .match-info {
+                min-width: auto;
+                flex: 1;
             }
             
-            .stats-panel {
-                width: 250px;
-                padding: 15px;
+            .user-info {
+                min-width: auto;
             }
             
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .footer {
+                padding: 8px 15px;
+                font-size: 11px;
+            }
+            
+            .connection-status {
+                min-width: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .user-info {
+                align-self: flex-start;
             }
             
             .footer {
                 flex-direction: column;
-                gap: 10px;
                 align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .connection-status, .timestamp {
+                width: 100%;
             }
         }
         
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        /* Landscape mode optimization */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .header {
+                padding: 8px 15px;
+            }
+            
+            .footer {
+                padding: 6px 15px;
+                font-size: 11px;
+            }
         }
         
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
+        /* Ensure video controls are accessible */
+        .shaka-video-container {
+            width: 100% !important;
+            height: 100% !important;
         }
         
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+        .shaka-bottom-controls {
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8)) !important;
         }
         
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .shaka-range-element {
+            color: #e50914 !important;
+        }
+        
+        .shaka-play-button-container button {
+            background: rgba(229, 9, 20, 0.9);
+            border-radius: 50%;
         }
     </style>
 </head>
@@ -371,7 +280,7 @@
                         <span class="live-pulse"></span>
                         LIVE
                     </span>
-                    <span>ICC Men's T20 World Cup 2024</span>
+                    <span>ICC Men's U19 World Cup 2026</span>
                 </div>
             </div>
             
@@ -381,71 +290,8 @@
             </div>
         </div>
         
-        <!-- Video container -->
+        <!-- Video container - Clean, no info box -->
         <div class="video-container" data-shaka-player-container>
-            <!-- Stats toggle button -->
-            <div class="stats-toggle" id="statsToggle">
-                <i class="fas fa-chart-bar"></i>
-            </div>
-            
-            <!-- Enhanced stats panel -->
-            <div class="stats-panel" id="statsPanel">
-                <div class="stats-header">
-                    <div class="stats-title">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Stream Analytics
-                    </div>
-                    <button class="stats-refresh" id="refreshStats">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">Resolution</div>
-                        <div class="stat-value">
-                            <i class="fas fa-expand-alt stat-icon"></i>
-                            <span id="stat-res">1920x1080</span>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-item">
-                        <div class="stat-label">Frame Rate</div>
-                        <div class="stat-value">
-                            <i class="fas fa-film stat-icon"></i>
-                            <span id="stat-fps">60 FPS</span>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-item">
-                        <div class="stat-label">Latency</div>
-                        <div class="stat-value">
-                            <i class="fas fa-clock stat-icon"></i>
-                            <span id="stat-lat" class="latency-good">20.0s</span>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-item">
-                        <div class="stat-label">Bandwidth</div>
-                        <div class="stat-value">
-                            <i class="fas fa-bolt stat-icon"></i>
-                            <span id="stat-bw">8.42 Mbps</span>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-item" style="grid-column: span 2;">
-                        <div class="stat-label">Buffer Health</div>
-                        <div class="stat-value">
-                            <i class="fas fa-shield-alt stat-icon"></i>
-                            <span id="stat-buffer">30.0s</span>
-                        </div>
-                        <div style="margin-top: 8px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
-                            <div id="bufferBar" style="height: 100%; width: 100%; background: linear-gradient(90deg, #4caf50, #8bc34a); border-radius: 2px;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             <video data-shaka-player id="video" autoplay crossorigin="anonymous"></video>
         </div>
         
@@ -505,87 +351,145 @@
             try {
                 await player.load(config.manifest);
                 
-                // Stats update function
-                function updateStats() {
-                    const stats = player.getStats();
-                    const tracks = player.getVariantTracks().find(t => t.active);
-                    const liveEdge = player.seekRange().end;
+                // Keyboard controls setup
+                function setupKeyboardControls() {
+                    // Keyboard event listener
+                    document.addEventListener('keydown', (e) => {
+                        // Don't trigger if user is typing in an input field
+                        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                            return;
+                        }
+                        
+                        switch(e.key.toLowerCase()) {
+                            case ' ':
+                            case 'k':
+                                // Prevent spacebar from scrolling page
+                                e.preventDefault();
+                                // Toggle play/pause
+                                if (video.paused) {
+                                    video.play();
+                                } else {
+                                    video.pause();
+                                }
+                                break;
+                                
+                            case 'm':
+                                // Toggle mute
+                                video.muted = !video.muted;
+                                break;
+                                
+                            case 'f':
+                                // Toggle fullscreen
+                                toggleFullscreen();
+                                break;
+                                
+                            case 'escape':
+                                // Exit fullscreen if in fullscreen mode
+                                if (document.fullscreenElement) {
+                                    document.exitFullscreen();
+                                }
+                                break;
+                                
+                            case 'arrowleft':
+                                // Seek backward 10 seconds
+                                e.preventDefault();
+                                video.currentTime = Math.max(0, video.currentTime - 10);
+                                break;
+                                
+                            case 'arrowright':
+                                // Seek forward 10 seconds
+                                e.preventDefault();
+                                video.currentTime = Math.min(video.duration, video.currentTime + 10);
+                                break;
+                                
+                            case 'arrowup':
+                                // Increase volume
+                                e.preventDefault();
+                                video.volume = Math.min(1, video.volume + 0.1);
+                                break;
+                                
+                            case 'arrowdown':
+                                // Decrease volume
+                                e.preventDefault();
+                                video.volume = Math.max(0, video.volume - 0.1);
+                                break;
+                                
+                            // Number keys 0-9 for seeking to percentage
+                            case '0':
+                            case '1':
+                            case '2':
+                            case '3':
+                            case '4':
+                            case '5':
+                            case '6':
+                            case '7':
+                            case '8':
+                            case '9':
+                                if (!isNaN(video.duration)) {
+                                    const percentage = parseInt(e.key) / 10;
+                                    video.currentTime = video.duration * percentage;
+                                }
+                                break;
+                        }
+                    });
                     
-                    // Update resolution
-                    if (tracks) {
-                        document.getElementById('stat-res').innerText = `${tracks.width}x${tracks.height}`;
-                        document.getElementById('stat-fps').innerText = `${Math.round(tracks.frameRate)} FPS`;
-                    }
-                    
-                    // Update bandwidth
-                    const bw = (stats.estimatedBandwidth / 1000000).toFixed(2);
-                    document.getElementById('stat-bw').innerText = `${bw} Mbps`;
-                    
-                    // Update latency
-                    const latency = (liveEdge - video.currentTime).toFixed(1);
-                    const latencyElement = document.getElementById('stat-lat');
-                    latencyElement.innerText = `${latency}s`;
-                    
-                    // Color code latency
-                    if (latency < 15) {
-                        latencyElement.className = 'latency-warning';
-                    } else {
-                        latencyElement.className = 'latency-good';
-                    }
-                    
-                    // Update buffer health
-                    const bufferHealth = Math.min(30, player.getBufferedInfo().total[0]?.end - video.currentTime || 0).toFixed(1);
-                    document.getElementById('stat-buffer').innerText = `${bufferHealth}s`;
-                    
-                    // Update buffer bar
-                    const bufferPercent = Math.min(100, (bufferHealth / 30) * 100);
-                    document.getElementById('bufferBar').style.width = `${bufferPercent}%`;
-                    
-                    // Update current time
-                    const now = new Date();
-                    const timeString = now.toLocaleTimeString([], {hour12: false});
-                    document.getElementById('currentTime').innerText = timeString;
-                    
-                    // If the player accidentally gets too close to live (< 10s), jump back to 20s
-                    if ((liveEdge - video.currentTime) < 10) {
-                        video.currentTime = liveEdge - 20;
+                    // Fullscreen toggle function
+                    function toggleFullscreen() {
+                        if (!document.fullscreenElement) {
+                            if (video.requestFullscreen) {
+                                video.requestFullscreen();
+                            } else if (video.webkitRequestFullscreen) {
+                                video.webkitRequestFullscreen();
+                            } else if (video.mozRequestFullScreen) {
+                                video.mozRequestFullScreen();
+                            } else if (video.msRequestFullscreen) {
+                                video.msRequestFullscreen();
+                            }
+                        } else {
+                            if (document.exitFullscreen) {
+                                document.exitFullscreen();
+                            } else if (document.webkitExitFullscreen) {
+                                document.webkitExitFullscreen();
+                            } else if (document.mozCancelFullScreen) {
+                                document.mozCancelFullScreen();
+                            } else if (document.msExitFullscreen) {
+                                document.msExitFullscreen();
+                            }
+                        }
                     }
                 }
                 
-                // Initial stats update
-                updateStats();
+                // Update current time in footer
+                function updateTime() {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString([], {hour12: false});
+                    document.getElementById('currentTime').innerText = timeString;
+                }
                 
-                // Set up periodic stats updates
-                const statsInterval = setInterval(updateStats, 1000);
+                // Setup keyboard controls
+                setupKeyboardControls();
                 
-                // Set up manual refresh button
-                document.getElementById('refreshStats').addEventListener('click', updateStats);
+                // Initial time update
+                updateTime();
                 
-                // Set up stats panel toggle
-                const statsPanel = document.getElementById('statsPanel');
-                const statsToggle = document.getElementById('statsToggle');
-                
-                statsToggle.addEventListener('click', () => {
-                    const isVisible = statsPanel.style.display !== 'none';
-                    statsPanel.style.display = isVisible ? 'none' : 'block';
-                    statsToggle.innerHTML = isVisible ? '<i class="fas fa-chart-bar"></i>' : '<i class="fas fa-times"></i>';
-                });
+                // Update time every second
+                setInterval(updateTime, 1000);
                 
                 // Handle player errors
                 player.addEventListener('error', (event) => {
                     console.error('Player error:', event.detail);
                 });
                 
+                // Monitor latency and maintain 20-second buffer
+                setInterval(() => {
+                    const liveEdge = player.seekRange().end;
+                    if ((liveEdge - video.currentTime) < 10) {
+                        video.currentTime = liveEdge - 20;
+                    }
+                }, 1000);
+                
             } catch (e) { 
                 console.error('Error initializing player:', e);
-                
-                // Show error in stats panel
-                document.getElementById('stat-res').innerText = 'Error';
-                document.getElementById('stat-fps').innerText = '--';
-                document.getElementById('stat-bw').innerText = '--';
-                document.getElementById('stat-lat').innerText = '--';
-                document.getElementById('stat-buffer').innerText = '--';
-                document.getElementById('bufferBar').style.width = '0%';
             }
         }
 
