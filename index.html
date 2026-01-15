@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Native Fast-Stream Pro | SYD-NITRO</title>
+    <title>IND vs USA Jinx8004</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.js"></script>
     <style>
@@ -11,30 +11,29 @@
         .container { width: 100%; height: 100%; }
         video { width: 100%; height: 100%; }
 
-        /* Technical HUD Overlay */
+        /* Technical HUD - Jinx8004 Minimalist */
         #hud {
-            position: absolute; top: 15px; left: 15px;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
-            padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-            color: #00ff00; font-size: 11px; line-height: 1.6;
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+            padding: 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
+            color: #0f0; font-size: 12px; line-height: 1.4;
             pointer-events: none; z-index: 100;
         }
-        .hud-label { color: #aaa; text-transform: uppercase; margin-right: 5px; }
-        
-        /* Shaka UI Customization - Chrome Style */
-        .shaka-range-element { color: #e50914 !important; }
-        .shaka-bottom-controls { display: flex; align-items: center; }
-        .shaka-video-container:hover #hud { opacity: 1; }
+        .hud-header { color: #fff; font-weight: bold; border-bottom: 1px solid #444; margin-bottom: 5px; padding-bottom: 2px; }
+        .hud-val { color: #00ff00; }
+
+        /* Hide the Shaka overlay elements to mimic Chrome's native control look */
+        .shaka-video-container { cursor: auto !important; }
+        .shaka-range-element { color: #fff !important; }
     </style>
 </head>
 <body>
 
     <div id="hud">
-        <div><span class="hud-label">Stream:</span> <span id="stat-name">Connecting...</span></div>
-        <div><span class="hud-label">Resolution:</span> <span id="stat-res">0x0</span></div>
-        <div><span class="hud-label">Framerate:</span> <span id="stat-fps">0</span> fps</div>
-        <div><span class="hud-label">Bandwidth:</span> <span id="stat-bw">0</span> Mbps</div>
-        <div><span class="hud-label">Dropped:</span> <span id="stat-drop">0</span></div>
+        <div class="hud-header">IND vs USA | Jinx8004</div>
+        <div>RES: <span class="hud-val" id="stat-res">0x0</span></div>
+        <div>FPS: <span class="hud-val" id="stat-fps">0</span></div>
+        <div>BW:  <span class="hud-val" id="stat-bw">0</span> Mbps</div>
     </div>
 
     <div class="container" data-shaka-player-container>
@@ -43,32 +42,27 @@
 
 <script>
     const config = {
-        manifest: 'https://otte.live.fly.ww.aiv-cdn.net/syd-nitro/startover/clients/dash/manipulated-manifest-syd-prod/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/33372623-a7fe-4df5-b878-e03fba003dbe-cenc.mpd',
+        manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd',
         keys: {
-            'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2',
-            'b770d5b4bb6b594daf985845aae9aa5f': 'b0cb46d2d31cf044bc73db71e9865f6f'
+            'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2'
         }
     };
 
-    async function initPlayer() {
+    async function init() {
         const video = document.getElementById('video');
         const player = new shaka.Player(video);
         const ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
-        // OPTIMIZED FOR MINIMAL DELAY & FPS STABILITY
+        // Aggressive Startup Config
         player.configure({
             streaming: {
-                bufferingGoal: 2,           // Only keep 2s of video buffered
-                rebufferingGoal: 0.5,      // Resume playing after 0.5s of data
+                bufferingGoal: 1,           
+                rebufferingGoal: 0.2,      
                 lowLatencyMode: true,
-                jumpLargeGaps: true,
-                alwaysStreamText: true
+                jumpLargeGaps: true
             },
             manifest: {
-                dash: {
-                    ignoreMinBufferTime: true, // Overrides the manifest's default buffer wait
-                    autoCorrectDrift: true
-                }
+                dash: { ignoreMinBufferTime: true } 
             },
             drm: { clearKeys: config.keys }
         });
@@ -80,9 +74,7 @@
 
         try {
             await player.load(config.manifest);
-            document.getElementById('stat-name').innerText = "LIVE (SYD-NITRO)";
             
-            // Real-time Technical Stats Loop
             setInterval(() => {
                 const stats = player.getStats();
                 const tracks = player.getVariantTracks().find(t => t.active);
@@ -90,18 +82,13 @@
                     document.getElementById('stat-res').innerText = `${tracks.width}x${tracks.height}`;
                     document.getElementById('stat-fps').innerText = Math.round(tracks.frameRate || 0);
                     document.getElementById('stat-bw').innerText = (stats.estimatedBandwidth / 1000000).toFixed(2);
-                    document.getElementById('stat-drop').innerText = stats.droppedFrames;
                 }
             }, 1000);
             
-        } catch (e) {
-            document.getElementById('stat-name').innerText = "ERROR / OFFLINE";
-            console.error('Error loading stream:', e);
-        }
+        } catch (e) { console.error(e); }
     }
 
-    // Initialize once UI is ready
-    document.addEventListener('shaka-ui-loaded', initPlayer);
+    document.addEventListener('shaka-ui-loaded', init);
 </script>
 </body>
 </html>
