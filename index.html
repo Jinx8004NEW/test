@@ -3,11 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENG vs PAK | Jinx8004 - Live Stream</title>
+    <title>Cricket U19 World Cup | Jinx8004 - Live Stream</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <style>
+        :root {
+            /* Dark Mode Colors */
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-glass: rgba(17, 17, 17, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #999999;
+            --accent: #e50914;
+            --accent-hover: #ff1a2a;
+            --border: rgba(255, 255, 255, 0.1);
+            --card: rgba(255, 255, 255, 0.03);
+            --success: #22c55e;
+            --error: #ef4444;
+        }
+
+        [data-theme="light"] {
+            /* Light Mode Colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-glass: rgba(248, 249, 250, 0.9);
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --accent: #e50914;
+            --accent-hover: #ff1a2a;
+            --border: rgba(0, 0, 0, 0.08);
+            --card: rgba(0, 0, 0, 0.02);
+            --success: #22c55e;
+            --error: #ef4444;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,123 +55,415 @@
         body, html {
             width: 100%;
             height: 100%;
-            background: #000;
+            background: var(--bg-primary);
             overflow: hidden;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            color: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Main container */
         .main-container {
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
-            background: #000;
+            background: var(--bg-primary);
         }
         
-        /* Header section */
+        /* Minimal Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 24px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
             z-index: 100;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 16px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex: 1;
         }
         
         .match-info {
             display: flex;
             flex-direction: column;
+            gap: 6px;
             min-width: 200px;
         }
         
         .match-title {
-            font-size: clamp(16px, 2.5vw, 22px);
+            font-size: 20px;
             font-weight: 700;
-            background: linear-gradient(90deg, #ff4d4d, #ff9a3d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            color: var(--text-primary);
+            letter-spacing: -0.4px;
         }
         
         .match-subtitle {
-            font-size: clamp(12px, 1.5vw, 14px);
-            color: #aaa;
+            font-size: 13px;
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
+            gap: 12px;
+            font-weight: 500;
         }
         
         .live-indicator {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 4px;
-            color: #ff4d4d;
-            font-weight: 600;
+            gap: 6px;
+            color: var(--accent);
             font-size: 11px;
-            padding: 2px 8px;
-            background: rgba(255, 77, 77, 0.1);
+            font-weight: 700;
+            padding: 3px 10px;
+            border: 1px solid var(--accent);
             border-radius: 12px;
         }
         
         .live-pulse {
             width: 6px;
             height: 6px;
-            background: #ff4d4d;
+            background: var(--accent);
             border-radius: 50%;
-            animation: pulse 1.5s infinite;
+            animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
-        .user-info {
+        /* Minimal Controls */
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            background: var(--card);
+            border-color: var(--border);
+            opacity: 0.8;
+        }
+        
+        .control-btn i {
+            font-size: 12px;
+        }
+        
+        .stream-selector-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            min-width: 200px;
+            transition: all 0.2s ease;
+        }
+        
+        .stream-selector-btn:hover {
+            border-color: var(--accent);
+        }
+        
+        .stream-selector-btn i {
+            font-size: 11px;
+            opacity: 0.6;
+        }
+        
+        /* Modern Resolution Selector */
+        .resolution-selector {
+            position: relative;
+        }
+        
+        .resolution-btn {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-width: 140px;
+            padding: 8px 14px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100px;
         }
         
-        .user-name {
-            font-weight: 600;
+        .resolution-btn:hover {
+            border-color: var(--accent);
+            background: var(--card);
+        }
+        
+        .resolution-btn i {
+            font-size: 11px;
+            opacity: 0.7;
+            transition: transform 0.2s ease;
+        }
+        
+        .resolution-btn.active i {
+            transform: rotate(180deg);
+        }
+        
+        .resolution-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 180px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+        }
+        
+        .resolution-dropdown.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .resolution-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
             font-size: 13px;
-            color: #ddd;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .resolution-item:hover {
+            background: var(--card);
+        }
+        
+        .resolution-item.active {
+            background: rgba(229, 9, 20, 0.15);
+            color: var(--accent);
+        }
+        
+        .resolution-item.active::after {
+            content: '✓';
+            color: var(--accent);
+            font-weight: 700;
+            margin-left: 8px;
+        }
+        
+        .resolution-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .resolution-badge {
+            padding: 2px 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        /* Minimal Modal */
+        .stream-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .stream-modal.active {
+            display: flex;
+        }
+        
+        .stream-modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .stream-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .stream-modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+        
+        .stream-modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .stream-modal-close:hover {
+            background: var(--card);
+            color: var(--text-primary);
+        }
+        
+        /* Minimal Stream Cards */
+        .stream-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px;
+        }
+        
+        .stream-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .stream-card:hover {
+            border-color: var(--accent);
+            background: var(--card);
+        }
+        
+        .stream-card.active {
+            border-color: var(--accent);
+            background: var(--card);
+        }
+        
+        .stream-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .stream-card-tournament {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .stream-card-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .stream-card-active {
+            margin-left: auto;
+            color: var(--success);
+            font-weight: 600;
+            font-size: 11px;
+        }
+        
+        /* Minimal User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
         }
         
         .user-avatar {
             width: 28px;
             height: 28px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--accent);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 13px;
+            font-weight: 600;
+            font-size: 12px;
         }
         
-        /* Video container - Responsive */
+        .user-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        /* Video container */
         .video-container {
             flex: 1;
             position: relative;
             overflow: hidden;
-            display: flex;
             background: #000;
         }
         
@@ -141,186 +471,653 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            background: #000;
         }
         
-        /* Footer - Always visible */
+        /* Minimal Footer */
         .footer {
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 24px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 12px;
             flex-wrap: wrap;
-            gap: 10px;
-            z-index: 10;
+            gap: 16px;
         }
         
         .connection-status {
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex: 1;
-            min-width: 200px;
+            gap: 10px;
+            color: var(--text-secondary);
         }
         
         .connection-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #4caf50;
-            animation: pulse 2s infinite;
+            background: var(--success);
         }
         
         .connection-text {
-            color: #aaa;
+            font-weight: 500;
         }
         
         .connection-text strong {
-            color: #ddd;
+            color: var(--text-primary);
+            font-weight: 600;
         }
         
-        .timestamp {
-            color: #aaa;
+        .stream-stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .stat-item {
             display: flex;
             align-items: center;
             gap: 6px;
-            white-space: nowrap;
+            font-weight: 500;
         }
         
-        /* Mobile-specific styles */
+        .stat-item strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .timestamp {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* Minimal Loading */
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            display: none;
+            text-align: center;
+        }
+        
+        .loading-indicator.active {
+            display: block;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        /* Minimal Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            z-index: 10000;
+            display: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .toast.show {
+            display: block;
+        }
+        
+        .toast.error {
+            border-left: 3px solid var(--error);
+        }
+        
+        .toast.success {
+            border-left: 3px solid var(--success);
+        }
+        
+        /* Scrollbar */
+        .stream-modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .stream-modal-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .stream-modal-content::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+        
+        .stream-modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+        
+        /* Mobile */
         @media (max-width: 768px) {
             .header {
-                padding: 10px 15px;
+                padding: 12px 16px;
+                flex-direction: column;
+                align-items: stretch;
             }
             
-            .match-info {
-                min-width: auto;
-                flex: 1;
+            .header-left {
+                flex-direction: column;
+                gap: 12px;
             }
             
-            .user-info {
-                min-width: auto;
+            .stream-selector-btn {
+                min-width: 100%;
+            }
+            
+            .stream-modal-content {
+                padding: 24px;
+            }
+            
+            .stream-grid {
+                grid-template-columns: 1fr;
             }
             
             .footer {
-                padding: 8px 15px;
-                font-size: 11px;
-            }
-            
-            .connection-status {
-                min-width: auto;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header {
+                padding: 10px 16px;
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 8px;
             }
             
-            .user-info {
-                align-self: flex-start;
+            .resolution-dropdown {
+                right: auto;
+                left: 0;
             }
-            
-            .footer {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            
-            .connection-status, .timestamp {
-                width: 100%;
-            }
-        }
-        
-        /* Landscape mode optimization */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .header {
-                padding: 8px 15px;
-            }
-            
-            .footer {
-                padding: 6px 15px;
-                font-size: 11px;
-            }
-        }
-        
-        /* Ensure video controls are accessible */
-        .shaka-video-container {
-            width: 100% !important;
-            height: 100% !important;
-        }
-        
-        .shaka-bottom-controls {
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8)) !important;
-        }
-        
-        .shaka-range-element {
-            color: #e50914 !important;
-        }
-        
-        .shaka-play-button-container button {
-            background: rgba(229, 9, 20, 0.9);
-            border-radius: 50%;
         }
     </style>
 </head>
 <body>
     <div class="main-container">
-        <!-- Header with match and user info -->
         <div class="header">
-            <div class="match-info">
-                <div class="match-title">INDIA vs USA LIVE</div>
-                <div class="match-subtitle">
-                    <span class="live-indicator">
-                        <span class="live-pulse"></span>
-                        LIVE
-                    </span>
-                    <span>ICC Men's U19 World Cup 2026</span>
+            <div class="header-left">
+                <div class="match-info">
+                    <div class="match-title" id="currentMatchTitle">Select a Match</div>
+                    <div class="match-subtitle">
+                        <span class="live-indicator">
+                            <span class="live-pulse"></span>
+                            LIVE
+                        </span>
+                        <span id="currentTournament">ICC U19 Cricket World Cup</span>
+                    </div>
                 </div>
+                
+                <button class="stream-selector-btn" id="streamSelectorBtn">
+                    <span id="streamSelectorText">Select Stream</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
             </div>
             
-            <div class="user-info">
-                <div class="user-avatar">J</div>
-                <div class="user-name">Jinx8004</div>
+            <div class="control-group">
+                <div class="control-btn" id="firebaseStatus">
+                    <i class="fas fa-circle" style="font-size: 8px; color: var(--success);"></i>
+                    <span id="firebaseStatusText">Connecting</span>
+                </div>
+                
+                <div class="control-btn">
+                    <i class="fas fa-users"></i>
+                    <span>Active: <span id="activeUserCount">0</span></span>
+                </div>
+                
+                <div class="control-btn" id="themeToggle">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                    <span id="themeText">Dark</span>
+                </div>
+                
+                <!-- Modern Resolution Selector -->
+                <div class="resolution-selector">
+                    <button class="resolution-btn" id="resolutionBtn">
+                        <span id="resolutionText">Auto</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="resolution-dropdown" id="resolutionDropdown">
+                        <!-- Resolution options will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-avatar">J</div>
+                    <div class="user-name">Jinx8004</div>
+                </div>
             </div>
         </div>
         
-        <!-- Video container - Clean, no info box -->
+        <div class="stream-modal" id="streamModal">
+            <div class="stream-modal-content">
+                <div class="stream-modal-header">
+                    <h2 class="stream-modal-title">Select Stream</h2>
+                    <button class="stream-modal-close" id="streamModalClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="stream-grid" id="streamGrid"></div>
+            </div>
+        </div>
+        
         <div class="video-container" data-shaka-player-container>
+            <div class="loading-indicator" id="loadingIndicator">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading...</div>
+            </div>
             <video data-shaka-player id="video" autoplay crossorigin="anonymous"></video>
         </div>
         
-        <!-- Footer with connection info -->
         <div class="footer">
             <div class="connection-status">
                 <div class="connection-dot"></div>
                 <div class="connection-text">
-                    Stream: <strong>Akamai CDN</strong> • Protocol: <strong>DASH</strong> • Status: <strong>Stable</strong>
+                    Stream: <strong>Akamai CDN</strong> • Protocol: <strong>DASH</strong> • Status: <strong id="streamStatus">Select a match</strong>
+                </div>
+            </div>
+            
+            <div class="stream-stats" id="streamStats" style="display: none;">
+                <div class="stat-item">
+                    <span>Quality: <strong id="streamQuality">Auto</strong></span>
+                </div>
+                <div class="stat-item">
+                    <span>FPS: <strong id="streamFPS">--</strong></span>
+                </div>
+                <div class="stat-item">
+                    <span>Buffer: <strong id="bufferLevel">0s</strong></span>
                 </div>
             </div>
             
             <div class="timestamp">
-                <i class="far fa-clock"></i>
                 <span id="currentTime">--:--:--</span>
             </div>
         </div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
-        const config = {
-            manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rlisfyx9vd/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd',
-            keys: { 'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2' }
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com/",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const streams = [
+            {
+                id: 'aus-vs-ire',
+                title: 'SL vs JPN U19',
+                tournament: 'ICC U19 Cricket World Cup',
+                manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/oc3slvlq7n/out/v1/e4b93c0e3e4d4dcb9527c5b0dfe2ae90/cenc.mpd?%7CdrmScheme=clearkey&drmLicense=b86fa94988debfa3f1dff4cfd0d45345:ab64c1dc3e8f309e61cf0c8318618f05',
+                keys: {
+                    'b86fa94988debfa3f1dff4cfd0d45345': 'ab64c1dc3e8f309e61cf0c8318618f05'
+                }
+            },
+            {
+                id: 'sa-vs-afg',
+                title: 'No Event',
+                tournament: 'ICC U19 Cricket World Cup',
+                manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/3horuf8yft/out/v1/3b4484f853394bc9b0793be59aaba70a/cenc.mpd?%7CdrmScheme=clearkey&drmLicense=da661ad935054591590c7487368b26f3:10229bfa52d2e601b3e88b7951dc0bae',
+                keys: {
+                    'da661ad935054591590c7487368b26f3': '10229bfa52d2e601b3e88b7951dc0bae'
+                }
+            },
+            {
+                id: 'pak-vs-eng',
+                title: 'IND vs BAN U19',
+                tournament: 'ICC U19 Cricket World Cup',
+                manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/b5sgygmi5r/out/v1/450d606c6a17471f84d09372f55004e2/cenc.mpd?%7CdrmScheme=clearkey&drmLicense=f159241d40e659d58e81bc17ca30da31:6b7fe24f7a16343bd447b0b30f68b7b2',
+                keys: {
+                    'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2'
+                }
+            }
+        ];
+
+        let player = null;
+        let ui = null;
+        let currentStream = null;
+        let userId = null;
+        let userRef = null;
+        let heartbeatInterval = null;
+        let cleanupInterval = null;
+        let currentResolution = 'auto';
+
+        function getUserId() {
+            if (!userId) {
+                userId = localStorage.getItem('userId');
+                if (!userId) {
+                    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('userId', userId);
+                }
+            }
+            return userId;
+        }
+
+        function initFirebaseTracking() {
+            const firebaseStatus = document.getElementById('firebaseStatus');
+            const firebaseStatusText = document.getElementById('firebaseStatusText');
+            
+            try {
+                userId = getUserId();
+                userRef = database.ref(`activeUsers/${userId}`);
+                userRef.set({
+                    online: true,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                    streamId: currentStream || null,
+                    joinedAt: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                firebaseStatusText.textContent = 'Connected';
+                firebaseStatus.querySelector('i').style.color = 'var(--success)';
+                
+                heartbeatInterval = setInterval(() => {
+                    if (userRef) {
+                        userRef.update({
+                            lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                            streamId: currentStream || null
+                        });
+                    }
+                }, 10000);
+                
+                database.ref('activeUsers').on('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        const users = snapshot.val();
+                        let activeCount = 0;
+                        const now = Date.now();
+                        
+                        Object.keys(users).forEach(key => {
+                            const user = users[key];
+                            if (user.online && user.lastSeen) {
+                                const timeDiff = now - user.lastSeen;
+                                if (timeDiff < 30000) activeCount++;
+                            }
+                        });
+                        
+                        document.getElementById('activeUserCount').textContent = activeCount;
+                    } else {
+                        document.getElementById('activeUserCount').textContent = 0;
+                    }
+                });
+                
+                userRef.onDisconnect().update({
+                    online: false,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                cleanupInterval = setInterval(() => {
+                    const now = Date.now();
+                    database.ref('activeUsers').once('value', (snapshot) => {
+                        if (snapshot.exists()) {
+                            const users = snapshot.val();
+                            const updates = {};
+                            Object.keys(users).forEach(key => {
+                                if (users[key].lastSeen && (now - users[key].lastSeen) > 120000) {
+                                    updates[key] = null;
+                                }
+                            });
+                            if (Object.keys(updates).length > 0) {
+                                database.ref('activeUsers').update(updates);
+                            }
+                        }
+                    });
+                }, 120000);
+                
+            } catch (error) {
+                firebaseStatusText.textContent = 'Error';
+                firebaseStatus.querySelector('i').style.color = 'var(--error)';
+            }
+        }
+
+        function notifyStreamChange(streamId) {
+            if (userRef) {
+                userRef.update({
+                    streamId: streamId,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeUI(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeUI(newTheme);
+        }
+
+        function updateThemeUI(theme) {
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            if (theme === 'light') {
+                themeIcon.className = 'fas fa-sun';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function openStreamModal() {
+            document.getElementById('streamModal').classList.add('active');
+            populateStreamGrid();
+        }
+
+        function closeStreamModal() {
+            document.getElementById('streamModal').classList.remove('active');
+        }
+
+        function populateStreamGrid() {
+            const grid = document.getElementById('streamGrid');
+            grid.innerHTML = '';
+            
+            streams.forEach((stream) => {
+                const card = document.createElement('div');
+                card.className = 'stream-card';
+                if (currentStream === stream.id) card.classList.add('active');
+                
+                card.innerHTML = `
+                    <div class="stream-card-title">${stream.title}</div>
+                    <div class="stream-card-tournament">${stream.tournament}</div>
+                    <div class="stream-card-footer">
+                        <span>DASH</span>
+                        ${currentStream === stream.id ? '<span class="stream-card-active">Active</span>' : ''}
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    loadStream(stream);
+                    closeStreamModal();
+                });
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Modern Resolution Selector
+        function populateResolutionDropdown() {
+            const dropdown = document.getElementById('resolutionDropdown');
+            dropdown.innerHTML = '';
+            
+            // Add Auto option
+            const autoItem = document.createElement('div');
+            autoItem.className = 'resolution-item';
+            if (currentResolution === 'auto') autoItem.classList.add('active');
+            autoItem.innerHTML = `
+                <div class="resolution-label">
+                    <span>Auto</span>
+                    <span class="resolution-badge">Recommended</span>
+                </div>
+            `;
+            autoItem.addEventListener('click', () => {
+                setResolution('auto');
+                closeResolutionDropdown();
+            });
+            dropdown.appendChild(autoItem);
+            
+            // Get available tracks and add resolution options
+            if (player) {
+                try {
+                    const tracks = player.getVariantTracks();
+                    const resolutions = new Set();
+                    
+                    tracks.forEach(track => {
+                        if (track.height) {
+                            resolutions.add(track.height);
+                        }
+                    });
+                    
+                    const sortedResolutions = Array.from(resolutions).sort((a, b) => b - a);
+                    
+                    sortedResolutions.forEach(height => {
+                        const item = document.createElement('div');
+                        item.className = 'resolution-item';
+                        if (currentResolution === height.toString()) item.classList.add('active');
+                        item.innerHTML = `
+                            <div class="resolution-label">
+                                <span>${height}p</span>
+                            </div>
+                        `;
+                        item.addEventListener('click', () => {
+                            setResolution(height.toString());
+                            closeResolutionDropdown();
+                        });
+                        dropdown.appendChild(item);
+                    });
+                } catch (e) {
+                    console.error('Error getting tracks:', e);
+                }
+            }
+        }
+
+        function setResolution(resolution) {
+            currentResolution = resolution;
+            document.getElementById('resolutionText').textContent = resolution === 'auto' ? 'Auto' : resolution + 'p';
+            
+            if (player && resolution !== 'auto') {
+                try {
+                    const tracks = player.getVariantTracks();
+                    const track = tracks.find(t => t.height === parseInt(resolution));
+                    if (track) {
+                        player.selectVariantTrack(track, true);
+                        showToast(`Quality set to ${resolution}p`, 'success');
+                    }
+                } catch (e) {
+                    console.error('Error setting resolution:', e);
+                }
+            } else if (player && resolution === 'auto') {
+                try {
+                    player.configure({ abr: { enabled: true } });
+                    showToast('Auto quality enabled', 'success');
+                } catch (e) {
+                    console.error('Error enabling auto quality:', e);
+                }
+            }
+            
+            populateResolutionDropdown();
+        }
+
+        function openResolutionDropdown() {
+            populateResolutionDropdown();
+            document.getElementById('resolutionDropdown').classList.add('active');
+            document.getElementById('resolutionBtn').classList.add('active');
+        }
+
+        function closeResolutionDropdown() {
+            document.getElementById('resolutionDropdown').classList.remove('active');
+            document.getElementById('resolutionBtn').classList.remove('active');
+        }
 
         async function init() {
             const video = document.getElementById('video');
-            const player = new shaka.Player(video);
-            const ui = new shaka.ui.Overlay(player, video.parentElement, video);
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const streamStatus = document.getElementById('streamStatus');
+            const currentMatchTitle = document.getElementById('currentMatchTitle');
+            const currentTournament = document.getElementById('currentTournament');
+            const streamSelectorBtn = document.getElementById('streamSelectorBtn');
+            const streamSelectorText = document.getElementById('streamSelectorText');
+            const streamModal = document.getElementById('streamModal');
+            const streamModalClose = document.getElementById('streamModalClose');
+            const themeToggle = document.getElementById('themeToggle');
+            const streamStats = document.getElementById('streamStats');
+            const streamQuality = document.getElementById('streamQuality');
+            const streamFPS = document.getElementById('streamFPS');
+            const bufferLevel = document.getElementById('bufferLevel');
+            const resolutionBtn = document.getElementById('resolutionBtn');
+
+            initTheme();
+            themeToggle.addEventListener('click', toggleTheme);
+            initFirebaseTracking();
+
+            streamSelectorBtn.addEventListener('click', openStreamModal);
+            streamModalClose.addEventListener('click', closeStreamModal);
+            streamModal.addEventListener('click', (e) => {
+                if (e.target === streamModal) closeStreamModal();
+            });
+
+            resolutionBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (document.getElementById('resolutionDropdown').classList.contains('active')) {
+                    closeResolutionDropdown();
+                } else {
+                    openResolutionDropdown();
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.resolution-selector')) {
+                    closeResolutionDropdown();
+                }
+                if (e.key === 'Escape' && streamModal.classList.contains('active')) {
+                    closeStreamModal();
+                }
+            });
+
+            player = new shaka.Player(video);
+            ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
             player.configure({
                 streaming: {
@@ -336,9 +1133,7 @@
                         autoCorrectDrift: true,
                         initialSegmentLimit: 20
                     }
-                },
-                ads: { enabled: false },
-                drm: { clearKeys: config.keys }
+                }
             });
 
             player.configure('streaming.presentationDelay', 20);
@@ -348,153 +1143,165 @@
                 'overflowMenuButtons': ['quality'] 
             });
 
-            try {
-                await player.load(config.manifest);
-                
-                // Keyboard controls setup
-                function setupKeyboardControls() {
-                    // Keyboard event listener
-                    document.addEventListener('keydown', (e) => {
-                        // Don't trigger if user is typing in an input field
-                        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                            return;
+            if (streams.length > 0) {
+                loadStream(streams[0]);
+                streamSelectorText.textContent = streams[0].title;
+            }
+
+            function updateStreamStats() {
+                try {
+                    if (player && player.isLive()) {
+                        const buffered = video.buffered.length > 0 ? video.buffered.end(video.buffered.length - 1) - video.currentTime : 0;
+                        bufferLevel.textContent = `${Math.round(buffered)}s`;
+                        streamStats.style.display = 'flex';
+                        
+                        const tracks = player.getVariantTracks();
+                        const activeTrack = tracks.find(t => t.active);
+                        
+                        if (activeTrack) {
+                            streamQuality.textContent = activeTrack.height ? `${activeTrack.height}p` : 'Auto';
+                            streamFPS.textContent = (activeTrack.frameRate && activeTrack.frameRate > 0) ? Math.round(activeTrack.frameRate) + 'fps' : '--';
+                        } else {
+                            streamQuality.textContent = 'Auto';
+                            streamFPS.textContent = '--';
                         }
                         
-                        switch(e.key.toLowerCase()) {
-                            case ' ':
-                            case 'k':
-                                // Prevent spacebar from scrolling page
-                                e.preventDefault();
-                                // Toggle play/pause
-                                if (video.paused) {
-                                    video.play();
-                                } else {
-                                    video.pause();
-                                }
-                                break;
-                                
-                            case 'm':
-                                // Toggle mute
-                                video.muted = !video.muted;
-                                break;
-                                
-                            case 'f':
-                                // Toggle fullscreen
-                                toggleFullscreen();
-                                break;
-                                
-                            case 'escape':
-                                // Exit fullscreen if in fullscreen mode
-                                if (document.fullscreenElement) {
-                                    document.exitFullscreen();
-                                }
-                                break;
-                                
-                            case 'arrowleft':
-                                // Seek backward 10 seconds
-                                e.preventDefault();
-                                video.currentTime = Math.max(0, video.currentTime - 10);
-                                break;
-                                
-                            case 'arrowright':
-                                // Seek forward 10 seconds
-                                e.preventDefault();
-                                video.currentTime = Math.min(video.duration, video.currentTime + 10);
-                                break;
-                                
-                            case 'arrowup':
-                                // Increase volume
-                                e.preventDefault();
-                                video.volume = Math.min(1, video.volume + 0.1);
-                                break;
-                                
-                            case 'arrowdown':
-                                // Decrease volume
-                                e.preventDefault();
-                                video.volume = Math.max(0, video.volume - 0.1);
-                                break;
-                                
-                            // Number keys 0-9 for seeking to percentage
-                            case '0':
-                            case '1':
-                            case '2':
-                            case '3':
-                            case '4':
-                            case '5':
-                            case '6':
-                            case '7':
-                            case '8':
-                            case '9':
-                                if (!isNaN(video.duration)) {
-                                    const percentage = parseInt(e.key) / 10;
-                                    video.currentTime = video.duration * percentage;
-                                }
-                                break;
-                        }
-                    });
-                    
-                    // Fullscreen toggle function
-                    function toggleFullscreen() {
-                        if (!document.fullscreenElement) {
-                            if (video.requestFullscreen) {
-                                video.requestFullscreen();
-                            } else if (video.webkitRequestFullscreen) {
-                                video.webkitRequestFullscreen();
-                            } else if (video.mozRequestFullScreen) {
-                                video.mozRequestFullScreen();
-                            } else if (video.msRequestFullscreen) {
-                                video.msRequestFullscreen();
-                            }
-                        } else {
-                            if (document.exitFullscreen) {
-                                document.exitFullscreen();
-                            } else if (document.webkitExitFullscreen) {
-                                document.webkitExitFullscreen();
-                            } else if (document.mozCancelFullScreen) {
-                                document.mozCancelFullScreen();
-                            } else if (document.msExitFullscreen) {
-                                document.msExitFullscreen();
-                            }
-                        }
+                        // Update resolution dropdown when tracks change
+                        populateResolutionDropdown();
                     }
-                }
-                
-                // Update current time in footer
-                function updateTime() {
-                    const now = new Date();
-                    const timeString = now.toLocaleTimeString([], {hour12: false});
-                    document.getElementById('currentTime').innerText = timeString;
-                }
-                
-                // Setup keyboard controls
-                setupKeyboardControls();
-                
-                // Initial time update
-                updateTime();
-                
-                // Update time every second
-                setInterval(updateTime, 1000);
-                
-                // Handle player errors
-                player.addEventListener('error', (event) => {
-                    console.error('Player error:', event.detail);
-                });
-                
-                // Monitor latency and maintain 20-second buffer
-                setInterval(() => {
-                    const liveEdge = player.seekRange().end;
-                    if ((liveEdge - video.currentTime) < 10) {
-                        video.currentTime = liveEdge - 20;
-                    }
-                }, 1000);
-                
-            } catch (e) { 
-                console.error('Error initializing player:', e);
+                } catch (e) {}
             }
+
+            setInterval(updateStreamStats, 1000);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                
+                switch(e.key.toLowerCase()) {
+                    case ' ':
+                    case 'k':
+                        e.preventDefault();
+                        video.paused ? video.play() : video.pause();
+                        break;
+                    case 'm':
+                        video.muted = !video.muted;
+                        showToast(video.muted ? 'Muted' : 'Unmuted', 'success');
+                        break;
+                    case 'f':
+                        if (!document.fullscreenElement) {
+                            video.requestFullscreen?.() || video.webkitRequestFullscreen?.();
+                        } else {
+                            document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+                        }
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        openStreamModal();
+                        break;
+                }
+            });
+
+            async function loadStream(stream) {
+                if (currentStream === stream.id) return;
+                
+                currentStream = stream.id;
+                currentMatchTitle.textContent = stream.title;
+                currentTournament.textContent = stream.tournament;
+                streamSelectorText.textContent = stream.title;
+                
+                notifyStreamChange(stream.id);
+                
+                loadingIndicator.classList.add('active');
+                streamStatus.textContent = 'Loading...';
+                
+                try {
+                    await player.unload();
+                    player.configure({ drm: { clearKeys: stream.keys } });
+                    await player.load(stream.manifest);
+                    
+                    // Reset to auto quality when new stream loads
+                    currentResolution = 'auto';
+                    document.getElementById('resolutionText').textContent = 'Auto';
+                    
+                    streamStatus.textContent = 'Stable';
+                    loadingIndicator.classList.remove('active');
+                    showToast(`Loaded: ${stream.title}`, 'success');
+                    
+                    // Populate resolution dropdown after stream loads
+                    setTimeout(() => {
+                        populateResolutionDropdown();
+                    }, 1000);
+                    
+                } catch (error) {
+                    streamStatus.textContent = 'Failed';
+                    loadingIndicator.classList.remove('active');
+                    showToast(`Failed: ${stream.title}`, 'error');
+                }
+            }
+
+            window.loadStream = loadStream;
+
+            function updateTime() {
+                document.getElementById('currentTime').innerText = new Date().toLocaleTimeString([], {hour12: false});
+            }
+            
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            player.addEventListener('error', () => {
+                loadingIndicator.classList.remove('active');
+                streamStatus.textContent = 'Error';
+                showToast('Stream error', 'error');
+            });
+
+            player.addEventListener('buffering', (event) => {
+                if (event.buffering) {
+                    loadingIndicator.classList.add('active');
+                    streamStatus.textContent = 'Buffering...';
+                } else {
+                    loadingIndicator.classList.remove('active');
+                    streamStatus.textContent = 'Stable';
+                }
+            });
+
+            setInterval(() => {
+                try {
+                    if (player && player.isLive()) {
+                        const liveEdge = player.seekRange().end;
+                        if ((liveEdge - video.currentTime) < 10) {
+                            video.currentTime = liveEdge - 20;
+                        }
+                    }
+                } catch (e) {}
+            }, 1000);
         }
 
-        document.addEventListener('shaka-ui-loaded', init);
+        window.addEventListener('beforeunload', () => {
+            if (userRef) {
+                userRef.update({
+                    online: false,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
+            if (heartbeatInterval) clearInterval(heartbeatInterval);
+            if (cleanupInterval) clearInterval(cleanupInterval);
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && userRef) {
+                userRef.update({
+                    online: true,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                    streamId: currentStream || null
+                });
+            }
+        });
+
+        if (window.shaka) {
+            init();
+        } else {
+            document.addEventListener('shaka-ui-loaded', init);
+        }
     </script>
 </body>
 </html>
-
