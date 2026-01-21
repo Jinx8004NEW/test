@@ -2,66 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cricket U19 World Cup | Jinx8004 - Live Stream</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Shaka Player -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.js"></script>
+
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --accent: #e50914;
+            --accent-soft: rgba(229, 9, 20, 0.15);
+            --accent-soft-border: rgba(229, 9, 20, 0.4);
+            --bg-main: #050509;
+            --text-primary: #ffffff;
+            --text-secondary: #b5b5c5;
+            --border-soft: rgba(255, 255, 255, 0.12);
         }
-        
+
         body, html {
             width: 100%;
             height: 100%;
-            background: #000;
+            background: radial-gradient(circle at top left, #181824 0, #050509 45%, #000 100%);
+            color: var(--text-primary);
+            font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             overflow: hidden;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            color: #fff;
         }
-        
-        /* Main container */
+
         .main-container {
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
-            background: #000;
         }
-        
-        /* Header section */
+
+        /* HEADER */
         .header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            background: rgba(0, 0, 0, 0.9);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100;
-            flex-wrap: wrap;
-            gap: 10px;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 24px;
+            background: linear-gradient(
+                180deg,
+                rgba(5, 5, 15, 0.96) 0%,
+                rgba(5, 5, 15, 0.9) 70%,
+                rgba(5, 5, 15, 0.85) 100%
+            );
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(18px);
+            z-index: 20;
         }
-        
+
         .header-left {
             display: flex;
             align-items: center;
             gap: 20px;
             flex: 1;
+            min-width: 0;
         }
-        
+
         .match-info {
             display: flex;
             flex-direction: column;
-            min-width: 200px;
+            min-width: 0;
         }
-        
+
         .match-title {
-            font-size: clamp(16px, 2.5vw, 22px);
-            font-weight: 700;
-            background: linear-gradient(90deg, #ff4d4d, #ff9a3d);
+            font-size: clamp(18px, 2.3vw, 24px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(90deg, #ffffff, #ffd93d, #ff6b6b);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -70,783 +87,869 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
-        .match-subtitle {
-            font-size: clamp(12px, 1.5vw, 14px);
-            color: #aaa;
+
+        .match-subtitle-row {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
             flex-wrap: wrap;
         }
-        
-        .live-indicator {
-            display: flex;
+
+        .live-pill {
+            display: inline-flex;
             align-items: center;
-            gap: 4px;
-            color: #ff4d4d;
-            font-weight: 600;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            border: 1px solid var(--accent-soft-border);
             font-size: 11px;
-            padding: 2px 8px;
-            background: rgba(255, 77, 77, 0.1);
-            border-radius: 12px;
+            font-weight: 700;
+            color: #ffb3b3;
+            text-transform: uppercase;
         }
-        
-        .live-pulse {
-            width: 6px;
-            height: 6px;
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
             background: #ff4d4d;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.9);
+            animation: pulse 1.3s infinite;
         }
-        
+
         @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        
-        /* Dropdown menu */
-        .dropdown {
-            position: relative;
-            min-width: 200px;
+
+        .match-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
         }
-        
+
+        .meta-pill {
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Dropdown */
+        .dropdown { margin-left: auto; position: relative; min-width: 230px; }
+
         .dropdown-btn {
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #fff;
-            cursor: pointer;
+            gap: 10px;
+            padding: 9px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border-soft);
+            background: rgba(10, 10, 18, 0.9);
+            color: var(--text-primary);
             font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s;
-            min-width: 200px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        
+
+        .dropdown-btn span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .dropdown-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(15, 15, 28, 0.96);
         }
-        
-        .dropdown-btn i {
-            font-size: 12px;
-            transition: transform 0.3s;
+
+        .dropdown-btn.active {
+            background: rgba(229, 9, 20, 0.15);
+            border-color: rgba(229, 9, 20, 0.4);
         }
-        
-        .dropdown-btn.active i {
-            transform: rotate(180deg);
-        }
-        
+
+        .dropdown-btn i { font-size: 12px; transition: transform 0.3s ease; }
+        .dropdown-btn.active i { transform: rotate(180deg); }
+
         .dropdown-content {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 8px);
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            margin-top: 5px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 1000;
+            border-radius: 16px;
             overflow: hidden;
-            max-height: 300px;
+            background: rgba(8, 8, 18, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            display: none;
+            max-height: 340px;
             overflow-y: auto;
+            z-index: 40;
         }
-        
-        .dropdown-content.active {
-            display: block;
-        }
-        
+
+        .dropdown-content.active { display: block; }
+
         .dropdown-item {
-            padding: 12px 15px;
-            color: #ddd;
+            padding: 11px 14px;
             cursor: pointer;
-            transition: all 0.2s;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            flex-direction: column;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.2s ease;
         }
-        
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-        
+
+        .dropdown-item:last-child { border-bottom: none; }
+
         .dropdown-item:hover {
             background: rgba(255, 255, 255, 0.08);
-            color: #fff;
         }
-        
+
         .dropdown-item.active {
-            background: rgba(229, 9, 20, 0.2);
-            color: #fff;
-            border-left: 3px solid #e50914;
+            background: linear-gradient(90deg, rgba(229, 9, 20, 0.25), rgba(229, 9, 20, 0.05));
+            border-left: 3px solid var(--accent);
         }
-        
-        .dropdown-match {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-        
-        .dropdown-tournament {
-            font-size: 11px;
-            color: #aaa;
-        }
-        
+
+        .dropdown-match { font-size: 14px; font-weight: 600; }
+        .dropdown-tournament { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+        /* Right side of header */
+        .header-right { display: flex; align-items: center; gap: 14px; }
+
         .user-info {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.05);
             padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-width: 140px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
-        
-        .user-name {
-            font-weight: 600;
-            font-size: 13px;
-            color: #ddd;
-        }
-        
+
         .user-avatar {
-            width: 28px;
-            height: 28px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            background: conic-gradient(from 210deg, #667eea, #764ba2, #ff6b6b, #ffd93d, #667eea);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 700;
         }
-        
-        /* Video container - Responsive */
-        .video-container {
+
+        .user-name { font-size: 13px; font-weight: 600; }
+
+        /* MAIN CONTENT */
+        .content {
             flex: 1;
-            position: relative;
-            overflow: hidden;
             display: flex;
-            background: #000;
+            padding: 10px 18px 12px;
+            gap: 10px;
+            min-height: 0;
         }
-        
+
+        .video-shell {
+            flex: 5;
+            min-width: 0;
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         video {
             width: 100%;
             height: 100%;
             object-fit: contain;
             background: #000;
         }
-        
-        /* Footer - Always visible */
-        .footer {
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.9);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+        /* SIDE PANEL */
+        .side-panel {
+            flex: 1.1;
+            min-width: 220px;
+            max-width: 260px;
+            border-radius: 18px;
+            padding: 10px 12px;
+            background: linear-gradient(
+                145deg,
+                rgba(15, 15, 25, 0.97),
+                rgba(10, 10, 20, 0.97)
+            );
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: var(--text-secondary);
+        }
+
+        .tag-pill {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+        }
+
+        .panel-card {
+            border-radius: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .panel-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             font-size: 12px;
-            flex-wrap: wrap;
-            gap: 10px;
-            z-index: 10;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
         }
-        
+
+        .panel-row span:first-child { color: #8f8fa3; }
+        .panel-row strong { color: var(--text-primary); font-weight: 600; }
+
+        .scorecard-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            margin-top: 8px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .scorecard-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .other-streams { margin-top: 4px; }
+
+        .other-streams-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .other-stream-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            font-size: 11px;
+            padding: 5px 7px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .other-stream-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+
+        .other-stream-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .other-stream-meta { font-size: 10px; color: var(--text-secondary); }
+        .other-stream-arrow { color: var(--text-secondary); font-size: 10px; }
+
+        /* LOADING */
+        .loading-indicator {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.94));
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-indicator.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border-radius: 999px;
+            border: 3px solid rgba(255, 255, 255, 0.12);
+            border-top-color: var(--accent);
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text { font-size: 13px; color: var(--text-secondary); }
+
+        /* FOOTER */
+        .footer {
+            padding: 8px 22px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            font-size: 12px;
+            background: linear-gradient(180deg, rgba(5, 5, 15, 0.97), rgba(0, 0, 0, 0.98));
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.85);
+        }
+
         .connection-status {
             display: flex;
             align-items: center;
             gap: 8px;
             flex: 1;
-            min-width: 200px;
+            min-width: 0;
         }
-        
+
         .connection-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
             background: #4caf50;
-            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.9);
+            animation: pulse 1.8s infinite;
         }
-        
+
         .connection-text {
-            color: #aaa;
-        }
-        
-        .connection-text strong {
-            color: #ddd;
-        }
-        
-        .timestamp {
-            color: #aaa;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            color: var(--text-secondary);
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        
-        /* Loading indicator */
-        .loading-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 20;
-            display: none;
-            text-align: center;
+
+        .connection-text strong { color: var(--text-primary); font-weight: 600; }
+
+        /* SHAKA styling */
+        .shaka-video-container { width: 100% !important; height: 100% !important; }
+        .shaka-bottom-controls { background: linear-gradient(transparent, rgba(0, 0, 0, 0.85)) !important; }
+        .shaka-range-element { color: var(--accent) !important; }
+        .shaka-play-button-container button { background-color: var(--accent) !important; }
+
+        .shaka-overflow-menu-button {
+            border-radius: 999px !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            padding: 6px 10px !important;
         }
-        
-        .loading-indicator.active {
-            display: block;
+
+        .shaka-overflow-menu {
+            border-radius: 16px !important;
+            background: rgba(8, 8, 18, 0.98) !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.85) !important;
+            backdrop-filter: blur(20px) !important;
+            padding: 8px !important;
+            min-width: 200px !important;
         }
-        
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid #e50914;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
+
+        .shaka-overflow-menu .shaka-overflow-menu-item {
+            border-radius: 10px !important;
+            padding: 10px 14px !important;
+            margin: 2px 0 !important;
+            color: #fff !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            transition: all 0.2s ease !important;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        .shaka-overflow-menu .shaka-overflow-menu-item:hover {
+            background: rgba(255, 255, 255, 0.15) !important;
         }
-        
-        .loading-text {
-            color: #aaa;
-            font-size: 14px;
+
+        .shaka-overflow-menu .shaka-overflow-menu-item[aria-checked="true"] {
+            background: rgba(229, 9, 20, 0.25) !important;
+            border-left: 3px solid var(--accent) !important;
         }
-        
-        /* Mobile-specific styles */
-        @media (max-width: 768px) {
-            .header {
-                padding: 10px 15px;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 15px;
-            }
-            
-            .header-left {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .match-info {
-                min-width: auto;
-                width: 100%;
-            }
-            
-            .dropdown {
-                min-width: 100%;
-            }
-            
-            .dropdown-btn {
-                min-width: 100%;
-            }
-            
-            .dropdown-content {
-                position: fixed;
-                top: 130px;
-                left: 15px;
-                right: 15px;
-                max-height: 60vh;
-            }
-            
-            .user-info {
-                align-self: flex-start;
-                min-width: auto;
-            }
-            
-            .footer {
-                padding: 8px 15px;
-                font-size: 11px;
-            }
-            
-            .connection-status {
-                min-width: auto;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header {
-                padding: 8px 12px;
-            }
-            
-            .footer {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            
-            .connection-status, .timestamp {
-                width: 100%;
-            }
-        }
-        
-        /* Landscape mode optimization */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .header {
-                padding: 8px 15px;
-            }
-            
-            .dropdown-content {
-                max-height: 200px;
-            }
-            
-            .footer {
-                padding: 6px 15px;
-                font-size: 11px;
-            }
-        }
-        
-        /* Ensure video controls are accessible */
-        .shaka-video-container {
-            width: 100% !important;
-            height: 100% !important;
-        }
-        
-        .shaka-bottom-controls {
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8)) !important;
-        }
-        
-        .shaka-range-element {
-            color: #e50914 !important;
-        }
-        
-        .shaka-play-button-container button {
-            background: rgba(229, 9, 20, 0.9);
-            border-radius: 50%;
-        }
-        
-        /* Custom scrollbar for dropdown */
-        .dropdown-content::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .dropdown-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-        
+
+        .dropdown-content::-webkit-scrollbar { width: 8px; }
+        .dropdown-content::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); }
         .dropdown-content::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+            border-radius: 999px;
         }
-        
-        .dropdown-content::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+
+        @media (max-width: 1024px) {
+            .content { padding-inline: 12px; flex-direction: column; }
+            .side-panel { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .header { flex-wrap: wrap; align-items: flex-start; padding: 12px 14px; }
+            .header-left { flex-wrap: wrap; gap: 10px; }
+            .dropdown { min-width: 180px; }
+            .footer { padding-inline: 14px; }
+        }
+
+        @media (max-width: 480px) {
+            .header { padding-inline: 10px; }
+            .content { padding-inline: 8px; }
+            .video-shell { border-radius: 12px; }
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <!-- Header with match info and dropdown -->
-        <div class="header">
-            <div class="header-left">
-                <div class="match-info">
-                    <div class="match-title" id="currentMatchTitle">Select a Match</div>
-                    <div class="match-subtitle">
-                        <span class="live-indicator">
-                            <span class="live-pulse"></span>
-                            LIVE
-                        </span>
-                        <span id="currentTournament">ICC U19 Cricket World Cup</span>
-                    </div>
-                </div>
-                
-                <!-- Dropdown menu for match selection -->
-                <div class="dropdown">
-                    <button class="dropdown-btn" id="dropdownBtn">
-                        <span id="dropdownText">Select Match</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="dropdown-content" id="dropdownContent">
-                        <!-- Match options will be populated by JavaScript -->
+<div class="main-container">
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <div class="match-info">
+                <div class="match-title" id="currentMatchTitle">Select a Match</div>
+                <div class="match-subtitle-row">
+                    <span class="live-pill">
+                        <span class="live-dot"></span>
+                        Live
+                    </span>
+                    <div class="match-meta">
+                        <span class="meta-pill" id="currentTournament">ICC U19 Cricket World Cup</span>
+                        <span class="meta-pill"><i class="fa-regular fa-circle-play"></i> FHD • Multi‑Bitrate</span>
                     </div>
                 </div>
             </div>
-            
+
+            <div class="dropdown">
+                <button class="dropdown-btn" id="dropdownBtn">
+                    <span id="dropdownText">Select Match</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content" id="dropdownContent"></div>
+            </div>
+        </div>
+
+        <div class="header-right">
             <div class="user-info">
                 <div class="user-avatar">J</div>
                 <div class="user-name">Jinx8004</div>
             </div>
         </div>
-        
-        <!-- Video container -->
-        <div class="video-container" data-shaka-player-container>
-            <!-- Loading indicator -->
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+        <div class="video-shell" data-shaka-player-container>
             <div class="loading-indicator" id="loadingIndicator">
                 <div class="spinner"></div>
-                <div class="loading-text">Loading Stream...</div>
+                <div class="loading-text">Loading stream...</div>
             </div>
-            
+
             <video data-shaka-player id="video" autoplay crossorigin="anonymous"></video>
         </div>
-        
-        <!-- Footer with connection info -->
-        <div class="footer">
-            <div class="connection-status">
-                <div class="connection-dot"></div>
-                <div class="connection-text">
-                    Stream: <strong>Akamai CDN</strong> • Protocol: <strong>DASH</strong> • Status: <strong id="streamStatus">Select a match</strong>
+
+        <aside class="side-panel">
+            <div class="panel-header">
+                <span class="panel-title">Match Center</span>
+                <span class="tag-pill"><i class="fa-solid fa-signal-bars"></i> Live Feed</span>
+            </div>
+
+            <div class="panel-card">
+                <div class="panel-row">
+                    <span>Tournament</span>
+                    <strong id="panelTournament">U19 World Cup</strong>
+                </div>
+                <div class="panel-row">
+                    <span>Venue</span>
+                    <strong id="panelVenue">—</strong>
+                </div>
+                <div class="panel-row">
+                    <span>Group</span>
+                    <strong id="panelGroup">—</strong>
+                </div>
+
+                <a id="scorecardLink" href="#" target="_blank" rel="noopener" class="scorecard-link">
+                    <i class="fa-solid fa-up-right-from-square"></i>
+                    Scorecard
+                </a>
+            </div>
+
+            <div class="panel-card">
+                <div class="other-streams">
+                    <div class="other-streams-title">Other Streams</div>
+                    <div id="otherStreamsList"></div>
                 </div>
             </div>
-            
-            <div class="timestamp">
-                <i class="far fa-clock"></i>
-                <span id="currentTime">--:--:--</span>
+        </aside>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="connection-status">
+            <div class="connection-dot"></div>
+            <div class="connection-text">
+                Stream: <strong>Akamai CDN</strong> • Protocol: <strong>DASH</strong> • Status:
+                <strong id="streamStatus">Select a match</strong>
             </div>
         </div>
-    </div>
+    </footer>
+</div>
 
-    <script>
-        // Define all available streams with updated information
-        const streams = [
-            {
-                id: 'pak-vs-sco',
-                title: 'PAK VS SCO',
-                tournament: 'U19 World Cup',
-                manifest: 'https://ABAGGUTAAAAAAAAMEJGVLT6SUI4BU.otte.live.cf.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/riuoraemfs/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd?|drmScheme=clearkey&drmLicense=f159241d40e659d58e81bc17ca30da31:6b7fe24f7a16343bd447b0b30f68b7b2',
-                keys: {
-                    'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2'
-                }
-            },
-            {
-                id: 'sl-vs-ire',
-                title: 'SL VS IRE',
-                tournament: 'U19 World Cup',
-                manifest: 'https://ABAGGTUAAAAAAAAMPA6PVZFUSUZSG.otte.live.cf.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/fj64vkqifs/out/v1/9f9a9a3c65674f6a82294c94efba2898/cenc.mpd?|drmScheme=clearkey&drmLicense=b86fa94988debfa3f1dff4cfd0d45345:ab64c1dc3e8f309e61cf0c8318618f05',
-                keys: {
-                    'b86fa94988debfa3f1dff4cfd0d45345': 'ab64c1dc3e8f309e61cf0c8318618f05'
-                }
-            },
-            {
-                id: 'tan-vs-sa',
-                title: 'SA VS TAN',
-                tournament: 'U19 World Cup',
-                manifest: 'https://a181aivottepl-a.akamaihd.net/syd-nitro/live/clients/dash/enc/gmgcjjmmtb/out/v1/b02b49b7e4244b4ebaf4f2d576a97228/cenc.mpd?|drmScheme=clearkey&drmLicense=da661ad935054591590c7487368b26f3:10229bfa52d2e601b3e88b7951dc0bae',
-                keys: {
-                    'da661ad935054591590c7487368b26f3': '10229bfa52d2e601b3e88b7951dc0bae'
-                }
+<script>
+    const streams = [
+        {
+            id: 'eng-vs-sco',
+            title: 'ENG vs SCO U19',
+            tournament: 'ICC U19 Cricket World Cup',
+            venue: 'Bloemfontein',
+            group: 'Group C',
+            scorecard: 'https://www.espncricinfo.com/series/men-s-under-19-world-cup-2025-26-1511849/england-under-19s-vs-scotland-under-19s-17th-match-group-c-1511866/live-cricket-score',
+            manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/tt4l9dkjqa/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd',
+            keys: {
+                'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2',
+                'b770d5b4bb6b594daf985845aae9aa5f': 'b0cb46d2d31cf044bc73db71e9865f6f'
             }
-        ];
-
-        // Global variables
-        let player = null;
-        let ui = null;
-        let currentStream = null;
-
-        async function init() {
-            const video = document.getElementById('video');
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            const streamStatus = document.getElementById('streamStatus');
-            const currentMatchTitle = document.getElementById('currentMatchTitle');
-            const currentTournament = document.getElementById('currentTournament');
-            const dropdownBtn = document.getElementById('dropdownBtn');
-            const dropdownContent = document.getElementById('dropdownContent');
-            const dropdownText = document.getElementById('dropdownText');
-
-            // Initialize player
-            player = new shaka.Player(video);
-            ui = new shaka.ui.Overlay(player, video.parentElement, video);
-
-            // Configure player
-            player.configure({
-                streaming: {
-                    bufferingGoal: 30,
-                    rebufferingGoal: 5,
-                    bufferBehind: 30,
-                    jumpLargeGaps: true,
-                    lowLatencyMode: false
-                },
-                manifest: {
-                    dash: {
-                        ignoreMinBufferTime: true,
-                        autoCorrectDrift: true,
-                        initialSegmentLimit: 20
-                    }
-                }
-            });
-
-            player.configure('streaming.presentationDelay', 20);
-
-            ui.configure({
-                'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
-                'overflowMenuButtons': ['quality'] 
-            });
-
-            // Populate dropdown with match options
-            function populateDropdown() {
-                dropdownContent.innerHTML = '';
-                
-                streams.forEach((stream) => {
-                    const dropdownItem = document.createElement('div');
-                    dropdownItem.className = 'dropdown-item';
-                    dropdownItem.dataset.id = stream.id;
-                    
-                    dropdownItem.innerHTML = `
-                        <div class="dropdown-match">${stream.title}</div>
-                        <div class="dropdown-tournament">${stream.tournament}</div>
-                    `;
-                    
-                    dropdownItem.addEventListener('click', () => {
-                        loadStream(stream);
-                        dropdownBtn.classList.remove('active');
-                        dropdownContent.classList.remove('active');
-                        
-                        // Update active state
-                        document.querySelectorAll('.dropdown-item').forEach(item => {
-                            item.classList.remove('active');
-                        });
-                        dropdownItem.classList.add('active');
-                    });
-                    
-                    dropdownContent.appendChild(dropdownItem);
-                });
+        },
+        {
+            id: 'afg-vs-tan',
+            title: 'AFG vs TAN U19',
+            tournament: 'ICC U19 Cricket World Cup',
+            venue: 'Kimberley',
+            group: 'Group D',
+            scorecard: 'https://www.espncricinfo.com/series/men-s-under-19-world-cup-2025-26-1511849/afghanistan-under-19s-vs-tanzania-under-19s-18th-match-group-d-1511867/live-cricket-score',
+            manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rinvsamnuy/out/v1/9f9a9a3c65674f6a82294c94efba2898/cenc.mpd',
+            keys: {
+                'b86fa94988debfa3f1dff4cfd0d45345': 'ab64c1dc3e8f309e61cf0c8318618f05',
+                'b770d5b4bb6b594daf985845aae9aa5f': 'b0cb46d2d31cf044bc73db71e9865f6f'
             }
-
-            // Toggle dropdown menu
-            dropdownBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownBtn.classList.toggle('active');
-                dropdownContent.classList.toggle('active');
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', () => {
-                dropdownBtn.classList.remove('active');
-                dropdownContent.classList.remove('active');
-            });
-
-            // Prevent dropdown from closing when clicking inside
-            dropdownContent.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-
-            // Populate dropdown initially
-            populateDropdown();
-
-            // Load first stream by default
-            if (streams.length > 0) {
-                loadStream(streams[0]);
-                // Set first item as active in dropdown
-                const firstItem = dropdownContent.querySelector('.dropdown-item');
-                if (firstItem) {
-                    firstItem.classList.add('active');
-                }
-                dropdownText.textContent = streams[0].title;
-            }
-
-            // Keyboard controls setup
-            function setupKeyboardControls() {
-                document.addEventListener('keydown', (e) => {
-                    // Don't trigger if user is typing in an input field
-                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                        return;
-                    }
-                    
-                    switch(e.key.toLowerCase()) {
-                        case ' ':
-                        case 'k':
-                            e.preventDefault();
-                            if (video.paused) {
-                                video.play();
-                            } else {
-                                video.pause();
-                            }
-                            break;
-                            
-                        case 'm':
-                            video.muted = !video.muted;
-                            break;
-                            
-                        case 'f':
-                            toggleFullscreen();
-                            break;
-                            
-                        case 'escape':
-                            if (document.fullscreenElement) {
-                                document.exitFullscreen();
-                            }
-                            dropdownBtn.classList.remove('active');
-                            dropdownContent.classList.remove('active');
-                            break;
-                            
-                        case 'arrowleft':
-                            e.preventDefault();
-                            video.currentTime = Math.max(0, video.currentTime - 10);
-                            break;
-                            
-                        case 'arrowright':
-                            e.preventDefault();
-                            video.currentTime = Math.min(video.duration, video.currentTime + 10);
-                            break;
-                            
-                        case 'arrowup':
-                            e.preventDefault();
-                            video.volume = Math.min(1, video.volume + 0.1);
-                            break;
-                            
-                        case 'arrowdown':
-                            e.preventDefault();
-                            video.volume = Math.max(0, video.volume - 0.1);
-                            break;
-                            
-                        // Number keys 1-3 for quick match switching
-                        case '1':
-                            if (streams[0]) loadStream(streams[0]);
-                            break;
-                        case '2':
-                            if (streams[1]) loadStream(streams[1]);
-                            break;
-                        case '3':
-                            if (streams[2]) loadStream(streams[2]);
-                            break;
-                            
-                        // Number keys 0-9 for seeking
-                        case '0':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            if (!isNaN(video.duration)) {
-                                const percentage = parseInt(e.key) / 10;
-                                video.currentTime = video.duration * percentage;
-                            }
-                            break;
-                    }
-                });
-                
-                function toggleFullscreen() {
-                    if (!document.fullscreenElement) {
-                        if (video.requestFullscreen) {
-                            video.requestFullscreen();
-                        } else if (video.webkitRequestFullscreen) {
-                            video.webkitRequestFullscreen();
-                        } else if (video.mozRequestFullScreen) {
-                            video.mozRequestFullScreen();
-                        } else if (video.msRequestFullscreen) {
-                            video.msRequestFullscreen();
-                        }
-                    } else {
-                        if (document.exitFullscreen) {
-                            document.exitFullscreen();
-                        } else if (document.webkitExitFullscreen) {
-                            document.webkitExitFullscreen();
-                        } else if (document.mozCancelFullScreen) {
-                            document.mozCancelFullScreen();
-                        } else if (document.msExitFullscreen) {
-                            document.msExitFullscreen();
-                        }
-                    }
-                }
-            }
-
-            // Load stream function
-            async function loadStream(stream) {
-                if (currentStream === stream.id) return;
-                
-                currentStream = stream.id;
-                currentMatchTitle.textContent = stream.title;
-                currentTournament.textContent = stream.tournament;
-                dropdownText.textContent = stream.title;
-                
-                loadingIndicator.classList.add('active');
-                streamStatus.textContent = 'Loading...';
-                streamStatus.style.color = '';
-                
-                try {
-                    console.log('Loading stream:', stream.title);
-                    
-                    // Unload previous stream
-                    await player.unload();
-                    
-                    // Configure DRM for this stream
-                    player.configure({
-                        drm: {
-                            clearKeys: stream.keys
-                        }
-                    });
-                    
-                    // Load new stream
-                    await player.load(stream.manifest);
-                    
-                    console.log('Stream loaded successfully:', stream.title);
-                    streamStatus.textContent = 'Stable';
-                    loadingIndicator.classList.remove('active');
-                    
-                } catch (error) {
-                    console.error('Error loading stream:', stream.title, error);
-                    streamStatus.textContent = 'Failed to load';
-                    streamStatus.style.color = '#ff4d4d';
-                    loadingIndicator.classList.remove('active');
-                }
-            }
-
-            // Setup keyboard controls
-            setupKeyboardControls();
-
-            // Update current time
-            function updateTime() {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString([], {hour12: false});
-                document.getElementById('currentTime').innerText = timeString;
-            }
-            
-            updateTime();
-            setInterval(updateTime, 1000);
-
-            // Handle player errors
-            player.addEventListener('error', (event) => {
-                console.error('Player error:', event.detail);
-                loadingIndicator.classList.remove('active');
-                streamStatus.textContent = 'Error';
-                streamStatus.style.color = '#ff4d4d';
-            });
-
-            // Handle buffering events
-            player.addEventListener('buffering', (event) => {
-                if (event.buffering) {
-                    loadingIndicator.classList.add('active');
-                    streamStatus.textContent = 'Buffering...';
-                } else {
-                    loadingIndicator.classList.remove('active');
-                    streamStatus.textContent = 'Stable';
-                }
-            });
-
-            // Monitor latency and maintain buffer
-            setInterval(() => {
-                try {
-                    if (player && player.isLive()) {
-                        const liveEdge = player.seekRange().end;
-                        if ((liveEdge - video.currentTime) < 10) {
-                            video.currentTime = liveEdge - 20;
-                        }
-                    }
-                } catch (e) {
-                    // Ignore errors
-                }
-            }, 1000);
         }
+    ];
 
-        // Initialize when Shaka Player is loaded
-        if (window.shaka) {
-            init();
+    let player = null;
+    let ui = null;
+    let currentStreamId = null;
+
+    function updateSidePanel(stream) {
+        const tournamentEl = document.getElementById('panelTournament');
+        const venueEl = document.getElementById('panelVenue');
+        const groupEl = document.getElementById('panelGroup');
+        const scorecardEl = document.getElementById('scorecardLink');
+        const otherList = document.getElementById('otherStreamsList');
+
+        if (!stream) return;
+
+        tournamentEl.textContent = stream.tournament || '—';
+        venueEl.textContent = stream.venue || '—';
+        groupEl.textContent = stream.group || '—';
+
+        if (stream.scorecard) {
+            scorecardEl.href = stream.scorecard;
+            scorecardEl.style.display = 'inline-flex';
         } else {
-            document.addEventListener('shaka-ui-loaded', init);
+            scorecardEl.href = '#';
+            scorecardEl.style.display = 'none';
         }
-    </script>
+
+        otherList.innerHTML = '';
+        streams
+            .filter(s => s.id !== stream.id)
+            .forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'other-stream-item';
+                div.innerHTML = `
+                    <div>
+                        <div class="other-stream-name">${s.title}</div>
+                        <div class="other-stream-meta">${s.tournament}</div>
+                    </div>
+                    <span class="other-stream-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                `;
+                div.addEventListener('click', () => loadStream(s));
+                otherList.appendChild(div);
+            });
+    }
+
+    function enhanceQualityMenu() {
+        if (!player) return;
+        const tracks = player.getVariantTracks();
+        setTimeout(() => {
+            const items = document.querySelectorAll('.shaka-overflow-menu-item[aria-label*="p"]');
+            items.forEach(item => {
+                const label = item.getAttribute('aria-label');
+                if (!label) return;
+                const match = label.match(/(\d+)p/i);
+                if (!match) return;
+
+                const height = parseInt(match[1], 10);
+                const track = tracks.find(t => t.height === height);
+                if (!track) return;
+
+                const fps = track.frameRate || track.videoFrameRate || '';
+                const newLabel = fps ? `${height}p • ${fps} fps` : `${height}p`;
+                item.setAttribute('aria-label', newLabel);
+                item.textContent = newLabel;
+            });
+        }, 150);
+    }
+
+    async function loadStream(stream) {
+        if (!player) return;
+        if (currentStreamId === stream.id) return;
+
+        currentStreamId = stream.id;
+
+        const currentMatchTitle = document.getElementById('currentMatchTitle');
+        const currentTournament = document.getElementById('currentTournament');
+        const dropdownText = document.getElementById('dropdownText');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const streamStatus = document.getElementById('streamStatus');
+
+        currentMatchTitle.textContent = stream.title;
+        currentTournament.textContent = stream.tournament;
+        dropdownText.textContent = stream.title;
+
+        updateSidePanel(stream);
+
+        loadingIndicator.classList.add('active');
+        streamStatus.textContent = 'Loading...';
+        streamStatus.style.color = '';
+
+        try {
+            await player.unload();
+            player.configure({ drm: { clearKeys: stream.keys } });
+            await player.load(stream.manifest);
+            streamStatus.textContent = 'Stable';
+            enhanceQualityMenu();
+        } catch (error) {
+            console.error('Error loading stream:', stream.title, error);
+            streamStatus.textContent = 'Failed to load';
+            streamStatus.style.color = '#ff4d4d';
+        } finally {
+            loadingIndicator.classList.remove('active');
+        }
+    }
+
+    async function init() {
+        const video = document.getElementById('video');
+        const streamStatus = document.getElementById('streamStatus');
+        const dropdownBtn = document.getElementById('dropdownBtn');
+        const dropdownContent = document.getElementById('dropdownContent');
+        const dropdownText = document.getElementById('dropdownText');
+
+        player = new shaka.Player(video);
+        ui = new shaka.ui.Overlay(player, video.parentElement, video);
+
+        player.configure({
+            streaming: {
+                bufferingGoal: 30,
+                rebufferingGoal: 5,
+                bufferBehind: 30,
+                jumpLargeGaps: true,
+                lowLatencyMode: false
+            },
+            manifest: {
+                dash: {
+                    ignoreMinBufferTime: true,
+                    autoCorrectDrift: true,
+                    initialSegmentLimit: 20
+                }
+            }
+        });
+        player.configure('streaming.presentationDelay', 20);
+
+        ui.configure({
+            controlPanelElements: [
+                'play_pause',
+                'time_and_duration',
+                'spacer',
+                'mute',
+                'volume',
+                'fullscreen',
+                'overflow_menu'
+            ],
+            overflowMenuButtons: ['quality']
+        });
+
+        player.addEventListener('adaptation', enhanceQualityMenu);
+        player.addEventListener('trackschanged', enhanceQualityMenu);
+
+        function populateDropdown() {
+            dropdownContent.innerHTML = '';
+            streams.forEach((stream) => {
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.dataset.id = stream.id;
+                item.innerHTML = `
+                    <div class="dropdown-match">${stream.title}</div>
+                    <div class="dropdown-tournament">${stream.tournament}</div>
+                `;
+                item.addEventListener('click', () => {
+                    loadStream(stream);
+                    dropdownBtn.classList.remove('active');
+                    dropdownContent.classList.remove('active');
+                    document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                });
+                dropdownContent.appendChild(item);
+            });
+        }
+
+        dropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownBtn.classList.toggle('active');
+            dropdownContent.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            dropdownBtn.classList.remove('active');
+            dropdownContent.classList.remove('active');
+        });
+
+        dropdownContent.addEventListener('click', (e) => e.stopPropagation());
+
+        populateDropdown();
+
+        if (streams.length > 0) {
+            loadStream(streams[0]);
+            const firstItem = dropdownContent.querySelector('.dropdown-item');
+            if (firstItem) firstItem.classList.add('active');
+            dropdownText.textContent = streams[0].title;
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            switch (e.key) {
+                case ' ':
+                    e.preventDefault();
+                    if (video.paused) video.play(); else video.pause();
+                    break;
+                case 'm':
+                case 'M':
+                    video.muted = !video.muted;
+                    break;
+                case 'f':
+                case 'F':
+                    if (!document.fullscreenElement) {
+                        if (video.requestFullscreen) video.requestFullscreen();
+                        else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+                    } else {
+                        document.exitFullscreen && document.exitFullscreen();
+                    }
+                    break;
+                case 'Escape':
+                    if (document.fullscreenElement) document.exitFullscreen();
+                    dropdownBtn.classList.remove('active');
+                    dropdownContent.classList.remove('active');
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    video.currentTime = Math.max(0, video.currentTime - 10);
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    video.currentTime = Math.min(video.duration || 0, video.currentTime + 10);
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    video.volume = Math.min(1, video.volume + 0.1);
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    video.volume = Math.max(0, video.volume - 0.1);
+                    break;
+                case '1':
+                    if (streams[0]) loadStream(streams[0]);
+                    break;
+                case '2':
+                    if (streams[1]) loadStream(streams[1]);
+                    break;
+                case '0': case '4': case '5': case '6':
+                case '7': case '8': case '9':
+                    if (!isNaN(video.duration)) {
+                        const percentage = parseInt(e.key, 10) / 10;
+                        video.currentTime = video.duration * percentage;
+                    }
+                    break;
+            }
+        });
+
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        player.addEventListener('error', (event) => {
+            console.error('Player error:', event.detail);
+            loadingIndicator.classList.remove('active');
+            streamStatus.textContent = 'Error';
+            streamStatus.style.color = '#ff4d4d';
+        });
+
+        player.addEventListener('buffering', (event) => {
+            if (event.buffering) {
+                loadingIndicator.classList.add('active');
+                streamStatus.textContent = 'Buffering...';
+            } else {
+                loadingIndicator.classList.remove('active');
+                streamStatus.textContent = 'Stable';
+            }
+        });
+
+        setInterval(() => {
+            try {
+                if (player && player.isLive()) {
+                    const liveEdge = player.seekRange().end;
+                    if ((liveEdge - video.currentTime) < 10) {
+                        video.currentTime = liveEdge - 20;
+                    }
+                }
+            } catch (_) {}
+        }, 1000);
+    }
+
+    if (window.shaka) {
+        init();
+    } else {
+        document.addEventListener('shaka-ui-loaded', init);
+    }
+</script>
 </body>
 </html>
