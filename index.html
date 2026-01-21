@@ -653,7 +653,7 @@
                     </div>
                     <div class="buffering-tip">
                         <i class="fas fa-lightbulb"></i>
-                        Maintaining 1 min buffer ensures uninterrupted experience
+                        Maintaining buffer for uninterrupted experience
                     </div>
                 </div>
             </div>
@@ -763,40 +763,25 @@
             player = new shaka.Player(video);
             ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
-            // Configure player with larger buffers
+            // EXACT BUFFER SETTINGS FROM WORKING CODE (30s not 60s!)
             player.configure({
                 streaming: {
-                    bufferingGoal: 60,
-                    rebufferingGoal: 15,
-                    bufferBehind: 60,
+                    bufferingGoal: 30,          // Working setting from 2nd code
+                    rebufferingGoal: 5,         // Working setting from 2nd code
+                    bufferBehind: 30,           // Working setting from 2nd code
                     jumpLargeGaps: true,
-                    lowLatencyMode: false,
-                    retryParameters: {
-                        timeout: 30000,
-                        maxAttempts: 5,
-                        baseDelay: 1000,
-                        backoffFactor: 2,
-                        fuzzFactor: 0.5
-                    }
+                    lowLatencyMode: false
                 },
                 manifest: {
                     dash: {
                         ignoreMinBufferTime: true,
                         autoCorrectDrift: true,
-                        initialSegmentLimit: 30,
-                        updatePeriod: 5
+                        initialSegmentLimit: 20  // Working setting from 2nd code
                     }
-                },
-                abr: {
-                    enabled: true,
-                    defaultBandwidthEstimate: 5000000,
-                    switchInterval: 8,
-                    bandwidthUpgradeTarget: 0.85,
-                    bandwidthDowngradeTarget: 0.95
                 }
             });
 
-            player.configure('streaming.presentationDelay', 30);
+            player.configure('streaming.presentationDelay', 20);  // Working setting from 2nd code
 
             ui.configure({
                 'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
@@ -834,7 +819,6 @@
                         dropdownBtn.classList.remove('active');
                         dropdownContent.classList.remove('active');
                         
-                        // Update active state
                         document.querySelectorAll('.dropdown-item').forEach(item => {
                             item.classList.remove('active');
                         });
@@ -852,21 +836,17 @@
                 dropdownContent.classList.toggle('active');
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', () => {
                 dropdownBtn.classList.remove('active');
                 dropdownContent.classList.remove('active');
             });
 
-            // Prevent dropdown from closing when clicking inside
             dropdownContent.addEventListener('click', (e) => {
                 e.stopPropagation();
             });
 
-            // Populate dropdown initially
             populateDropdown();
 
-            // Load first stream by default
             if (streams.length > 0) {
                 loadStream(streams[0]);
                 const firstItem = dropdownContent.querySelector('.dropdown-item');
@@ -887,11 +867,7 @@
                         case ' ':
                         case 'k':
                             e.preventDefault();
-                            if (video.paused) {
-                                video.play();
-                            } else {
-                                video.pause();
-                            }
+                            video.paused ? video.play() : video.pause();
                             break;
                             
                         case 'm':
@@ -1040,25 +1016,19 @@
                 }
             });
 
-            // Monitor latency and maintain buffer
+            // EXACT LATENCY MANAGEMENT FROM WORKING CODE
             setInterval(() => {
                 try {
                     if (player && player.isLive()) {
-                        const seekRange = player.seekRange();
-                        const liveEdge = seekRange.end;
-                        const currentTime = video.currentTime;
-                        const distanceFromLive = liveEdge - currentTime;
-                        
-                        if (distanceFromLive < 20) {
-                            video.currentTime = liveEdge - 40;
-                        } else if (distanceFromLive > 120) {
-                            video.currentTime = liveEdge - 60;
+                        const liveEdge = player.seekRange().end;
+                        if ((liveEdge - video.currentTime) < 10) {
+                            video.currentTime = liveEdge - 20;
                         }
                     }
                 } catch (e) {
                     // Ignore errors
                 }
-            }, 2000);
+            }, 1000);
         }
 
         // Initialize when Shaka Player is loaded
