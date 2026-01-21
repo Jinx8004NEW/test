@@ -401,7 +401,7 @@
         .other-stream-meta { font-size: 10px; color: var(--text-secondary); }
         .other-stream-arrow { color: var(--text-secondary); font-size: 10px; }
 
-        /* LOADING */
+        /* CUSTOM LOADING OVERLAY (ONLY ONE) */
         .loading-indicator {
             position: absolute;
             inset: 0;
@@ -409,11 +409,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.94));
+            background: radial-gradient(circle at center, rgba(0,0,0,0.15), rgba(0,0,0,0.85));
             z-index: 10;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease;
         }
 
         .loading-indicator.active {
@@ -421,19 +421,41 @@
             pointer-events: auto;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border-radius: 999px;
-            border: 3px solid rgba(255, 255, 255, 0.12);
+        .loader-ring {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.15);
             border-top-color: var(--accent);
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 10px;
+            position: relative;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-ring::after {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-left-color: transparent;
+            border-right-color: transparent;
+            animation: spinReverse 1.4s linear infinite;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spinReverse { to { transform: rotate(-360deg); } }
 
-        .loading-text { font-size: 13px; color: var(--text-secondary); }
+        .loading-text {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* HIDE SHAKA'S OWN BUFFERING SPINNER */
+        .shaka-spinner-container,
+        .shaka-buffering-message {
+            display: none !important;
+        }
 
         /* FOOTER */
         .footer {
@@ -582,7 +604,7 @@
     <main class="content">
         <div class="video-shell" data-shaka-player-container>
             <div class="loading-indicator" id="loadingIndicator">
-                <div class="spinner"></div>
+                <div class="loader-ring"></div>
                 <div class="loading-text">Loading stream...</div>
             </div>
 
@@ -713,23 +735,21 @@
         if (!player) return;
         const tracks = player.getVariantTracks();
         setTimeout(() => {
-            const items = document.querySelectorAll('.shaka-overflow-menu-item[aria-label*="p"]');
+            const items = document.querySelectorAll('.shaka-overflow-menu .shaka-overflow-menu-item');
             items.forEach(item => {
-                const label = item.getAttribute('aria-label');
-                if (!label) return;
-                const match = label.match(/(\d+)p/i);
+                const label = item.getAttribute('aria-label') || '';
+                // Match pure resolution labels like "1080p" etc, skip "Auto"
+                const match = label.match(/^(\d+)p/i);
                 if (!match) return;
-
                 const height = parseInt(match[1], 10);
                 const track = tracks.find(t => t.height === height);
                 if (!track) return;
-
                 const fps = track.frameRate || track.videoFrameRate || '';
                 const newLabel = fps ? `${height}p • ${fps} fps` : `${height}p`;
                 item.setAttribute('aria-label', newLabel);
                 item.textContent = newLabel;
             });
-        }, 150);
+        }, 120);
     }
 
     async function loadStream(stream) {
@@ -779,10 +799,11 @@
         player = new shaka.Player(video);
         ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
+        // 20s buffer goal to reduce re-buffering
         player.configure({
             streaming: {
-                bufferingGoal: 30,
-                rebufferingGoal: 5,
+                bufferingGoal: 20,    // target buffer ahead in seconds
+                rebufferingGoal: 10,  // minimum buffer after a stall
                 bufferBehind: 30,
                 jumpLargeGaps: true,
                 lowLatencyMode: false
@@ -810,8 +831,19 @@
             overflowMenuButtons: ['quality']
         });
 
+        // Update FPS labels when tracks/quality change
         player.addEventListener('adaptation', enhanceQualityMenu);
         player.addEventListener('trackschanged', enhanceQualityMenu);
+
+        // Also update when the 3-dot menu is opened
+        const controls = ui.getControls();
+        const controlsContainer = controls.getControlsContainer();
+        const overflowButton = controlsContainer.querySelector('.shaka-overflow-menu-button');
+        if (overflowButton) {
+            overflowButton.addEventListener('click', () => {
+                enhanceQualityMenu();
+            });
+        }
 
         function populateDropdown() {
             dropdownContent.innerHTML = '';
@@ -933,6 +965,7 @@
             }
         });
 
+        // Keep player near live edge but with some cushion
         setInterval(() => {
             try {
                 if (player && player.isLive()) {
