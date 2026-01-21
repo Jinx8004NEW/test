@@ -418,6 +418,74 @@
         .other-stream-meta { font-size: 10px; color: var(--text-secondary); }
         .other-stream-arrow { color: var(--text-secondary); font-size: 10px; }
 
+        /* BUFFERING OVERLAY WITH MESSAGE */
+        .buffering-overlay {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.75), rgba(0,0,0,0.92));
+            z-index: 15;
+            padding: 20px;
+        }
+
+        .buffering-overlay.active {
+            display: flex;
+        }
+
+        .buffering-spinner {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent);
+            border-bottom-color: var(--accent);
+            animation: spin 1.2s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .buffering-message {
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .buffering-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .buffering-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .buffering-tip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(66, 165, 245, 0.15);
+            border: 1px solid rgba(66, 165, 245, 0.3);
+            border-radius: 999px;
+            font-size: 12px;
+            color: #64b5f6;
+            font-weight: 600;
+        }
+
         /* CUSTOM LOADING OVERLAY */
         .loading-indicator {
             position: absolute;
@@ -459,7 +527,6 @@
             animation: spinReverse 1.4s linear infinite;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes spinReverse { to { transform: rotate(-360deg); } }
 
         .loading-text {
@@ -707,6 +774,18 @@
             .dropdown-content {
                 max-height: 50vh;
             }
+
+            .buffering-title {
+                font-size: 16px;
+            }
+
+            .buffering-subtitle {
+                font-size: 13px;
+            }
+
+            .buffering-tip {
+                font-size: 11px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -777,6 +856,24 @@
             
             .error-message {
                 font-size: 12px;
+            }
+
+            .buffering-spinner {
+                width: 50px;
+                height: 50px;
+            }
+
+            .buffering-title {
+                font-size: 15px;
+            }
+
+            .buffering-subtitle {
+                font-size: 12px;
+            }
+
+            .buffering-tip {
+                font-size: 10px;
+                padding: 5px 12px;
             }
         }
 
@@ -896,6 +993,23 @@
             <div class="loading-indicator" id="loadingIndicator">
                 <div class="loader-ring"></div>
                 <div class="loading-text">Loading stream...</div>
+            </div>
+
+            <div class="buffering-overlay" id="bufferingOverlay">
+                <div class="buffering-spinner"></div>
+                <div class="buffering-message">
+                    <div class="buffering-title">
+                        <i class="fas fa-circle-notch fa-spin"></i>
+                        Buffering Stream
+                    </div>
+                    <div class="buffering-subtitle">
+                        Building buffer for smooth playback...
+                    </div>
+                    <div class="buffering-tip">
+                        <i class="fas fa-lightbulb"></i>
+                        Maintaining 1 min buffer ensures uninterrupted experience
+                    </div>
+                </div>
             </div>
 
             <div class="reconnect-overlay" id="reconnectOverlay">
@@ -1154,6 +1268,7 @@
         const dropdownBtn = document.getElementById('dropdownBtn');
         const dropdownContent = document.getElementById('dropdownContent');
         const dropdownText = document.getElementById('dropdownText');
+        const bufferingOverlay = document.getElementById('bufferingOverlay');
 
         player = new shaka.Player(video);
         ui = new shaka.ui.Overlay(player, video.parentElement, video);
@@ -1312,12 +1427,13 @@
 
         const loadingIndicator = document.getElementById('loadingIndicator');
 
+        // Handle buffering events with message
         player.addEventListener('buffering', (event) => {
             if (event.buffering) {
-                loadingIndicator.classList.add('active');
+                bufferingOverlay.classList.add('active');
                 streamStatus.textContent = 'Buffering...';
             } else {
-                loadingIndicator.classList.remove('active');
+                bufferingOverlay.classList.remove('active');
                 streamStatus.textContent = 'Stable';
             }
         });
