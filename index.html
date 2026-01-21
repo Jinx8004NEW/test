@@ -895,7 +895,7 @@
         <div class="video-shell" data-shaka-player-container>
             <div class="loading-indicator" id="loadingIndicator">
                 <div class="loader-ring"></div>
-                <div class="loading-text">Buffering stream...</div>
+                <div class="loading-text">Loading stream...</div>
             </div>
 
             <div class="reconnect-overlay" id="reconnectOverlay">
@@ -907,7 +907,7 @@
                 </button>
             </div>
 
-            <video data-shaka-player id="video" crossorigin="anonymous" playsinline></video>
+            <video data-shaka-player id="video" autoplay crossorigin="anonymous" playsinline></video>
         </div>
 
         <aside class="side-panel">
@@ -1033,7 +1033,6 @@
     }
 
     function setupAutoHideControls() {
-        // Don't auto-hide on touch devices
         if (isTouchDevice) return;
         
         const videoShell = document.querySelector('.video-shell');
@@ -1111,7 +1110,6 @@
         const loadingIndicator = document.getElementById('loadingIndicator');
         const streamStatus = document.getElementById('streamStatus');
         const reconnectOverlay = document.getElementById('reconnectOverlay');
-        const video = document.getElementById('video');
 
         currentMatchTitle.textContent = stream.title;
         currentTournament.textContent = stream.tournament;
@@ -1121,39 +1119,25 @@
 
         loadingIndicator.classList.add('active');
         reconnectOverlay.classList.remove('active');
-        streamStatus.textContent = 'Buffering...';
+        streamStatus.textContent = 'Loading...';
         streamStatus.style.color = '';
 
         try {
+            console.log('Loading stream:', stream.title);
+            
             await player.unload();
-            player.configure({ drm: { clearKeys: stream.keys } });
+            
+            player.configure({
+                drm: {
+                    clearKeys: stream.keys
+                }
+            });
+            
             await player.load(stream.manifest);
             
-            // Wait for 20 seconds of buffer before playing
-            video.pause();
-            
-            const checkBuffer = setInterval(() => {
-                const buffered = video.buffered;
-                if (buffered.length > 0) {
-                    const bufferedSeconds = buffered.end(0) - buffered.start(0);
-                    if (bufferedSeconds >= 20) {
-                        clearInterval(checkBuffer);
-                        video.play();
-                        loadingIndicator.classList.remove('active');
-                        streamStatus.textContent = 'Stable';
-                    }
-                }
-            }, 500);
-            
-            // Fallback: start playing after 25 seconds regardless
-            setTimeout(() => {
-                clearInterval(checkBuffer);
-                if (video.paused) {
-                    video.play();
-                    loadingIndicator.classList.remove('active');
-                    streamStatus.textContent = 'Stable';
-                }
-            }, 25000);
+            console.log('Stream loaded successfully:', stream.title);
+            streamStatus.textContent = 'Stable';
+            loadingIndicator.classList.remove('active');
             
             enhanceQualityMenu();
         } catch (error) {
@@ -1174,11 +1158,11 @@
         player = new shaka.Player(video);
         ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
-        // 20s buffer goal for stability
+        // EXACT BUFFER LOGIC FROM WORKING FILE
         player.configure({
             streaming: {
-                bufferingGoal: 20,
-                rebufferingGoal: 10,
+                bufferingGoal: 30,
+                rebufferingGoal: 5,
                 bufferBehind: 30,
                 jumpLargeGaps: true,
                 lowLatencyMode: false
@@ -1191,6 +1175,7 @@
                 }
             }
         });
+
         player.configure('streaming.presentationDelay', 20);
 
         ui.configure({
@@ -1206,10 +1191,8 @@
             overflowMenuButtons: ['quality']
         });
 
-        // Setup auto-hide controls (only on non-touch devices)
         setupAutoHideControls();
 
-        // Update FPS labels when tracks/quality change
         player.addEventListener('adaptation', enhanceQualityMenu);
         player.addEventListener('trackschanged', enhanceQualityMenu);
 
@@ -1264,11 +1247,9 @@
             if (firstItem) firstItem.classList.add('active');
             dropdownText.textContent = streams[0].title;
             
-            // Setup reconnect for first stream
             setupReconnect(streams[0]);
         }
 
-        // Keyboard controls (desktop only)
         if (!isTouchDevice) {
             document.addEventListener('keydown', (e) => {
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -1341,20 +1322,18 @@
             }
         });
 
-        // Keep player near live edge
+        // EXACT LATENCY MANAGEMENT FROM WORKING FILE
         setInterval(() => {
             try {
                 if (player && player.isLive()) {
-                    const seekRange = player.seekRange();
-                    const liveEdge = seekRange.end;
-                    const currentTime = video.currentTime;
-                    const distanceFromLive = liveEdge - currentTime;
-                    
-                    if (distanceFromLive < 10) {
+                    const liveEdge = player.seekRange().end;
+                    if ((liveEdge - video.currentTime) < 10) {
                         video.currentTime = liveEdge - 20;
                     }
                 }
-            } catch (_) {}
+            } catch (e) {
+                // Ignore errors
+            }
         }, 1000);
     }
 
