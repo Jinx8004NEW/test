@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Cricket U19 World Cup | Jinx8004 - Live Stream</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <!-- Shaka Player -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
@@ -32,6 +32,8 @@
             color: var(--text-primary);
             font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .main-container {
@@ -137,33 +139,6 @@
             border-radius: 999px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             background: rgba(255, 255, 255, 0.03);
-        }
-
-        .res-fps-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 3px 10px;
-            border-radius: 999px;
-            background: rgba(76, 175, 80, 0.15);
-            border: 1px solid rgba(76, 175, 80, 0.4);
-            font-size: 11px;
-            font-weight: 700;
-            color: #90ee90;
-            text-transform: uppercase;
-        }
-
-        .network-speed {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 3px 10px;
-            border-radius: 999px;
-            background: rgba(66, 165, 245, 0.15);
-            border: 1px solid rgba(66, 165, 245, 0.4);
-            font-size: 11px;
-            font-weight: 600;
-            color: #64b5f6;
         }
 
         /* Dropdown */
@@ -504,6 +479,7 @@
             background: rgba(0, 0, 0, 0.92);
             z-index: 30;
             gap: 20px;
+            padding: 20px;
         }
 
         .reconnect-overlay.active {
@@ -531,11 +507,16 @@
             box-shadow: 0 8px 24px rgba(229, 9, 20, 0.6);
         }
 
+        .reconnect-btn:active {
+            transform: scale(0.98);
+        }
+
         .error-message {
             color: var(--text-secondary);
             font-size: 13px;
             max-width: 400px;
             text-align: center;
+            line-height: 1.5;
         }
 
         /* HIDE SHAKA'S OWN BUFFERING SPINNER */
@@ -632,22 +613,244 @@
             border-radius: 999px;
         }
 
+        /* MOBILE OPTIMIZATIONS */
         @media (max-width: 1024px) {
-            .content { padding-inline: 12px; flex-direction: column; }
-            .side-panel { display: none; }
+            .content { 
+                padding: 8px 12px 10px; 
+                flex-direction: column; 
+            }
+            .side-panel { 
+                display: none; 
+            }
+            .video-shell {
+                border-radius: 12px;
+            }
         }
 
         @media (max-width: 768px) {
-            .header { flex-wrap: wrap; align-items: flex-start; padding: 12px 14px; }
-            .header-left { flex-wrap: wrap; gap: 10px; }
-            .dropdown { min-width: 180px; }
-            .footer { padding-inline: 14px; }
+            .header { 
+                flex-direction: column;
+                align-items: stretch; 
+                padding: 10px 12px; 
+                gap: 10px;
+            }
+            
+            .header-left { 
+                flex-direction: column;
+                gap: 10px; 
+            }
+            
+            .match-info {
+                width: 100%;
+            }
+            
+            .match-title {
+                font-size: 18px;
+                white-space: normal;
+                line-height: 1.3;
+            }
+            
+            .match-subtitle-row {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            
+            .meta-pill {
+                font-size: 10px;
+                padding: 2px 6px;
+            }
+            
+            .dropdown { 
+                min-width: 100%;
+                width: 100%;
+            }
+            
+            .header-right {
+                justify-content: flex-end;
+                position: absolute;
+                top: 10px;
+                right: 12px;
+            }
+            
+            .user-info {
+                padding: 4px 8px;
+                gap: 6px;
+            }
+            
+            .user-avatar {
+                width: 26px;
+                height: 26px;
+                font-size: 12px;
+            }
+            
+            .user-name {
+                font-size: 12px;
+            }
+            
+            .content {
+                padding: 6px 8px 8px;
+            }
+            
+            .video-shell {
+                border-radius: 8px;
+            }
+            
+            .footer { 
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+            
+            .connection-text {
+                font-size: 11px;
+            }
+            
+            .dropdown-content {
+                max-height: 50vh;
+            }
         }
 
         @media (max-width: 480px) {
-            .header { padding-inline: 10px; }
-            .content { padding-inline: 8px; }
-            .video-shell { border-radius: 12px; }
+            .header { 
+                padding: 8px 10px; 
+            }
+            
+            .header-right {
+                top: 8px;
+                right: 10px;
+            }
+            
+            .match-title {
+                font-size: 16px;
+            }
+            
+            .live-pill {
+                font-size: 10px;
+                padding: 2px 8px;
+            }
+            
+            .live-dot {
+                width: 6px;
+                height: 6px;
+            }
+            
+            .meta-pill {
+                font-size: 9px;
+                padding: 2px 5px;
+            }
+            
+            .dropdown-btn {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+            
+            .content { 
+                padding: 4px 6px 6px; 
+            }
+            
+            .video-shell { 
+                border-radius: 6px; 
+            }
+            
+            .footer {
+                padding: 6px 10px;
+                font-size: 10px;
+            }
+            
+            .connection-dot {
+                width: 7px;
+                height: 7px;
+            }
+            
+            .loader-ring {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .loading-text {
+                font-size: 12px;
+            }
+            
+            .reconnect-btn {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+            
+            .error-message {
+                font-size: 12px;
+            }
+        }
+
+        /* LANDSCAPE MOBILE OPTIMIZATION */
+        @media (max-width: 932px) and (orientation: landscape) {
+            .header {
+                padding: 6px 10px;
+            }
+            
+            .match-title {
+                font-size: 14px;
+                margin-bottom: 2px;
+            }
+            
+            .match-subtitle-row {
+                gap: 4px;
+            }
+            
+            .live-pill, .meta-pill {
+                font-size: 9px;
+                padding: 2px 6px;
+            }
+            
+            .dropdown-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            
+            .content {
+                padding: 4px 6px;
+            }
+            
+            .footer {
+                padding: 4px 10px;
+                font-size: 10px;
+            }
+            
+            .user-avatar {
+                width: 22px;
+                height: 22px;
+                font-size: 11px;
+            }
+            
+            .user-name {
+                font-size: 11px;
+            }
+        }
+
+        /* TOUCH IMPROVEMENTS */
+        @media (hover: none) and (pointer: coarse) {
+            .dropdown-btn,
+            .dropdown-item,
+            .reconnect-btn,
+            .scorecard-link,
+            .other-stream-item {
+                -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            .dropdown-btn:active {
+                transform: scale(0.98);
+            }
+            
+            .dropdown-item:active {
+                background: rgba(255, 255, 255, 0.12);
+            }
+            
+            /* Don't auto-hide controls on touch devices */
+            .video-shell.hide-cursor {
+                cursor: default;
+            }
+            
+            .video-shell.hide-cursor .shaka-controls-container {
+                opacity: 1 !important;
+            }
         }
     </style>
 </head>
@@ -666,14 +869,6 @@
                     <div class="match-meta">
                         <span class="meta-pill" id="currentTournament">ICC U19 Cricket World Cup</span>
                         <span class="meta-pill"><i class="fa-regular fa-circle-play"></i> FHD • Multi‑Bitrate</span>
-                        <span class="res-fps-badge" id="resFpsBadge">
-                            <i class="fa-solid fa-display"></i>
-                            <span id="currentRes">--</span>
-                        </span>
-                        <span class="network-speed" id="networkSpeed">
-                            <i class="fa-solid fa-gauge-high"></i>
-                            <span id="speedValue">-- Mbps</span>
-                        </span>
                     </div>
                 </div>
             </div>
@@ -700,7 +895,7 @@
         <div class="video-shell" data-shaka-player-container>
             <div class="loading-indicator" id="loadingIndicator">
                 <div class="loader-ring"></div>
-                <div class="loading-text">Loading stream...</div>
+                <div class="loading-text">Buffering stream...</div>
             </div>
 
             <div class="reconnect-overlay" id="reconnectOverlay">
@@ -712,7 +907,7 @@
                 </button>
             </div>
 
-            <video data-shaka-player id="video" autoplay crossorigin="anonymous"></video>
+            <video data-shaka-player id="video" crossorigin="anonymous" playsinline></video>
         </div>
 
         <aside class="side-panel">
@@ -796,7 +991,7 @@
     let ui = null;
     let currentStreamId = null;
     let mouseIdleTimer = null;
-    let statsUpdateInterval = null;
+    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
     function updateSidePanel(stream) {
         const tournamentEl = document.getElementById('panelTournament');
@@ -837,31 +1032,10 @@
             });
     }
 
-    function updateStatsDisplay() {
-        if (!player) return;
-        
-        try {
-            const stats = player.getStats();
-            const currentRes = document.getElementById('currentRes');
-            const speedValue = document.getElementById('speedValue');
-            
-            // Update resolution + FPS
-            if (stats.height && stats.width) {
-                const fps = stats.frameRate ? Math.round(stats.frameRate) : 0;
-                currentRes.textContent = `${stats.width}x${stats.height}${fps ? ` • ${fps}fps` : ''}`;
-            }
-            
-            // Update network speed (convert from bits/sec to Mbps)
-            if (stats.estimatedBandwidth) {
-                const mbps = (stats.estimatedBandwidth / 1000000).toFixed(1);
-                speedValue.textContent = `${mbps} Mbps`;
-            }
-        } catch (error) {
-            console.error('Error updating stats:', error);
-        }
-    }
-
     function setupAutoHideControls() {
+        // Don't auto-hide on touch devices
+        if (isTouchDevice) return;
+        
         const videoShell = document.querySelector('.video-shell');
         
         function resetIdleTimer() {
@@ -937,6 +1111,7 @@
         const loadingIndicator = document.getElementById('loadingIndicator');
         const streamStatus = document.getElementById('streamStatus');
         const reconnectOverlay = document.getElementById('reconnectOverlay');
+        const video = document.getElementById('video');
 
         currentMatchTitle.textContent = stream.title;
         currentTournament.textContent = stream.tournament;
@@ -946,20 +1121,45 @@
 
         loadingIndicator.classList.add('active');
         reconnectOverlay.classList.remove('active');
-        streamStatus.textContent = 'Loading...';
+        streamStatus.textContent = 'Buffering...';
         streamStatus.style.color = '';
 
         try {
             await player.unload();
             player.configure({ drm: { clearKeys: stream.keys } });
             await player.load(stream.manifest);
-            streamStatus.textContent = 'Stable';
+            
+            // Wait for 20 seconds of buffer before playing
+            video.pause();
+            
+            const checkBuffer = setInterval(() => {
+                const buffered = video.buffered;
+                if (buffered.length > 0) {
+                    const bufferedSeconds = buffered.end(0) - buffered.start(0);
+                    if (bufferedSeconds >= 20) {
+                        clearInterval(checkBuffer);
+                        video.play();
+                        loadingIndicator.classList.remove('active');
+                        streamStatus.textContent = 'Stable';
+                    }
+                }
+            }, 500);
+            
+            // Fallback: start playing after 25 seconds regardless
+            setTimeout(() => {
+                clearInterval(checkBuffer);
+                if (video.paused) {
+                    video.play();
+                    loadingIndicator.classList.remove('active');
+                    streamStatus.textContent = 'Stable';
+                }
+            }, 25000);
+            
             enhanceQualityMenu();
         } catch (error) {
             console.error('Error loading stream:', stream.title, error);
             streamStatus.textContent = 'Failed to load';
             streamStatus.style.color = '#ff4d4d';
-        } finally {
             loadingIndicator.classList.remove('active');
         }
     }
@@ -974,24 +1174,24 @@
         player = new shaka.Player(video);
         ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
-        // Minimal buffer for low latency
+        // 20s buffer goal for stability
         player.configure({
             streaming: {
-                bufferingGoal: 6,
-                rebufferingGoal: 2,
-                bufferBehind: 15,
+                bufferingGoal: 20,
+                rebufferingGoal: 10,
+                bufferBehind: 30,
                 jumpLargeGaps: true,
-                lowLatencyMode: true
+                lowLatencyMode: false
             },
             manifest: {
                 dash: {
                     ignoreMinBufferTime: true,
                     autoCorrectDrift: true,
-                    initialSegmentLimit: 10
+                    initialSegmentLimit: 20
                 }
             }
         });
-        player.configure('streaming.presentationDelay', 6);
+        player.configure('streaming.presentationDelay', 20);
 
         ui.configure({
             controlPanelElements: [
@@ -1006,11 +1206,8 @@
             overflowMenuButtons: ['quality']
         });
 
-        // Setup auto-hide controls
+        // Setup auto-hide controls (only on non-touch devices)
         setupAutoHideControls();
-        
-        // Start stats monitoring
-        statsUpdateInterval = setInterval(updateStatsDisplay, 1000);
 
         // Update FPS labels when tracks/quality change
         player.addEventListener('adaptation', enhanceQualityMenu);
@@ -1071,64 +1268,66 @@
             setupReconnect(streams[0]);
         }
 
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        // Keyboard controls (desktop only)
+        if (!isTouchDevice) {
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-            switch (e.key) {
-                case ' ':
-                    e.preventDefault();
-                    if (video.paused) video.play(); else video.pause();
-                    break;
-                case 'm':
-                case 'M':
-                    video.muted = !video.muted;
-                    break;
-                case 'f':
-                case 'F':
-                    if (!document.fullscreenElement) {
-                        if (video.requestFullscreen) video.requestFullscreen();
-                        else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-                    } else {
-                        document.exitFullscreen && document.exitFullscreen();
-                    }
-                    break;
-                case 'Escape':
-                    if (document.fullscreenElement) document.exitFullscreen();
-                    dropdownBtn.classList.remove('active');
-                    dropdownContent.classList.remove('active');
-                    break;
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    video.currentTime = Math.max(0, video.currentTime - 10);
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    video.currentTime = Math.min(video.duration || 0, video.currentTime + 10);
-                    break;
-                case 'ArrowUp':
-                    e.preventDefault();
-                    video.volume = Math.min(1, video.volume + 0.1);
-                    break;
-                case 'ArrowDown':
-                    e.preventDefault();
-                    video.volume = Math.max(0, video.volume - 0.1);
-                    break;
-                case '1':
-                    if (streams[0]) loadStream(streams[0]);
-                    break;
-                case '2':
-                    if (streams[1]) loadStream(streams[1]);
-                    break;
-                case '0': case '4': case '5': case '6':
-                case '7': case '8': case '9':
-                    if (!isNaN(video.duration)) {
-                        const percentage = parseInt(e.key, 10) / 10;
-                        video.currentTime = video.duration * percentage;
-                    }
-                    break;
-            }
-        });
+                switch (e.key) {
+                    case ' ':
+                        e.preventDefault();
+                        if (video.paused) video.play(); else video.pause();
+                        break;
+                    case 'm':
+                    case 'M':
+                        video.muted = !video.muted;
+                        break;
+                    case 'f':
+                    case 'F':
+                        if (!document.fullscreenElement) {
+                            if (video.requestFullscreen) video.requestFullscreen();
+                            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+                        } else {
+                            document.exitFullscreen && document.exitFullscreen();
+                        }
+                        break;
+                    case 'Escape':
+                        if (document.fullscreenElement) document.exitFullscreen();
+                        dropdownBtn.classList.remove('active');
+                        dropdownContent.classList.remove('active');
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        video.currentTime = Math.max(0, video.currentTime - 10);
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        video.currentTime = Math.min(video.duration || 0, video.currentTime + 10);
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        video.volume = Math.min(1, video.volume + 0.1);
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        video.volume = Math.max(0, video.volume - 0.1);
+                        break;
+                    case '1':
+                        if (streams[0]) loadStream(streams[0]);
+                        break;
+                    case '2':
+                        if (streams[1]) loadStream(streams[1]);
+                        break;
+                    case '0': case '4': case '5': case '6':
+                    case '7': case '8': case '9':
+                        if (!isNaN(video.duration)) {
+                            const percentage = parseInt(e.key, 10) / 10;
+                            video.currentTime = video.duration * percentage;
+                        }
+                        break;
+                }
+            });
+        }
 
         const loadingIndicator = document.getElementById('loadingIndicator');
 
@@ -1142,7 +1341,7 @@
             }
         });
 
-        // Keep player near live edge with minimal cushion
+        // Keep player near live edge
         setInterval(() => {
             try {
                 if (player && player.isLive()) {
@@ -1151,13 +1350,12 @@
                     const currentTime = video.currentTime;
                     const distanceFromLive = liveEdge - currentTime;
                     
-                    // Jump to live if we're too far behind (more than 15 seconds)
-                    if (distanceFromLive > 15) {
-                        video.currentTime = liveEdge - 4;
+                    if (distanceFromLive < 10) {
+                        video.currentTime = liveEdge - 20;
                     }
                 }
             } catch (_) {}
-        }, 2000);
+        }, 1000);
     }
 
     if (window.shaka) {
