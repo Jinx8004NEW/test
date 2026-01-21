@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Cricket U19 World Cup | Jinx8004 - Live Stream</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Watch ICC U19 Cricket World Cup live streams in HD quality">
+    <meta name="theme-color" content="#e50914">
 
     <!-- Shaka Player -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
@@ -486,7 +488,7 @@
             font-weight: 600;
         }
 
-        /* CUSTOM LOADING OVERLAY */
+        /* LOADING OVERLAY */
         .loading-indicator {
             position: absolute;
             inset: 0;
@@ -631,7 +633,7 @@
 
         .connection-text strong { color: var(--text-primary); font-weight: 600; }
 
-        /* SHAKA styling */
+        /* SHAKA PLAYER STYLING */
         .shaka-video-container { width: 100% !important; height: 100% !important; }
         .shaka-bottom-controls { background: linear-gradient(transparent, rgba(0, 0, 0, 0.85)) !important; }
         .shaka-range-element { color: var(--accent) !important; }
@@ -971,7 +973,7 @@
             </div>
 
             <div class="dropdown">
-                <button class="dropdown-btn" id="dropdownBtn">
+                <button class="dropdown-btn" id="dropdownBtn" aria-label="Select match">
                     <span id="dropdownText">Select Match</span>
                     <i class="fas fa-chevron-down"></i>
                 </button>
@@ -990,11 +992,13 @@
     <!-- MAIN CONTENT -->
     <main class="content">
         <div class="video-shell" data-shaka-player-container>
+            <!-- Initial Loading -->
             <div class="loading-indicator" id="loadingIndicator">
                 <div class="loader-ring"></div>
                 <div class="loading-text">Loading stream...</div>
             </div>
 
+            <!-- Buffering Message -->
             <div class="buffering-overlay" id="bufferingOverlay">
                 <div class="buffering-spinner"></div>
                 <div class="buffering-message">
@@ -1012,10 +1016,11 @@
                 </div>
             </div>
 
+            <!-- Error Reconnect -->
             <div class="reconnect-overlay" id="reconnectOverlay">
                 <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--accent);"></i>
                 <div class="error-message" id="errorMessage">Stream connection lost</div>
-                <button class="reconnect-btn" id="reconnectBtn">
+                <button class="reconnect-btn" id="reconnectBtn" aria-label="Reconnect stream">
                     <i class="fa-solid fa-rotate-right"></i>
                     Reconnect Stream
                 </button>
@@ -1072,6 +1077,7 @@
 </div>
 
 <script>
+    // Stream configurations
     const streams = [
         {
             id: 'eng-vs-sco',
@@ -1101,12 +1107,14 @@
         }
     ];
 
+    // Global variables
     let player = null;
     let ui = null;
     let currentStreamId = null;
     let mouseIdleTimer = null;
     const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
+    // Update side panel with match information
     function updateSidePanel(stream) {
         const tournamentEl = document.getElementById('panelTournament');
         const venueEl = document.getElementById('panelVenue');
@@ -1146,6 +1154,7 @@
             });
     }
 
+    // Auto-hide controls on desktop
     function setupAutoHideControls() {
         if (isTouchDevice) return;
         
@@ -1171,6 +1180,7 @@
         });
     }
 
+    // Setup reconnect functionality
     function setupReconnect(stream) {
         const reconnectOverlay = document.getElementById('reconnectOverlay');
         const reconnectBtn = document.getElementById('reconnectBtn');
@@ -1192,6 +1202,7 @@
         });
     }
 
+    // Enhance quality menu with FPS info
     function enhanceQualityMenu() {
         if (!player) return;
         const tracks = player.getVariantTracks();
@@ -1212,6 +1223,7 @@
         }, 120);
     }
 
+    // Load stream function
     async function loadStream(stream) {
         if (!player) return;
         if (currentStreamId === stream.id) return;
@@ -1262,6 +1274,7 @@
         }
     }
 
+    // Initialize player
     async function init() {
         const video = document.getElementById('video');
         const streamStatus = document.getElementById('streamStatus');
@@ -1273,25 +1286,40 @@
         player = new shaka.Player(video);
         ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
-        // EXACT BUFFER LOGIC FROM WORKING FILE
+        // OPTIMIZED BUFFER SETTINGS FOR SMOOTH PLAYBACK
         player.configure({
             streaming: {
-                bufferingGoal: 30,
-                rebufferingGoal: 5,
-                bufferBehind: 30,
+                bufferingGoal: 60,           // 60 seconds buffer goal
+                rebufferingGoal: 15,         // 15 seconds rebuffer goal
+                bufferBehind: 60,            // Keep 60 seconds behind
                 jumpLargeGaps: true,
-                lowLatencyMode: false
+                lowLatencyMode: false,
+                retryParameters: {
+                    timeout: 30000,          // 30 seconds timeout
+                    maxAttempts: 5,
+                    baseDelay: 1000,
+                    backoffFactor: 2,
+                    fuzzFactor: 0.5
+                }
             },
             manifest: {
                 dash: {
                     ignoreMinBufferTime: true,
                     autoCorrectDrift: true,
-                    initialSegmentLimit: 20
+                    initialSegmentLimit: 30,
+                    updatePeriod: 5
                 }
+            },
+            abr: {
+                enabled: true,
+                defaultBandwidthEstimate: 5000000,
+                switchInterval: 8,
+                bandwidthUpgradeTarget: 0.85,
+                bandwidthDowngradeTarget: 0.95
             }
         });
 
-        player.configure('streaming.presentationDelay', 20);
+        player.configure('streaming.presentationDelay', 30);
 
         ui.configure({
             controlPanelElements: [
@@ -1315,11 +1343,10 @@
         const controlsContainer = controls.getControlsContainer();
         const overflowButton = controlsContainer.querySelector('.shaka-overflow-menu-button');
         if (overflowButton) {
-            overflowButton.addEventListener('click', () => {
-                enhanceQualityMenu();
-            });
+            overflowButton.addEventListener('click', enhanceQualityMenu);
         }
 
+        // Populate dropdown menu
         function populateDropdown() {
             dropdownContent.innerHTML = '';
             streams.forEach((stream) => {
@@ -1341,6 +1368,7 @@
             });
         }
 
+        // Dropdown toggle
         dropdownBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             dropdownBtn.classList.toggle('active');
@@ -1356,6 +1384,7 @@
 
         populateDropdown();
 
+        // Load first stream by default
         if (streams.length > 0) {
             loadStream(streams[0]);
             const firstItem = dropdownContent.querySelector('.dropdown-item');
@@ -1365,6 +1394,7 @@
             setupReconnect(streams[0]);
         }
 
+        // Keyboard controls (desktop only)
         if (!isTouchDevice) {
             document.addEventListener('keydown', (e) => {
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -1372,7 +1402,7 @@
                 switch (e.key) {
                     case ' ':
                         e.preventDefault();
-                        if (video.paused) video.play(); else video.pause();
+                        video.paused ? video.play() : video.pause();
                         break;
                     case 'm':
                     case 'M':
@@ -1381,10 +1411,9 @@
                     case 'f':
                     case 'F':
                         if (!document.fullscreenElement) {
-                            if (video.requestFullscreen) video.requestFullscreen();
-                            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+                            video.requestFullscreen?.() || video.webkitRequestFullscreen?.();
                         } else {
-                            document.exitFullscreen && document.exitFullscreen();
+                            document.exitFullscreen?.();
                         }
                         break;
                     case 'Escape':
@@ -1425,9 +1454,7 @@
             });
         }
 
-        const loadingIndicator = document.getElementById('loadingIndicator');
-
-        // Handle buffering events with message
+        // Handle buffering events
         player.addEventListener('buffering', (event) => {
             if (event.buffering) {
                 bufferingOverlay.classList.add('active');
@@ -1438,21 +1465,37 @@
             }
         });
 
-        // EXACT LATENCY MANAGEMENT FROM WORKING FILE
+        // Log quality changes
+        player.addEventListener('adaptation', () => {
+            const track = player.getVariantTracks().find(t => t.active);
+            if (track) {
+                console.log(`Quality: ${track.height}p @ ${Math.round(track.bandwidth / 1000)} kbps`);
+            }
+        });
+
+        // Buffer maintenance for live streams
         setInterval(() => {
             try {
                 if (player && player.isLive()) {
-                    const liveEdge = player.seekRange().end;
-                    if ((liveEdge - video.currentTime) < 10) {
-                        video.currentTime = liveEdge - 20;
+                    const seekRange = player.seekRange();
+                    const liveEdge = seekRange.end;
+                    const currentTime = video.currentTime;
+                    const distanceFromLive = liveEdge - currentTime;
+                    
+                    // Maintain 30-60 seconds behind live edge
+                    if (distanceFromLive < 20) {
+                        video.currentTime = liveEdge - 40;
+                    } else if (distanceFromLive > 120) {
+                        video.currentTime = liveEdge - 60;
                     }
                 }
             } catch (e) {
-                // Ignore errors
+                // Ignore errors silently
             }
-        }, 1000);
+        }, 2000);
     }
 
+    // Initialize when Shaka Player is ready
     if (window.shaka) {
         init();
     } else {
