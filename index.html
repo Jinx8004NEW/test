@@ -5,10 +5,6 @@
     <title>Cricket U19 World Cup | Jinx8004 - Live Stream</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Preconnect hints for faster loading -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com/ajax/libs">
-    <link rel="preconnect" href="https://a201aivottlinear-a.akamaihd.net">
-
     <!-- Shaka Player -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.js"></script>
@@ -27,9 +23,6 @@
             --text-primary: #ffffff;
             --text-secondary: #b5b5c5;
             --border-soft: rgba(255, 255, 255, 0.12);
-            --connection-good: #4caf50;
-            --connection-fair: #ffa500;
-            --connection-poor: #ff4d4d;
         }
 
         body, html {
@@ -144,6 +137,33 @@
             border-radius: 999px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             background: rgba(255, 255, 255, 0.03);
+        }
+
+        .res-fps-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            font-size: 11px;
+            font-weight: 700;
+            color: #90ee90;
+            text-transform: uppercase;
+        }
+
+        .network-speed {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: rgba(66, 165, 245, 0.15);
+            border: 1px solid rgba(66, 165, 245, 0.4);
+            font-size: 11px;
+            font-weight: 600;
+            color: #64b5f6;
         }
 
         /* Dropdown */
@@ -270,6 +290,21 @@
             background: #000;
             box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Auto-hide controls */
+        .video-shell.hide-cursor {
+            cursor: none;
+        }
+
+        .video-shell.hide-cursor .shaka-controls-container {
+            opacity: 0 !important;
+            transition: opacity 0.3s ease !important;
+        }
+
+        .video-shell:hover .shaka-controls-container,
+        .video-shell.show-controls .shaka-controls-container {
+            opacity: 1 !important;
         }
 
         video {
@@ -408,7 +443,7 @@
         .other-stream-meta { font-size: 10px; color: var(--text-secondary); }
         .other-stream-arrow { color: var(--text-secondary); font-size: 10px; }
 
-        /* LOADING IMPROVEMENTS */
+        /* CUSTOM LOADING OVERLAY */
         .loading-indicator {
             position: absolute;
             inset: 0;
@@ -458,48 +493,49 @@
             color: var(--text-secondary);
         }
 
-        /* Stream loading progress */
-        .stream-load-progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            z-index: 11;
-            display: none;
-        }
-
-        .stream-load-progress.active {
-            display: block;
-        }
-
-        .stream-load-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #e50914, #ff6b6b);
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 0 2px 2px 0;
-        }
-
-        /* Shimmer loading effect */
-        .video-shell[data-stream-loading]::before {
-            content: '';
+        /* RECONNECT OVERLAY */
+        .reconnect-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(90deg, 
-                rgba(229, 9, 20, 0.1) 0%,
-                rgba(229, 9, 20, 0.2) 50%,
-                rgba(229, 9, 20, 0.1) 100%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            z-index: 5;
-            pointer-events: none;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 30;
+            gap: 20px;
         }
 
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+        .reconnect-overlay.active {
+            display: flex;
+        }
+
+        .reconnect-btn {
+            padding: 12px 28px;
+            border-radius: 999px;
+            background: var(--accent);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reconnect-btn:hover {
+            background: #ff0a1a;
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(229, 9, 20, 0.6);
+        }
+
+        .error-message {
+            color: var(--text-secondary);
+            font-size: 13px;
+            max-width: 400px;
+            text-align: center;
         }
 
         /* HIDE SHAKA'S OWN BUFFERING SPINNER */
@@ -533,7 +569,7 @@
             width: 9px;
             height: 9px;
             border-radius: 999px;
-            background: var(--connection-good);
+            background: #4caf50;
             box-shadow: 0 0 10px rgba(76, 175, 80, 0.9);
             animation: pulse 1.8s infinite;
         }
@@ -546,19 +582,6 @@
         }
 
         .connection-text strong { color: var(--text-primary); font-weight: 600; }
-
-        /* Quality improvements */
-        .quality-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
 
         /* SHAKA styling */
         .shaka-video-container { width: 100% !important; height: 100% !important; }
@@ -643,6 +666,14 @@
                     <div class="match-meta">
                         <span class="meta-pill" id="currentTournament">ICC U19 Cricket World Cup</span>
                         <span class="meta-pill"><i class="fa-regular fa-circle-play"></i> FHD • Multi‑Bitrate</span>
+                        <span class="res-fps-badge" id="resFpsBadge">
+                            <i class="fa-solid fa-display"></i>
+                            <span id="currentRes">--</span>
+                        </span>
+                        <span class="network-speed" id="networkSpeed">
+                            <i class="fa-solid fa-gauge-high"></i>
+                            <span id="speedValue">-- Mbps</span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -667,13 +698,18 @@
     <!-- MAIN CONTENT -->
     <main class="content">
         <div class="video-shell" data-shaka-player-container>
-            <div class="stream-load-progress" id="streamLoadProgress">
-                <div class="stream-load-progress-bar" id="streamLoadProgressBar"></div>
-            </div>
-            
             <div class="loading-indicator" id="loadingIndicator">
                 <div class="loader-ring"></div>
-                <div class="loading-text" id="loadingText">Loading stream...</div>
+                <div class="loading-text">Loading stream...</div>
+            </div>
+
+            <div class="reconnect-overlay" id="reconnectOverlay">
+                <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--accent);"></i>
+                <div class="error-message" id="errorMessage">Stream connection lost</div>
+                <button class="reconnect-btn" id="reconnectBtn">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    Reconnect Stream
+                </button>
             </div>
 
             <video data-shaka-player id="video" autoplay crossorigin="anonymous"></video>
@@ -698,14 +734,6 @@
                     <span>Group</span>
                     <strong id="panelGroup">—</strong>
                 </div>
-                <div class="panel-row">
-                    <span>Connection</span>
-                    <strong id="panelConnection">—</strong>
-                </div>
-                <div class="panel-row">
-                    <span>Buffer</span>
-                    <strong id="panelBuffer">—</strong>
-                </div>
 
                 <a id="scorecardLink" href="#" target="_blank" rel="noopener" class="scorecard-link">
                     <i class="fa-solid fa-up-right-from-square"></i>
@@ -725,8 +753,8 @@
     <!-- FOOTER -->
     <footer class="footer">
         <div class="connection-status">
-            <div class="connection-dot" id="connectionDot"></div>
-            <div class="connection-text" id="connectionText">
+            <div class="connection-dot"></div>
+            <div class="connection-text">
                 Stream: <strong>Akamai CDN</strong> • Protocol: <strong>DASH</strong> • Status:
                 <strong id="streamStatus">Select a match</strong>
             </div>
@@ -767,14 +795,8 @@
     let player = null;
     let ui = null;
     let currentStreamId = null;
-    let streamCache = new Map();
-    const MAX_CACHE_SIZE = 3;
-    let networkMonitor = {
-        samples: [],
-        maxSamples: 10,
-        bufferingEvents: 0,
-        networkQuality: 'good'
-    };
+    let mouseIdleTimer = null;
+    let statsUpdateInterval = null;
 
     function updateSidePanel(stream) {
         const tournamentEl = document.getElementById('panelTournament');
@@ -803,7 +825,6 @@
             .forEach(s => {
                 const div = document.createElement('div');
                 div.className = 'other-stream-item';
-                div.dataset.id = s.id;
                 div.innerHTML = `
                     <div>
                         <div class="other-stream-name">${s.title}</div>
@@ -816,324 +837,72 @@
             });
     }
 
-    function updateConnectionStatus(speedBps, isStable) {
-        const connectionDot = document.getElementById('connectionDot');
-        const connectionText = document.getElementById('connectionText');
-        const panelConnection = document.getElementById('panelConnection');
-        const panelBuffer = document.getElementById('panelBuffer');
-
-        const speedMbps = (speedBps / 1000000).toFixed(1);
-        
-        if (speedBps < 500000) { // < 0.5 Mbps
-            connectionDot.style.background = 'var(--connection-poor)';
-            connectionDot.style.boxShadow = '0 0 10px rgba(255, 77, 77, 0.9)';
-            panelConnection.innerHTML = `<span style="color:var(--connection-poor)">${speedMbps} Mbps</span>`;
-        } else if (speedBps < 2000000) { // < 2 Mbps
-            connectionDot.style.background = 'var(--connection-fair)';
-            connectionDot.style.boxShadow = '0 0 10px rgba(255, 165, 0, 0.9)';
-            panelConnection.innerHTML = `<span style="color:var(--connection-fair)">${speedMbps} Mbps</span>`;
-        } else {
-            connectionDot.style.background = 'var(--connection-good)';
-            connectionDot.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.9)';
-            panelConnection.innerHTML = `<span style="color:var(--connection-good)">${speedMbps} Mbps</span>`;
-        }
-
-        if (player) {
-            const bufferEnd = player.getBufferedInfo().total[0]?.end || 0;
-            const bufferStart = player.getBufferedInfo().total[0]?.start || 0;
-            const bufferSize = bufferEnd - bufferStart;
-            panelBuffer.textContent = `${bufferSize.toFixed(1)}s`;
-        }
-    }
-
-    function setupConnectionMonitoring() {
-        let lastBytesLoaded = 0;
-        let lastTime = Date.now();
-
-        player.addEventListener('loading', () => {
-            const now = Date.now();
-            const timeDiff = (now - lastTime) / 1000;
-            const stats = player.getStats();
-            const currentBytes = stats.estimatedBandwidth || 0;
-
-            if (timeDiff > 1 && lastBytesLoaded > 0) {
-                const bytesDownloaded = currentBytes - lastBytesLoaded;
-                const speed = (bytesDownloaded * 8) / timeDiff;
-                
-                networkMonitor.samples.push(speed);
-                if (networkMonitor.samples.length > networkMonitor.maxSamples) {
-                    networkMonitor.samples.shift();
-                }
-
-                const avgSpeed = networkMonitor.samples.reduce((a, b) => a + b, 0) / networkMonitor.samples.length;
-                const isStable = networkMonitor.samples.length < 3 || 
-                    networkMonitor.samples.reduce((sum, s) => sum + Math.pow(s - avgSpeed, 2), 0) / networkMonitor.samples.length < (avgSpeed * 0.3);
-
-                updateConnectionStatus(speed, isStable);
-            }
-
-            lastBytesLoaded = currentBytes;
-            lastTime = now;
-        });
-
-        // Monitor buffering events
-        player.addEventListener('buffering', (event) => {
-            if (event.buffering) {
-                networkMonitor.bufferingEvents++;
-                if (networkMonitor.bufferingEvents > 2) {
-                    networkMonitor.networkQuality = 'poor';
-                    player.configure({
-                        streaming: {
-                            bufferingGoal: 35,
-                            rebufferingGoal: 25
-                        }
-                    });
-                }
-            }
-        });
-
-        // Reset network quality after stable playback
-        setInterval(() => {
-            const video = document.getElementById('video');
-            if (video && !video.paused && !player.isBuffering()) {
-                networkMonitor.bufferingEvents = Math.max(0, networkMonitor.bufferingEvents - 1);
-                if (networkMonitor.bufferingEvents === 0) {
-                    networkMonitor.networkQuality = 'good';
-                    player.configure({
-                        streaming: {
-                            bufferingGoal: 25,
-                            rebufferingGoal: 15
-                        }
-                    });
-                }
-            }
-        }, 30000);
-    }
-
-    function configureSmartBuffering() {
-        player.configure({
-            streaming: {
-                bufferingGoal: 25,
-                rebufferingGoal: 15,
-                bufferBehind: 40,
-                lowLatencyMode: false,
-                stallThreshold: 0.5,
-                useNativeHlsOnSafari: true
-            },
-            abr: {
-                defaultBandwidthEstimate: 2000000,
-                bandwidthDowngradeTarget: 0.9,
-                bandwidthUpgradeTarget: 0.95,
-                restrictions: {
-                    minWidth: 426,
-                    maxWidth: 1920,
-                    minHeight: 240,
-                    maxHeight: 1080
-                }
-            }
-        });
-    }
-
-    function optimizeInitialQuality() {
-        const tracks = player.getVariantTracks();
-        if (tracks.length === 0) return;
-
-        tracks.sort((a, b) => a.height - b.height);
-        
-        // Start with medium quality (720p if available)
-        const targetHeight = Math.min(720, tracks[tracks.length - 1]?.height || 720);
-        const initialTrack = tracks.find(t => t.height >= targetHeight) || tracks[tracks.length - 1];
-
-        if (initialTrack) {
-            player.selectVariantTrack(initialTrack);
-
-            // After 5 seconds, re-evaluate and switch to optimal quality
-            setTimeout(() => {
-                const stats = player.getStats();
-                const estimatedBandwidth = stats.estimatedBandwidth || 2000000;
-                
-                let optimalHeight = 480;
-                if (estimatedBandwidth > 3000000) optimalHeight = 1080;
-                else if (estimatedBandwidth > 1500000) optimalHeight = 720;
-                else if (estimatedBandwidth > 800000) optimalHeight = 480;
-                else optimalHeight = 360;
-
-                const optimalTrack = tracks.find(t => t.height >= optimalHeight) || tracks[0];
-                if (optimalTrack && optimalTrack.id !== initialTrack.id) {
-                    player.selectVariantTrack(optimalTrack);
-                }
-            }, 5000);
-        }
-    }
-
-    function setupStreamPreloading() {
-        const dropdownItems = document.querySelectorAll('.dropdown-item, .other-stream-item');
-        dropdownItems.forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                const streamId = item.dataset.id;
-                const stream = streams.find(s => s.id === streamId);
-                if (stream) {
-                    // Prefetch manifest (no-cors to avoid CORS issues)
-                    fetch(stream.manifest, { mode: 'no-cors' })
-                        .catch(() => {});
-                }
-            });
-        });
-    }
-
-    function updateUIForStream(stream) {
-        const currentMatchTitle = document.getElementById('currentMatchTitle');
-        const currentTournament = document.getElementById('currentTournament');
-        const dropdownText = document.getElementById('dropdownText');
-
-        currentMatchTitle.textContent = stream.title;
-        currentTournament.textContent = stream.tournament;
-        dropdownText.textContent = stream.title;
-        updateSidePanel(stream);
-    }
-
-    async function loadStream(stream) {
+    function updateStatsDisplay() {
         if (!player) return;
-        if (currentStreamId === stream.id) return;
-
-        const videoShell = document.querySelector('.video-shell');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const loadingText = document.getElementById('loadingText');
-        const streamStatus = document.getElementById('streamStatus');
-        const progressBar = document.getElementById('streamLoadProgressBar');
-        const progressContainer = document.getElementById('streamLoadProgress');
-
-        // Cache current stream state before unloading
-        if (currentStreamId) {
-            streamCache.set(currentStreamId, {
-                time: video.currentTime,
-                quality: player.getVariantTracks().find(t => t.active)
-            });
-            
-            if (streamCache.size > MAX_CACHE_SIZE) {
-                const firstKey = streamCache.keys().next().value;
-                streamCache.delete(firstKey);
-            }
-        }
-
-        currentStreamId = stream.id;
-        updateUIForStream(stream);
-
-        // Show loading UI
-        videoShell.setAttribute('data-stream-loading', 'true');
-        loadingIndicator.classList.add('active');
-        progressContainer.classList.add('active');
-        loadingText.textContent = 'Initializing...';
-        progressBar.style.width = '10%';
-        streamStatus.textContent = 'Loading...';
-        streamStatus.style.color = '';
-
+        
         try {
-            // Step 1: Unload current stream
-            loadingText.textContent = 'Unloading previous stream...';
-            progressBar.style.width = '20%';
+            const stats = player.getStats();
+            const currentRes = document.getElementById('currentRes');
+            const speedValue = document.getElementById('speedValue');
             
-            if (player.getAssetUri()) {
-                await player.unload();
+            // Update resolution + FPS
+            if (stats.height && stats.width) {
+                const fps = stats.frameRate ? Math.round(stats.frameRate) : 0;
+                currentRes.textContent = `${stats.width}x${stats.height}${fps ? ` • ${fps}fps` : ''}`;
             }
-
-            // Step 2: Configure DRM
-            loadingText.textContent = 'Configuring DRM...';
-            progressBar.style.width = '40%';
             
-            player.configure({ 
-                drm: { 
-                    clearKeys: stream.keys,
-                    retryParameters: {
-                        maxAttempts: 3,
-                        baseDelay: 1000,
-                        backoffFactor: 2,
-                        fuzzFactor: 0.5
-                    }
-                }
-            });
-
-            // Step 3: Load with timeout
-            loadingText.textContent = 'Fetching manifest...';
-            progressBar.style.width = '60%';
-            
-            const loadTimeout = 15000;
-            const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('Load timeout')), loadTimeout);
-            });
-
-            await Promise.race([
-                player.load(stream.manifest),
-                timeoutPromise
-            ]);
-
-            // Step 4: Wait for playable state
-            loadingText.textContent = 'Preparing playback...';
-            progressBar.style.width = '80%';
-            
-            await new Promise((resolve) => {
-                const checkPlayable = () => {
-                    if (video.readyState >= 2) {
-                        resolve();
-                    } else {
-                        setTimeout(checkPlayable, 100);
-                    }
-                };
-                checkPlayable();
-            });
-
-            // Step 5: Apply cached position if available
-            const cached = streamCache.get(stream.id);
-            if (cached && !player.isLive()) {
-                video.currentTime = Math.max(0, cached.time - 5);
+            // Update network speed (convert from bits/sec to Mbps)
+            if (stats.estimatedBandwidth) {
+                const mbps = (stats.estimatedBandwidth / 1000000).toFixed(1);
+                speedValue.textContent = `${mbps} Mbps`;
             }
-
-            // Step 6: Optimize quality
-            optimizeInitialQuality();
-
-            // Final UI updates
-            progressBar.style.width = '100%';
-            streamStatus.textContent = 'Stable';
-            streamStatus.style.color = 'var(--connection-good)';
-
-            setTimeout(() => {
-                videoShell.removeAttribute('data-stream-loading');
-                progressContainer.classList.remove('active');
-            }, 300);
-
         } catch (error) {
-            console.error('Stream load error:', error);
-            
-            // Error handling
-            if (error.message.includes('DRM') || error.message.includes('key')) {
-                loadingText.textContent = 'DRM Error - Trying fallback...';
-                streamStatus.textContent = 'DRM Error';
-                await attemptFallbackStream(stream);
-            } else if (error.message.includes('timeout')) {
-                loadingText.textContent = 'Timeout - Retrying...';
-                streamStatus.textContent = 'Timeout';
-                setTimeout(() => loadStream(stream), 2000);
-            } else {
-                loadingText.textContent = 'Load Failed';
-                streamStatus.textContent = 'Failed';
-                streamStatus.style.color = 'var(--connection-poor)';
-            }
-        } finally {
-            setTimeout(() => {
-                loadingIndicator.classList.remove('active');
-                progressBar.style.width = '0%';
-            }, 500);
+            console.error('Error updating stats:', error);
         }
     }
 
-    async function attemptFallbackStream(originalStream) {
-        try {
-            player.configure({ drm: { clearKeys: {} } });
-            await player.load(originalStream.manifest);
-            document.getElementById('streamStatus').textContent = 'Playing (Fallback)';
-        } catch (fallbackError) {
-            throw fallbackError;
+    function setupAutoHideControls() {
+        const videoShell = document.querySelector('.video-shell');
+        
+        function resetIdleTimer() {
+            videoShell.classList.remove('hide-cursor');
+            videoShell.classList.add('show-controls');
+            
+            clearTimeout(mouseIdleTimer);
+            mouseIdleTimer = setTimeout(() => {
+                videoShell.classList.add('hide-cursor');
+                videoShell.classList.remove('show-controls');
+            }, 3000);
         }
+        
+        videoShell.addEventListener('mousemove', resetIdleTimer);
+        videoShell.addEventListener('mouseenter', resetIdleTimer);
+        videoShell.addEventListener('mouseleave', () => {
+            clearTimeout(mouseIdleTimer);
+            videoShell.classList.add('hide-cursor');
+            videoShell.classList.remove('show-controls');
+        });
+    }
+
+    function setupReconnect(stream) {
+        const reconnectOverlay = document.getElementById('reconnectOverlay');
+        const reconnectBtn = document.getElementById('reconnectBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        reconnectBtn.onclick = async () => {
+            reconnectOverlay.classList.remove('active');
+            if (stream) {
+                await loadStream(stream);
+            }
+        };
+        
+        player.addEventListener('error', (event) => {
+            console.error('Player error:', event.detail);
+            errorMessage.textContent = `Stream error: ${event.detail.message || 'Connection failed'}`;
+            reconnectOverlay.classList.add('active');
+            document.getElementById('streamStatus').textContent = 'Error';
+            document.getElementById('streamStatus').style.color = '#ff4d4d';
+        });
     }
 
     function enhanceQualityMenu() {
@@ -1156,6 +925,45 @@
         }, 120);
     }
 
+    async function loadStream(stream) {
+        if (!player) return;
+        if (currentStreamId === stream.id) return;
+
+        currentStreamId = stream.id;
+
+        const currentMatchTitle = document.getElementById('currentMatchTitle');
+        const currentTournament = document.getElementById('currentTournament');
+        const dropdownText = document.getElementById('dropdownText');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const streamStatus = document.getElementById('streamStatus');
+        const reconnectOverlay = document.getElementById('reconnectOverlay');
+
+        currentMatchTitle.textContent = stream.title;
+        currentTournament.textContent = stream.tournament;
+        dropdownText.textContent = stream.title;
+
+        updateSidePanel(stream);
+
+        loadingIndicator.classList.add('active');
+        reconnectOverlay.classList.remove('active');
+        streamStatus.textContent = 'Loading...';
+        streamStatus.style.color = '';
+
+        try {
+            await player.unload();
+            player.configure({ drm: { clearKeys: stream.keys } });
+            await player.load(stream.manifest);
+            streamStatus.textContent = 'Stable';
+            enhanceQualityMenu();
+        } catch (error) {
+            console.error('Error loading stream:', stream.title, error);
+            streamStatus.textContent = 'Failed to load';
+            streamStatus.style.color = '#ff4d4d';
+        } finally {
+            loadingIndicator.classList.remove('active');
+        }
+    }
+
     async function init() {
         const video = document.getElementById('video');
         const streamStatus = document.getElementById('streamStatus');
@@ -1166,9 +974,24 @@
         player = new shaka.Player(video);
         ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
-        configureSmartBuffering();
-        
-        player.configure('streaming.presentationDelay', 20);
+        // Minimal buffer for low latency
+        player.configure({
+            streaming: {
+                bufferingGoal: 6,
+                rebufferingGoal: 2,
+                bufferBehind: 15,
+                jumpLargeGaps: true,
+                lowLatencyMode: true
+            },
+            manifest: {
+                dash: {
+                    ignoreMinBufferTime: true,
+                    autoCorrectDrift: true,
+                    initialSegmentLimit: 10
+                }
+            }
+        });
+        player.configure('streaming.presentationDelay', 6);
 
         ui.configure({
             controlPanelElements: [
@@ -1183,9 +1006,13 @@
             overflowMenuButtons: ['quality']
         });
 
-        // Setup monitoring and features
-        setupConnectionMonitoring();
+        // Setup auto-hide controls
+        setupAutoHideControls();
         
+        // Start stats monitoring
+        statsUpdateInterval = setInterval(updateStatsDisplay, 1000);
+
+        // Update FPS labels when tracks/quality change
         player.addEventListener('adaptation', enhanceQualityMenu);
         player.addEventListener('trackschanged', enhanceQualityMenu);
 
@@ -1193,7 +1020,9 @@
         const controlsContainer = controls.getControlsContainer();
         const overflowButton = controlsContainer.querySelector('.shaka-overflow-menu-button');
         if (overflowButton) {
-            overflowButton.addEventListener('click', enhanceQualityMenu);
+            overflowButton.addEventListener('click', () => {
+                enhanceQualityMenu();
+            });
         }
 
         function populateDropdown() {
@@ -1231,24 +1060,77 @@
         dropdownContent.addEventListener('click', (e) => e.stopPropagation());
 
         populateDropdown();
-        setupStreamPreloading();
 
-        // Load first stream
         if (streams.length > 0) {
             loadStream(streams[0]);
             const firstItem = dropdownContent.querySelector('.dropdown-item');
             if (firstItem) firstItem.classList.add('active');
             dropdownText.textContent = streams[0].title;
+            
+            // Setup reconnect for first stream
+            setupReconnect(streams[0]);
         }
 
-        // Error handling
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        player.addEventListener('error', (event) => {
-            console.error('Player error:', event.detail);
-            loadingIndicator.classList.remove('active');
-            streamStatus.textContent = 'Error';
-            streamStatus.style.color = 'var(--connection-poor)';
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            switch (e.key) {
+                case ' ':
+                    e.preventDefault();
+                    if (video.paused) video.play(); else video.pause();
+                    break;
+                case 'm':
+                case 'M':
+                    video.muted = !video.muted;
+                    break;
+                case 'f':
+                case 'F':
+                    if (!document.fullscreenElement) {
+                        if (video.requestFullscreen) video.requestFullscreen();
+                        else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+                    } else {
+                        document.exitFullscreen && document.exitFullscreen();
+                    }
+                    break;
+                case 'Escape':
+                    if (document.fullscreenElement) document.exitFullscreen();
+                    dropdownBtn.classList.remove('active');
+                    dropdownContent.classList.remove('active');
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    video.currentTime = Math.max(0, video.currentTime - 10);
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    video.currentTime = Math.min(video.duration || 0, video.currentTime + 10);
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    video.volume = Math.min(1, video.volume + 0.1);
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    video.volume = Math.max(0, video.volume - 0.1);
+                    break;
+                case '1':
+                    if (streams[0]) loadStream(streams[0]);
+                    break;
+                case '2':
+                    if (streams[1]) loadStream(streams[1]);
+                    break;
+                case '0': case '4': case '5': case '6':
+                case '7': case '8': case '9':
+                    if (!isNaN(video.duration)) {
+                        const percentage = parseInt(e.key, 10) / 10;
+                        video.currentTime = video.duration * percentage;
+                    }
+                    break;
+            }
         });
+
+        const loadingIndicator = document.getElementById('loadingIndicator');
 
         player.addEventListener('buffering', (event) => {
             if (event.buffering) {
@@ -1260,17 +1142,22 @@
             }
         });
 
-        // Keep near live edge
+        // Keep player near live edge with minimal cushion
         setInterval(() => {
             try {
                 if (player && player.isLive()) {
-                    const liveEdge = player.seekRange().end;
-                    if ((liveEdge - video.currentTime) < 10) {
-                        video.currentTime = liveEdge - 20;
+                    const seekRange = player.seekRange();
+                    const liveEdge = seekRange.end;
+                    const currentTime = video.currentTime;
+                    const distanceFromLive = liveEdge - currentTime;
+                    
+                    // Jump to live if we're too far behind (more than 15 seconds)
+                    if (distanceFromLive > 15) {
+                        video.currentTime = liveEdge - 4;
                     }
                 }
             } catch (_) {}
-        }, 1000);
+        }, 2000);
     }
 
     if (window.shaka) {
