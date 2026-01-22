@@ -2,311 +2,504 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cricket U19 World Cup | Jinx8004 - Live Stream</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ============================================
+           CSS Custom Properties (Theme Variables)
+           ============================================ */
+        :root {
+            /* Colors */
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-tertiary: #1a2332;
+            --bg-card: rgba(26, 35, 50, 0.8);
+            --bg-overlay: rgba(0, 0, 0, 0.85);
+            
+            --text-primary: #ffffff;
+            --text-secondary: #e5e7eb;
+            --text-tertiary: #9ca3af;
+            --text-muted: #6b7280;
+            
+            --accent-primary: #00d4aa;
+            --accent-secondary: #ff6b35;
+            --accent-gradient: linear-gradient(135deg, #00d4aa 0%, #ff6b35 100%);
+            
+            --status-live: #00d4aa;
+            --status-buffering: #ff6b35;
+            --status-error: #ef4444;
+            --status-success: #10b981;
+            
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            
+            /* Typography */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 2rem;
+            
+            /* Effects */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.3);
+            
+            --blur-sm: blur(8px);
+            --blur-md: blur(12px);
+            --blur-lg: blur(16px);
+            
+            --border-radius-sm: 0.375rem;
+            --border-radius-md: 0.5rem;
+            --border-radius-lg: 0.75rem;
+            --border-radius-xl: 1rem;
+            --border-radius-full: 9999px;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 250ms ease;
+            --transition-slow: 350ms ease;
+            
+            /* Layout */
+            --header-height: 80px;
+            --footer-height: 60px;
+            --scorecard-width: 320px;
+        }
+
+        /* ============================================
+           Reset & Base Styles
+           ============================================ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-        body, html {
-            width: 100%;
-            height: 100%;
-            background: #000;
-            overflow: hidden;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            color: #fff;
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
         }
-        
-        /* Main container */
-        .main-container {
-            width: 100%;
-            height: 100%;
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow: hidden;
+            height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================
+           App Container
+           ============================================ */
+        .app-container {
             display: flex;
             flex-direction: column;
-            background: #000;
+            height: 100vh;
+            width: 100%;
+            background: var(--bg-primary);
         }
-        
-        /* Header section */
+
+        /* ============================================
+           Header Styles
+           ============================================ */
         .header {
+            background: var(--bg-overlay);
+            backdrop-filter: var(--blur-md);
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--spacing-md) var(--spacing-xl);
+            z-index: 100;
+            position: relative;
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            background: rgba(0, 0, 0, 0.9);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100;
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: var(--spacing-lg);
+            max-width: 100%;
         }
-        
+
         .header-left {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: var(--spacing-xl);
             flex: 1;
+            min-width: 0;
         }
-        
-        .match-info {
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .brand-text {
             display: flex;
             flex-direction: column;
-            min-width: 200px;
         }
-        
-        .match-title {
-            font-size: clamp(16px, 2.5vw, 22px);
+
+        .brand-name {
+            font-size: var(--font-size-xl);
             font-weight: 700;
-            background: linear-gradient(90deg, #ff4d4d, #ff9a3d);
+            background: var(--accent-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .brand-tagline {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .match-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            min-width: 0;
+            flex: 1;
+        }
+
+        .match-title {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text-primary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .match-subtitle {
-            font-size: clamp(12px, 1.5vw, 14px);
-            color: #aaa;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: var(--spacing-sm);
             flex-wrap: wrap;
+            font-size: var(--font-size-sm);
+            color: var(--text-tertiary);
         }
-        
+
         .live-indicator {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 4px;
-            color: #ff4d4d;
+            gap: var(--spacing-xs);
+            color: var(--status-live);
             font-weight: 600;
-            font-size: 11px;
+            font-size: var(--font-size-xs);
             padding: 2px 8px;
-            background: rgba(255, 77, 77, 0.1);
-            border-radius: 12px;
+            background: rgba(0, 212, 170, 0.1);
+            border-radius: var(--border-radius-full);
+            border: 1px solid rgba(0, 212, 170, 0.2);
         }
-        
+
         .live-pulse {
             width: 6px;
             height: 6px;
-            background: #ff4d4d;
+            background: var(--status-live);
             border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
-        
+
         @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.1); }
         }
-        
-        /* Dropdown menu */
-        .dropdown {
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex-shrink: 0;
+        }
+
+        /* ============================================
+           Match Selector (Dropdown)
+           ============================================ */
+        .match-selector {
             position: relative;
-            min-width: 200px;
         }
-        
+
         .dropdown-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #fff;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-primary);
             cursor: pointer;
-            font-size: 13px;
+            font-size: var(--font-size-sm);
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all var(--transition-base);
             min-width: 200px;
+            font-family: var(--font-family);
         }
-        
+
         .dropdown-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
-        
+
+        .dropdown-btn.active {
+            border-color: var(--accent-primary);
+            background: rgba(0, 212, 170, 0.1);
+        }
+
         .dropdown-btn i {
-            font-size: 12px;
-            transition: transform 0.3s;
+            font-size: var(--font-size-xs);
+            transition: transform var(--transition-base);
         }
-        
+
         .dropdown-btn.active i {
             transform: rotate(180deg);
         }
-        
+
         .dropdown-content {
             position: absolute;
-            top: 100%;
+            top: calc(100% + var(--spacing-xs));
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            margin-top: 5px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: var(--bg-overlay);
+            backdrop-filter: var(--blur-lg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            margin-top: var(--spacing-xs);
+            box-shadow: var(--shadow-xl);
             display: none;
             z-index: 1000;
             overflow: hidden;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
+            min-width: 280px;
         }
-        
+
         .dropdown-content.active {
             display: block;
+            animation: slideDown var(--transition-base);
         }
-        
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .dropdown-item {
-            padding: 12px 15px;
-            color: #ddd;
+            padding: var(--spacing-md);
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all var(--transition-fast);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
+            gap: var(--spacing-xs);
         }
-        
+
         .dropdown-item:last-child {
             border-bottom: none;
         }
-        
+
         .dropdown-item:hover {
             background: rgba(255, 255, 255, 0.08);
-            color: #fff;
+            color: var(--text-primary);
         }
-        
+
         .dropdown-item.active {
-            background: rgba(229, 9, 20, 0.2);
-            color: #fff;
-            border-left: 3px solid #e50914;
+            background: rgba(0, 212, 170, 0.15);
+            color: var(--text-primary);
+            border-left: 3px solid var(--accent-primary);
         }
-        
+
         .dropdown-match {
             font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 2px;
+            font-size: var(--font-size-base);
         }
-        
+
         .dropdown-tournament {
-            font-size: 11px;
-            color: #aaa;
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
         }
-        
+
+        /* Custom Scrollbar */
+        .dropdown-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dropdown-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .dropdown-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .dropdown-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ============================================
+           User Info
+           ============================================ */
         .user-info {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-width: 140px;
+            gap: var(--spacing-sm);
+            background: var(--bg-card);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-full);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-base);
         }
-        
-        .user-name {
-            font-weight: 600;
-            font-size: 13px;
-            color: #ddd;
+
+        .user-info:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
         }
-        
+
         .user-avatar {
-            width: 28px;
-            height: 28px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 32px;
+            height: 32px;
+            background: var(--accent-gradient);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 13px;
+            font-weight: 700;
+            font-size: var(--font-size-sm);
+            color: var(--text-primary);
+            flex-shrink: 0;
         }
-        
-        /* Video container - Responsive */
-        .video-container {
+
+        .user-name {
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           Main Content
+           ============================================ */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ============================================
+           Video Section
+           ============================================ */
+        .video-section {
             flex: 1;
             position: relative;
-            overflow: hidden;
+            display: flex;
+            background: #000;
+            min-width: 0;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
             display: flex;
             background: #000;
         }
 
-        /* Auto-hide controls */
-        .video-container.hide-cursor {
-            cursor: none;
-        }
-
-        .video-container.hide-cursor .shaka-controls-container {
-            opacity: 0 !important;
-            transition: opacity 0.3s ease !important;
-        }
-
-        .video-container:hover .shaka-controls-container,
-        .video-container.show-controls .shaka-controls-container {
-            opacity: 1 !important;
-        }
-        
         video {
             width: 100%;
             height: 100%;
             object-fit: contain;
             background: #000;
         }
-        
-        /* Footer - Always visible */
-        .footer {
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.9);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            flex-wrap: wrap;
-            gap: 10px;
+
+        .video-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: var(--spacing-lg);
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            pointer-events: none;
             z-index: 10;
         }
-        
-        .connection-status {
+
+        .stream-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .stream-status {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .connection-info {
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex: 1;
-            min-width: 200px;
+            gap: var(--spacing-xs);
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
         }
-        
+
         .connection-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #4caf50;
+            background: var(--status-success);
             animation: pulse 2s infinite;
         }
-        
-        .connection-text {
-            color: #aaa;
-        }
-        
-        .connection-text strong {
-            color: #ddd;
-        }
-        
-        .timestamp {
-            color: #aaa;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-        }
-        
-        /* Loading indicator */
+
+        /* ============================================
+           Loading Indicator
+           ============================================ */
         .loading-indicator {
             position: absolute;
             top: 50%;
@@ -315,460 +508,893 @@
             z-index: 20;
             display: none;
             text-align: center;
+            background: var(--bg-overlay);
+            backdrop-filter: var(--blur-md);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
         }
-        
+
         .loading-indicator.active {
             display: block;
+            animation: fadeIn var(--transition-base);
         }
-        
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid #e50914;
+            border-top: 3px solid var(--accent-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
+            margin: 0 auto var(--spacing-md);
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         .loading-text {
-            color: #aaa;
-            font-size: 14px;
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+            font-weight: 500;
         }
 
-        /* Buffering overlay */
-        .buffering-overlay {
-            position: absolute;
-            inset: 0;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.7), rgba(0,0,0,0.9));
-            z-index: 25;
-            padding: 20px;
-        }
-
-        .buffering-overlay.active {
+        /* ============================================
+           Scorecard Panel
+           ============================================ */
+        .scorecard-panel {
+            width: var(--scorecard-width);
+            background: var(--bg-overlay);
+            backdrop-filter: var(--blur-md);
+            border-left: 1px solid var(--border-color);
             display: flex;
-        }
-
-        .buffering-spinner {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #e50914;
-            border-bottom-color: #e50914;
-            animation: spin 1.2s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        .buffering-message {
-            text-align: center;
-            max-width: 400px;
-        }
-
-        .buffering-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .buffering-subtitle {
-            font-size: 14px;
-            color: #aaa;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-
-        .buffering-tip {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            background: rgba(66, 165, 245, 0.15);
-            border: 1px solid rgba(66, 165, 245, 0.3);
-            border-radius: 999px;
-            font-size: 12px;
-            color: #64b5f6;
-            font-weight: 600;
-        }
-
-        /* Reconnect overlay */
-        .reconnect-overlay {
-            position: absolute;
-            inset: 0;
-            display: none;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.92);
-            z-index: 30;
-            gap: 20px;
-            padding: 20px;
+            transition: transform var(--transition-slow);
+            z-index: 50;
         }
 
-        .reconnect-overlay.active {
+        .scorecard-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
         }
 
-        .reconnect-btn {
-            padding: 12px 28px;
-            border-radius: 999px;
-            background: #e50914;
-            color: white;
-            font-size: 14px;
+        .scorecard-title {
+            font-size: var(--font-size-lg);
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+
+        .scorecard-title i {
+            color: var(--accent-primary);
+        }
+
+        .panel-toggle {
+            background: none;
             border: none;
+            color: var(--text-tertiary);
             cursor: pointer;
-            transition: all 0.3s ease;
+            padding: var(--spacing-xs);
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-base);
+            font-size: var(--font-size-base);
+        }
+
+        .panel-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .scorecard-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+        }
+
+        .scorecard-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-2xl);
+            text-align: center;
+            color: var(--text-tertiary);
+            min-height: 200px;
+        }
+
+        .scorecard-placeholder i {
+            font-size: var(--font-size-3xl);
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        .match-teams {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .team {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: var(--bg-card);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .team-name {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .team-score {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .vs-divider {
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+            letter-spacing: 2px;
+        }
+
+        .match-status {
+            padding: var(--spacing-md);
+            background: var(--bg-card);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .status-text {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .scorecard-actions {
+            margin-top: var(--spacing-lg);
+        }
+
+        .espn-link {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: var(--accent-gradient);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
         }
 
-        .reconnect-btn:hover {
-            background: #ff0a1a;
-            transform: scale(1.05);
-            box-shadow: 0 8px 24px rgba(229, 9, 20, 0.6);
+        .espn-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
-        .error-message {
-            color: #aaa;
-            font-size: 13px;
-            max-width: 400px;
+        .espn-link:active {
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           Footer
+           ============================================ */
+        .footer {
+            background: var(--bg-overlay);
+            backdrop-filter: var(--blur-md);
+            border-top: 1px solid var(--border-color);
+            padding: var(--spacing-md) var(--spacing-xl);
+            z-index: 10;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .footer-left,
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .connection-text {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+
+        .connection-text strong {
+            color: var(--text-secondary);
+        }
+
+        .timestamp {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+
+        .keyboard-hint {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: color var(--transition-base);
+        }
+
+        .keyboard-hint:hover {
+            color: var(--text-secondary);
+        }
+
+        kbd {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 2px 6px;
+            font-size: var(--font-size-xs);
+            font-family: monospace;
+            color: var(--text-primary);
+        }
+
+        /* ============================================
+           Modal (Keyboard Shortcuts)
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: var(--blur-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn var(--transition-base);
+        }
+
+        .modal-content {
+            background: var(--bg-overlay);
+            backdrop-filter: var(--blur-lg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-xl);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp var(--transition-base);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            font-size: var(--font-size-lg);
+            padding: var(--spacing-xs);
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-base);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+        }
+
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            gap: var(--spacing-md);
+        }
+
+        .shortcut-item:last-child {
+            border-bottom: none;
+        }
+
+        .shortcut-item kbd {
+            min-width: 80px;
             text-align: center;
-            line-height: 1.5;
         }
-        
-        /* Mobile-specific styles */
+
+        .shortcut-item span {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        /* ============================================
+           Shaka Player Customization
+           ============================================ */
+        .shaka-video-container {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .shaka-bottom-controls {
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8)) !important;
+        }
+
+        .shaka-range-element {
+            color: var(--accent-primary) !important;
+        }
+
+        .shaka-play-button-container button {
+            background: rgba(0, 212, 170, 0.9) !important;
+            border-radius: 50% !important;
+        }
+
+        /* ============================================
+           Responsive Design
+           ============================================ */
+        @media (max-width: 1024px) {
+            :root {
+                --scorecard-width: 280px;
+            }
+        }
+
         @media (max-width: 768px) {
             .header {
-                padding: 10px 15px;
+                padding: var(--spacing-md);
+            }
+            
+            .header-content {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 15px;
+                gap: var(--spacing-md);
             }
             
             .header-left {
                 flex-direction: column;
-                gap: 10px;
+                gap: var(--spacing-md);
+            }
+            
+            .logo-section {
+                align-self: flex-start;
             }
             
             .match-info {
-                min-width: auto;
                 width: 100%;
             }
             
-            .dropdown {
-                min-width: 100%;
+            .header-right {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .match-selector {
+                width: 100%;
             }
             
             .dropdown-btn {
                 min-width: 100%;
+                width: 100%;
             }
             
             .dropdown-content {
                 position: fixed;
-                top: 130px;
-                left: 15px;
-                right: 15px;
+                top: auto;
+                left: var(--spacing-md);
+                right: var(--spacing-md);
                 max-height: 60vh;
             }
             
             .user-info {
                 align-self: flex-start;
-                min-width: auto;
+            }
+            
+            .scorecard-panel {
+                position: fixed;
+                right: 0;
+                top: var(--header-height);
+                bottom: var(--footer-height);
+                transform: translateX(100%);
+                z-index: 200;
+            }
+            
+            .scorecard-panel.open {
+                transform: translateX(0);
+            }
+            
+            .panel-toggle i {
+                transform: rotate(180deg);
+            }
+            
+            .scorecard-panel.open .panel-toggle i {
+                transform: rotate(0deg);
             }
             
             .footer {
-                padding: 8px 15px;
-                font-size: 11px;
+                padding: var(--spacing-sm) var(--spacing-md);
             }
             
-            .connection-status {
-                min-width: auto;
-            }
-
-            .buffering-title {
-                font-size: 16px;
-            }
-
-            .buffering-subtitle {
-                font-size: 13px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header {
-                padding: 8px 12px;
-            }
-            
-            .footer {
+            .footer-content {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 8px;
+                gap: var(--spacing-sm);
             }
             
-            .connection-status, .timestamp {
-                width: 100%;
-            }
-
-            .buffering-spinner {
-                width: 50px;
-                height: 50px;
+            .footer-right {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
             }
         }
-        
+
+        @media (max-width: 480px) {
+            .header {
+                padding: var(--spacing-sm) var(--spacing-md);
+            }
+            
+            .brand-name {
+                font-size: var(--font-size-lg);
+            }
+            
+            .match-title {
+                font-size: var(--font-size-base);
+            }
+            
+            .scorecard-panel {
+                width: 100%;
+            }
+            
+            .video-overlay {
+                padding: var(--spacing-md);
+            }
+        }
+
         /* Landscape mode optimization */
         @media (max-height: 500px) and (orientation: landscape) {
             .header {
-                padding: 8px 15px;
+                padding: var(--spacing-sm) var(--spacing-md);
             }
             
-            .dropdown-content {
-                max-height: 200px;
+            .scorecard-panel {
+                width: 240px;
             }
             
             .footer {
-                padding: 6px 15px;
-                font-size: 11px;
+                padding: var(--spacing-xs) var(--spacing-md);
             }
-        }
-
-        /* Touch devices */
-        @media (hover: none) and (pointer: coarse) {
-            .video-container.hide-cursor {
-                cursor: default;
-            }
-            
-            .video-container.hide-cursor .shaka-controls-container {
-                opacity: 1 !important;
-            }
-        }
-        
-        /* Ensure video controls are accessible */
-        .shaka-video-container {
-            width: 100% !important;
-            height: 100% !important;
-        }
-        
-        .shaka-bottom-controls {
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8)) !important;
-        }
-        
-        .shaka-range-element {
-            color: #e50914 !important;
-        }
-        
-        .shaka-play-button-container button {
-            background: rgba(229, 9, 20, 0.9);
-            border-radius: 50%;
-        }
-
-        .shaka-spinner-container,
-        .shaka-buffering-message {
-            display: none !important;
-        }
-        
-        /* Custom scrollbar for dropdown */
-        .dropdown-content::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .dropdown-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-        
-        .dropdown-content::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-        }
-        
-        .dropdown-content::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <!-- Header with match info and dropdown -->
-        <div class="header">
-            <div class="header-left">
-                <div class="match-info">
-                    <div class="match-title" id="currentMatchTitle">Select a Match</div>
-                    <div class="match-subtitle">
-                        <span class="live-indicator">
-                            <span class="live-pulse"></span>
-                            LIVE
-                        </span>
-                        <span id="currentTournament">ICC U19 Cricket World Cup</span>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-section">
+                        <div class="logo-icon">
+                            <i class="fas fa-cricket"></i>
+                        </div>
+                        <div class="brand-text">
+                            <h1 class="brand-name">Cricket Live</h1>
+                            <span class="brand-tagline">U19 World Cup</span>
+                        </div>
+                    </div>
+                    
+                    <div class="match-info">
+                        <div class="match-title" id="currentMatchTitle">Select a Match</div>
+                        <div class="match-subtitle">
+                            <span class="live-indicator">
+                                <span class="live-pulse"></span>
+                                <span>LIVE</span>
+                            </span>
+                            <span class="tournament-name" id="currentTournament">ICC U19 Cricket World Cup</span>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Dropdown menu for match selection -->
-                <div class="dropdown">
-                    <button class="dropdown-btn" id="dropdownBtn">
-                        <span id="dropdownText">Select Match</span>
-                        <i class="fas fa-chevron-down"></i>
+                <div class="header-right">
+                    <div class="match-selector">
+                        <button class="dropdown-btn" id="dropdownBtn" aria-label="Select Match">
+                            <span id="dropdownText">Select Match</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content" id="dropdownContent" role="menu">
+                            <!-- Match options will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="user-info">
+                        <div class="user-avatar">J</div>
+                        <div class="user-name">Jinx8004</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Video Player Section -->
+            <section class="video-section">
+                <div class="video-container" data-shaka-player-container>
+                    <div class="loading-indicator" id="loadingIndicator" aria-live="polite">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Loading Stream...</div>
+                    </div>
+                    
+                    <video 
+                        data-shaka-player 
+                        id="video" 
+                        autoplay 
+                        crossorigin="anonymous"
+                        aria-label="Live cricket stream"
+                    ></video>
+                    
+                    <div class="video-overlay">
+                        <div class="stream-info">
+                            <div class="stream-status" id="streamStatus">Select a match</div>
+                            <div class="connection-info">
+                                <span class="connection-dot"></span>
+                                <span>Akamai CDN • DASH</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Scorecard Panel -->
+            <aside class="scorecard-panel" id="scorecardPanel">
+                <div class="scorecard-header">
+                    <h2 class="scorecard-title">
+                        <i class="fas fa-chart-line"></i>
+                        Live Scorecard
+                    </h2>
+                    <button class="panel-toggle" id="panelToggle" aria-label="Toggle scorecard panel">
+                        <i class="fas fa-chevron-right"></i>
                     </button>
-                    <div class="dropdown-content" id="dropdownContent">
-                        <!-- Match options will be populated by JavaScript -->
+                </div>
+                
+                <div class="scorecard-content" id="scorecardContent">
+                    <div class="scorecard-placeholder">
+                        <i class="fas fa-cricket-ball"></i>
+                        <p>Select a match to view live scorecard</p>
+                    </div>
+                    
+                    <div class="scorecard-match-info" id="scorecardMatchInfo" style="display: none;">
+                        <div class="match-teams">
+                            <div class="team team-1">
+                                <div class="team-name" id="team1Name">--</div>
+                                <div class="team-score" id="team1Score">--</div>
+                            </div>
+                            <div class="vs-divider">VS</div>
+                            <div class="team team-2">
+                                <div class="team-name" id="team2Name">--</div>
+                                <div class="team-score" id="team2Score">--</div>
+                            </div>
+                        </div>
+                        
+                        <div class="match-status" id="matchStatus">
+                            <span class="status-text">Match in progress</span>
+                        </div>
+                        
+                        <div class="scorecard-actions">
+                            <a 
+                                href="#" 
+                                class="espn-link" 
+                                id="espnLink" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                aria-label="View full scorecard on ESPN Cricinfo"
+                            >
+                                <i class="fas fa-external-link-alt"></i>
+                                View Full Scorecard on ESPN Cricinfo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <div class="connection-status">
+                        <div class="connection-dot"></div>
+                        <div class="connection-text">
+                            Stream: <strong>Akamai CDN</strong> • Protocol: <strong>DASH</strong> • Status: <strong id="footerStreamStatus">Select a match</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-right">
+                    <div class="timestamp">
+                        <i class="far fa-clock"></i>
+                        <span id="currentTime">--:--:--</span>
+                    </div>
+                    <div class="keyboard-hint">
+                        <i class="fas fa-keyboard"></i>
+                        <span>Press <kbd>?</kbd> for shortcuts</span>
                     </div>
                 </div>
             </div>
-            
-            <div class="user-info">
-                <div class="user-avatar">J</div>
-                <div class="user-name">Jinx8004</div>
-            </div>
-        </div>
-        
-        <!-- Video container -->
-        <div class="video-container" data-shaka-player-container>
-            <!-- Loading indicator -->
-            <div class="loading-indicator" id="loadingIndicator">
-                <div class="spinner"></div>
-                <div class="loading-text">Loading Stream...</div>
-            </div>
+        </footer>
+    </div>
 
-            <!-- Buffering overlay -->
-            <div class="buffering-overlay" id="bufferingOverlay">
-                <div class="buffering-spinner"></div>
-                <div class="buffering-message">
-                    <div class="buffering-title">
-                        <i class="fas fa-circle-notch fa-spin"></i>
-                        Buffering Stream
-                    </div>
-                    <div class="buffering-subtitle">
-                        Building buffer for smooth playback...
-                    </div>
-                    <div class="buffering-tip">
-                        <i class="fas fa-lightbulb"></i>
-                        Maintaining buffer for uninterrupted experience
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reconnect overlay -->
-            <div class="reconnect-overlay" id="reconnectOverlay">
-                <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e50914;"></i>
-                <div class="error-message" id="errorMessage">Stream connection lost</div>
-                <button class="reconnect-btn" id="reconnectBtn">
-                    <i class="fa-solid fa-rotate-right"></i>
-                    Reconnect Stream
+    <!-- Keyboard Shortcuts Modal -->
+    <div class="modal-overlay" id="shortcutsModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Keyboard Shortcuts</h3>
+                <button class="modal-close" id="closeModal" aria-label="Close">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
-            
-            <video data-shaka-player id="video" autoplay crossorigin="anonymous" playsinline></video>
-        </div>
-        
-        <!-- Footer with connection info -->
-        <div class="footer">
-            <div class="connection-status">
-                <div class="connection-dot"></div>
-                <div class="connection-text">
-                    Stream: <strong>Akamai CDN</strong> • Protocol: <strong>DASH</strong> • Status: <strong id="streamStatus">Select a match</strong>
+            <div class="modal-body">
+                <div class="shortcut-item">
+                    <kbd>Space</kbd> / <kbd>K</kbd>
+                    <span>Play/Pause</span>
                 </div>
-            </div>
-            
-            <div class="timestamp">
-                <i class="far fa-clock"></i>
-                <span id="currentTime">--:--:--</span>
+                <div class="shortcut-item">
+                    <kbd>M</kbd>
+                    <span>Mute/Unmute</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>F</kbd>
+                    <span>Fullscreen</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>←</kbd> / <kbd>→</kbd>
+                    <span>Seek -10s / +10s</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>↑</kbd> / <kbd>↓</kbd>
+                    <span>Volume +/-</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd>
+                    <span>Switch Match</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>?</kbd>
+                    <span>Show/Hide Shortcuts</span>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // ============================================
+        // Shaka Player Configuration & Management
+        // ============================================
+
         // Define all available streams
         const streams = [
             {
-                id: 'eng-vs-sco',
-                title: 'ENG vs SCO U19',
+                id: 'pak-vs-zim',
+                title: 'PAK vs ZIM U19',
                 tournament: 'ICC U19 Cricket World Cup',
-                manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/tt4l9dkjqa/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd',
+                manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/dxa7blzjzn/out/v1/61b8f61b22ac469297cbd4f1224f0ec8/cenc.mpd',
                 keys: {
                     'f159241d40e659d58e81bc17ca30da31': '6b7fe24f7a16343bd447b0b30f68b7b2',
                     'b770d5b4bb6b594daf985845aae9aa5f': 'b0cb46d2d31cf044bc73db71e9865f6f'
-                }
+                },
+                espnLink: 'https://www.espncricinfo.com/series/icc-under-19-world-cup-2023-24-1387748',
+                team1: 'Pakistan',
+                team2: 'Zimbabwe'
             },
             {
-                id: 'afg-vs-tan',
-                title: 'AFG vs TAN U19',
+                id: 'irl-vs-jpn',
+                title: 'IRL vs JPN U19',
                 tournament: 'ICC U19 Cricket World Cup',
-                manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/rinvsamnuy/out/v1/9f9a9a3c65674f6a82294c94efba2898/cenc.mpd',
+                manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/oyvyyhbxvf/out/v1/9f9a9a3c65674f6a82294c94efba2898/cenc.mpd',
                 keys: {
                     'b86fa94988debfa3f1dff4cfd0d45345': 'ab64c1dc3e8f309e61cf0c8318618f05',
                     'b770d5b4bb6b594daf985845aae9aa5f': 'b0cb46d2d31cf044bc73db71e9865f6f'
-                }
+                },
+                espnLink: 'https://www.espncricinfo.com/series/icc-under-19-world-cup-2023-24-1387748',
+                team1: 'Ireland',
+                team2: 'Japan'
+            },
+            {
+                id: 'wi-vs-sa',
+                title: 'WI vs SA U19',
+                tournament: 'ICC U19 Cricket World Cup',
+                manifest: 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/cbrqd8gkdu/out/v1/b02b49b7e4244b4ebaf4f2d576a97228cenc.mpd',
+                keys: {
+                    'da661ad935054591590c7487368b26f3': '10229bfa52d2e601b3e88b7951dc0bae',
+                    'b770d5b4bb6b594daf985845aae9aa5f': 'b0cb46d2d31cf044bc73db71e9865f6f'
+                },
+                espnLink: 'https://www.espncricinfo.com/series/icc-under-19-world-cup-2023-24-1387748',
+                team1: 'West Indies',
+                team2: 'South Africa'
             }
         ];
 
-        // Global variables
+        // Global player variables
         let player = null;
         let ui = null;
         let currentStream = null;
-        let mouseIdleTimer = null;
-        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
-        // Auto-hide controls
-        function setupAutoHideControls() {
-            if (isTouchDevice) return;
-            
-            const videoContainer = document.querySelector('.video-container');
-            
-            function resetIdleTimer() {
-                videoContainer.classList.remove('hide-cursor');
-                videoContainer.classList.add('show-controls');
-                
-                clearTimeout(mouseIdleTimer);
-                mouseIdleTimer = setTimeout(() => {
-                    videoContainer.classList.add('hide-cursor');
-                    videoContainer.classList.remove('show-controls');
-                }, 3000);
+        // ============================================
+        // Scorecard Management & ESPN Cricinfo Integration
+        // ============================================
+
+        // ESPN Cricinfo base URL patterns
+        const ESPN_BASE_URL = 'https://www.espncricinfo.com';
+
+        // Match-specific ESPN links
+        const matchESPNLinks = {
+            'pak-vs-zim': 'https://www.espncricinfo.com/series/icc-under-19-world-cup-2023-24-1387748',
+            'irl-vs-jpn': 'https://www.espncricinfo.com/series/icc-under-19-world-cup-2023-24-1387748',
+            'wi-vs-sa': 'https://www.espncricinfo.com/series/icc-under-19-world-cup-2023-24-1387748'
+        };
+
+        // Update scorecard with match information
+        function updateScorecard(stream) {
+            const placeholder = document.querySelector('.scorecard-placeholder');
+            const matchInfo = document.getElementById('scorecardMatchInfo');
+            const espnLink = document.getElementById('espnLink');
+            const team1Name = document.getElementById('team1Name');
+            const team2Name = document.getElementById('team2Name');
+            const team1Score = document.getElementById('team1Score');
+            const team2Score = document.getElementById('team2Score');
+            const matchStatus = document.getElementById('matchStatus');
+
+            if (!stream) {
+                if (placeholder) placeholder.style.display = 'flex';
+                if (matchInfo) matchInfo.style.display = 'none';
+                return;
             }
-            
-            videoContainer.addEventListener('mousemove', resetIdleTimer);
-            videoContainer.addEventListener('mouseenter', resetIdleTimer);
-            videoContainer.addEventListener('mouseleave', () => {
-                clearTimeout(mouseIdleTimer);
-                videoContainer.classList.add('hide-cursor');
-                videoContainer.classList.remove('show-controls');
-            });
+
+            if (placeholder) placeholder.style.display = 'none';
+            if (matchInfo) matchInfo.style.display = 'block';
+
+            if (team1Name && stream.team1) {
+                team1Name.textContent = stream.team1;
+            }
+            if (team2Name && stream.team2) {
+                team2Name.textContent = stream.team2;
+            }
+
+            if (!stream.team1 || !stream.team2) {
+                const titleParts = stream.title.split(' vs ');
+                if (titleParts.length === 2) {
+                    if (team1Name && !stream.team1) {
+                        team1Name.textContent = getTeamFullName(titleParts[0].trim());
+                    }
+                    if (team2Name && !stream.team2) {
+                        team2Name.textContent = getTeamFullName(titleParts[1].trim());
+                    }
+                }
+            }
+
+            if (espnLink) {
+                const link = matchESPNLinks[stream.id] || stream.espnLink || ESPN_BASE_URL;
+                espnLink.href = link;
+            }
+
+            if (matchStatus) {
+                const statusText = matchStatus.querySelector('.status-text');
+                if (statusText) {
+                    statusText.textContent = 'Match in progress';
+                }
+            }
+
+            if (team1Score) team1Score.textContent = '--';
+            if (team2Score) team2Score.textContent = '--';
         }
 
-        async function init() {
+        // Get full team name from abbreviation
+        function getTeamFullName(abbrev) {
+            const teamNames = {
+                'PAK': 'Pakistan',
+                'ZIM': 'Zimbabwe',
+                'IRL': 'Ireland',
+                'JPN': 'Japan',
+                'WI': 'West Indies',
+                'SA': 'South Africa',
+                'IND': 'India',
+                'AUS': 'Australia',
+                'ENG': 'England',
+                'NZ': 'New Zealand',
+                'SL': 'Sri Lanka',
+                'BAN': 'Bangladesh',
+                'AFG': 'Afghanistan'
+            };
+            return teamNames[abbrev] || abbrev;
+        }
+
+        // Player initialization
+        async function initPlayer() {
             const video = document.getElementById('video');
             const loadingIndicator = document.getElementById('loadingIndicator');
-            const bufferingOverlay = document.getElementById('bufferingOverlay');
-            const reconnectOverlay = document.getElementById('reconnectOverlay');
-            const reconnectBtn = document.getElementById('reconnectBtn');
-            const errorMessage = document.getElementById('errorMessage');
             const streamStatus = document.getElementById('streamStatus');
-            const currentMatchTitle = document.getElementById('currentMatchTitle');
-            const currentTournament = document.getElementById('currentTournament');
-            const dropdownBtn = document.getElementById('dropdownBtn');
-            const dropdownContent = document.getElementById('dropdownContent');
-            const dropdownText = document.getElementById('dropdownText');
+            const footerStreamStatus = document.getElementById('footerStreamStatus');
 
-            // Initialize player
+            if (!window.shaka) {
+                console.error('Shaka Player not loaded');
+                streamStatus.textContent = 'Player not available';
+                footerStreamStatus.textContent = 'Player not available';
+                return;
+            }
+
+            shaka.polyfill.installAll();
+
             player = new shaka.Player(video);
             ui = new shaka.ui.Overlay(player, video.parentElement, video);
 
-            // EXACT BUFFER SETTINGS FROM WORKING CODE (30s not 60s!)
             player.configure({
                 streaming: {
-                    bufferingGoal: 30,          // Working setting from 2nd code
-                    rebufferingGoal: 5,         // Working setting from 2nd code
-                    bufferBehind: 30,           // Working setting from 2nd code
+                    bufferingGoal: 30,
+                    rebufferingGoal: 5,
+                    bufferBehind: 30,
                     jumpLargeGaps: true,
                     lowLatencyMode: false
                 },
@@ -776,252 +1402,45 @@
                     dash: {
                         ignoreMinBufferTime: true,
                         autoCorrectDrift: true,
-                        initialSegmentLimit: 20  // Working setting from 2nd code
+                        initialSegmentLimit: 20
                     }
                 }
             });
 
-            player.configure('streaming.presentationDelay', 20);  // Working setting from 2nd code
+            player.configure('streaming.presentationDelay', 20);
 
             ui.configure({
                 'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
-                'overflowMenuButtons': ['quality'] 
+                'overflowMenuButtons': ['quality']
             });
 
-            // Setup auto-hide controls
-            setupAutoHideControls();
-
-            // Reconnect button
-            reconnectBtn.addEventListener('click', () => {
-                reconnectOverlay.classList.remove('active');
-                if (currentStream) {
-                    const stream = streams.find(s => s.id === currentStream);
-                    if (stream) loadStream(stream);
-                }
-            });
-
-            // Populate dropdown with match options
-            function populateDropdown() {
-                dropdownContent.innerHTML = '';
-                
-                streams.forEach((stream) => {
-                    const dropdownItem = document.createElement('div');
-                    dropdownItem.className = 'dropdown-item';
-                    dropdownItem.dataset.id = stream.id;
-                    
-                    dropdownItem.innerHTML = `
-                        <div class="dropdown-match">${stream.title}</div>
-                        <div class="dropdown-tournament">${stream.tournament}</div>
-                    `;
-                    
-                    dropdownItem.addEventListener('click', () => {
-                        loadStream(stream);
-                        dropdownBtn.classList.remove('active');
-                        dropdownContent.classList.remove('active');
-                        
-                        document.querySelectorAll('.dropdown-item').forEach(item => {
-                            item.classList.remove('active');
-                        });
-                        dropdownItem.classList.add('active');
-                    });
-                    
-                    dropdownContent.appendChild(dropdownItem);
-                });
-            }
-
-            // Toggle dropdown menu
-            dropdownBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownBtn.classList.toggle('active');
-                dropdownContent.classList.toggle('active');
-            });
-
-            document.addEventListener('click', () => {
-                dropdownBtn.classList.remove('active');
-                dropdownContent.classList.remove('active');
-            });
-
-            dropdownContent.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-
-            populateDropdown();
-
-            if (streams.length > 0) {
-                loadStream(streams[0]);
-                const firstItem = dropdownContent.querySelector('.dropdown-item');
-                if (firstItem) {
-                    firstItem.classList.add('active');
-                }
-                dropdownText.textContent = streams[0].title;
-            }
-
-            // Keyboard controls setup
-            function setupKeyboardControls() {
-                document.addEventListener('keydown', (e) => {
-                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                        return;
-                    }
-                    
-                    switch(e.key.toLowerCase()) {
-                        case ' ':
-                        case 'k':
-                            e.preventDefault();
-                            video.paused ? video.play() : video.pause();
-                            break;
-                            
-                        case 'm':
-                            video.muted = !video.muted;
-                            break;
-                            
-                        case 'f':
-                            toggleFullscreen();
-                            break;
-                            
-                        case 'escape':
-                            if (document.fullscreenElement) {
-                                document.exitFullscreen();
-                            }
-                            dropdownBtn.classList.remove('active');
-                            dropdownContent.classList.remove('active');
-                            break;
-                            
-                        case 'arrowleft':
-                            e.preventDefault();
-                            video.currentTime = Math.max(0, video.currentTime - 10);
-                            break;
-                            
-                        case 'arrowright':
-                            e.preventDefault();
-                            video.currentTime = Math.min(video.duration, video.currentTime + 10);
-                            break;
-                            
-                        case 'arrowup':
-                            e.preventDefault();
-                            video.volume = Math.min(1, video.volume + 0.1);
-                            break;
-                            
-                        case 'arrowdown':
-                            e.preventDefault();
-                            video.volume = Math.max(0, video.volume - 0.1);
-                            break;
-                            
-                        case '1':
-                            if (streams[0]) loadStream(streams[0]);
-                            break;
-                        case '2':
-                            if (streams[1]) loadStream(streams[1]);
-                            break;
-                            
-                        case '0':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            if (!isNaN(video.duration)) {
-                                const percentage = parseInt(e.key) / 10;
-                                video.currentTime = video.duration * percentage;
-                            }
-                            break;
-                    }
-                });
-                
-                function toggleFullscreen() {
-                    if (!document.fullscreenElement) {
-                        if (video.requestFullscreen) {
-                            video.requestFullscreen();
-                        } else if (video.webkitRequestFullscreen) {
-                            video.webkitRequestFullscreen();
-                        }
-                    } else {
-                        if (document.exitFullscreen) {
-                            document.exitFullscreen();
-                        }
-                    }
-                }
-            }
-
-            // Load stream function
-            async function loadStream(stream) {
-                if (currentStream === stream.id) return;
-                
-                currentStream = stream.id;
-                currentMatchTitle.textContent = stream.title;
-                currentTournament.textContent = stream.tournament;
-                dropdownText.textContent = stream.title;
-                
-                loadingIndicator.classList.add('active');
-                reconnectOverlay.classList.remove('active');
-                streamStatus.textContent = 'Loading...';
-                streamStatus.style.color = '';
-                
-                try {
-                    console.log('Loading stream:', stream.title);
-                    
-                    await player.unload();
-                    
-                    player.configure({
-                        drm: {
-                            clearKeys: stream.keys
-                        }
-                    });
-                    
-                    await player.load(stream.manifest);
-                    
-                    console.log('Stream loaded successfully:', stream.title);
-                    streamStatus.textContent = 'Stable';
-                    loadingIndicator.classList.remove('active');
-                    
-                } catch (error) {
-                    console.error('Error loading stream:', stream.title, error);
-                    streamStatus.textContent = 'Failed to load';
-                    streamStatus.style.color = '#ff4d4d';
-                    loadingIndicator.classList.remove('active');
-                }
-            }
-
-            setupKeyboardControls();
-
-            // Update current time
-            function updateTime() {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString([], {hour12: false});
-                document.getElementById('currentTime').innerText = timeString;
-            }
-            
-            updateTime();
-            setInterval(updateTime, 1000);
-
-            // Handle player errors
             player.addEventListener('error', (event) => {
                 console.error('Player error:', event.detail);
-                loadingIndicator.classList.remove('active');
-                bufferingOverlay.classList.remove('active');
-                errorMessage.textContent = `Stream error: ${event.detail.message || 'Connection failed'}`;
-                reconnectOverlay.classList.add('active');
-                streamStatus.textContent = 'Error';
-                streamStatus.style.color = '#ff4d4d';
+                handlePlayerError(event.detail);
             });
 
-            // Handle buffering events
             player.addEventListener('buffering', (event) => {
                 if (event.buffering) {
-                    bufferingOverlay.classList.add('active');
+                    loadingIndicator.classList.add('active');
                     streamStatus.textContent = 'Buffering...';
+                    footerStreamStatus.textContent = 'Buffering...';
+                    streamStatus.style.color = '';
+                    footerStreamStatus.style.color = '';
                 } else {
-                    bufferingOverlay.classList.remove('active');
+                    loadingIndicator.classList.remove('active');
                     streamStatus.textContent = 'Stable';
+                    footerStreamStatus.textContent = 'Stable';
                 }
             });
 
-            // EXACT LATENCY MANAGEMENT FROM WORKING CODE
             setInterval(() => {
                 try {
                     if (player && player.isLive()) {
                         const liveEdge = player.seekRange().end;
-                        if ((liveEdge - video.currentTime) < 10) {
+                        const currentTime = video.currentTime;
+                        const latency = liveEdge - currentTime;
+                        
+                        if (latency < 10) {
                             video.currentTime = liveEdge - 20;
                         }
                     }
@@ -1029,14 +1448,391 @@
                     // Ignore errors
                 }
             }, 1000);
+
+            if (streams.length > 0) {
+                await loadStream(streams[0]);
+            }
+        }
+
+        // Load a stream
+        async function loadStream(stream) {
+            if (currentStream === stream.id) {
+                return;
+            }
+
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const streamStatus = document.getElementById('streamStatus');
+            const footerStreamStatus = document.getElementById('footerStreamStatus');
+            const currentMatchTitle = document.getElementById('currentMatchTitle');
+            const currentTournament = document.getElementById('currentTournament');
+
+            currentStream = stream.id;
+            currentMatchTitle.textContent = stream.title;
+            currentTournament.textContent = stream.tournament;
+
+            loadingIndicator.classList.add('active');
+            streamStatus.textContent = 'Loading...';
+            footerStreamStatus.textContent = 'Loading...';
+            streamStatus.style.color = '';
+            footerStreamStatus.style.color = '';
+
+            try {
+                console.log('Loading stream:', stream.title);
+
+                if (player) {
+                    await player.unload();
+                }
+
+                player.configure({
+                    drm: {
+                        clearKeys: stream.keys
+                    }
+                });
+
+                await player.load(stream.manifest);
+
+                console.log('Stream loaded successfully:', stream.title);
+                streamStatus.textContent = 'Stable';
+                footerStreamStatus.textContent = 'Stable';
+                loadingIndicator.classList.remove('active');
+
+                updateScorecard(stream);
+
+            } catch (error) {
+                console.error('Error loading stream:', stream.title, error);
+                handleStreamError(error, streamStatus, footerStreamStatus);
+                loadingIndicator.classList.remove('active');
+            }
+        }
+
+        // Handle player errors
+        function handlePlayerError(error) {
+            const streamStatus = document.getElementById('streamStatus');
+            const footerStreamStatus = document.getElementById('footerStreamStatus');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+
+            loadingIndicator.classList.remove('active');
+            streamStatus.textContent = 'Error';
+            footerStreamStatus.textContent = 'Error';
+            streamStatus.style.color = '#ef4444';
+            footerStreamStatus.style.color = '#ef4444';
+
+            console.error('Player error details:', error);
+        }
+
+        // Handle stream loading errors
+        function handleStreamError(error, streamStatus, footerStreamStatus) {
+            streamStatus.textContent = 'Failed to load';
+            footerStreamStatus.textContent = 'Failed to load';
+            streamStatus.style.color = '#ef4444';
+            footerStreamStatus.style.color = '#ef4444';
+        }
+
+        // Get current stream
+        function getCurrentStream() {
+            return streams.find(s => s.id === currentStream);
+        }
+
+        // Get all streams
+        function getAllStreams() {
+            return streams;
+        }
+
+        // ============================================
+        // UI Interactions & Controls
+        // ============================================
+
+        // Initialize UI when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initDropdown();
+            initScorecardPanel();
+            initKeyboardControls();
+            initTimeDisplay();
+            initShortcutsModal();
+        });
+
+        // Dropdown Menu
+        function initDropdown() {
+            const dropdownBtn = document.getElementById('dropdownBtn');
+            const dropdownContent = document.getElementById('dropdownContent');
+            const dropdownText = document.getElementById('dropdownText');
+
+            if (!dropdownBtn || !dropdownContent) return;
+
+            const checkStreams = setInterval(() => {
+                if (window.getAllStreams) {
+                    clearInterval(checkStreams);
+                    populateDropdown();
+                }
+            }, 100);
+
+            function populateDropdown() {
+                const streams = getAllStreams();
+                if (!streams) return;
+
+                dropdownContent.innerHTML = '';
+
+                streams.forEach((stream, index) => {
+                    const dropdownItem = document.createElement('div');
+                    dropdownItem.className = 'dropdown-item';
+                    dropdownItem.dataset.id = stream.id;
+                    dropdownItem.setAttribute('role', 'menuitem');
+
+                    dropdownItem.innerHTML = `
+                        <div class="dropdown-match">${stream.title}</div>
+                        <div class="dropdown-tournament">${stream.tournament}</div>
+                    `;
+
+                    dropdownItem.addEventListener('click', () => {
+                        selectMatch(stream, dropdownItem);
+                    });
+
+                    dropdownContent.appendChild(dropdownItem);
+                });
+
+                if (streams.length > 0 && !getCurrentStream()) {
+                    const firstItem = dropdownContent.querySelector('.dropdown-item');
+                    if (firstItem) {
+                        firstItem.classList.add('active');
+                    }
+                    dropdownText.textContent = streams[0].title;
+                }
+            }
+
+            function selectMatch(stream, item) {
+                loadStream(stream);
+
+                dropdownBtn.classList.remove('active');
+                dropdownContent.classList.remove('active');
+                dropdownText.textContent = stream.title;
+
+                document.querySelectorAll('.dropdown-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                if (item) item.classList.add('active');
+            }
+
+            dropdownBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownBtn.classList.toggle('active');
+                dropdownContent.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!dropdownBtn.contains(e.target) && !dropdownContent.contains(e.target)) {
+                    dropdownBtn.classList.remove('active');
+                    dropdownContent.classList.remove('active');
+                }
+            });
+
+            dropdownContent.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+
+        // Scorecard Panel Toggle
+        function initScorecardPanel() {
+            const panelToggle = document.getElementById('panelToggle');
+            const scorecardPanel = document.getElementById('scorecardPanel');
+
+            if (!panelToggle || !scorecardPanel) return;
+
+            panelToggle.addEventListener('click', () => {
+                scorecardPanel.classList.toggle('open');
+            });
+        }
+
+        // Keyboard Controls
+        function initKeyboardControls() {
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+                    return;
+                }
+
+                const video = document.getElementById('video');
+                if (!video) return;
+
+                const key = e.key.toLowerCase();
+
+                switch (key) {
+                    case ' ':
+                    case 'k':
+                        e.preventDefault();
+                        if (video.paused) {
+                            video.play().catch(err => console.log('Play failed:', err));
+                        } else {
+                            video.pause();
+                        }
+                        break;
+
+                    case 'm':
+                        e.preventDefault();
+                        video.muted = !video.muted;
+                        break;
+
+                    case 'f':
+                        e.preventDefault();
+                        toggleFullscreen();
+                        break;
+
+                    case 'escape':
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen();
+                        }
+                        const dropdownBtn = document.getElementById('dropdownBtn');
+                        const dropdownContent = document.getElementById('dropdownContent');
+                        if (dropdownBtn) dropdownBtn.classList.remove('active');
+                        if (dropdownContent) dropdownContent.classList.remove('active');
+                        const modal = document.getElementById('shortcutsModal');
+                        if (modal) modal.style.display = 'none';
+                        break;
+
+                    case 'arrowleft':
+                        e.preventDefault();
+                        if (!isNaN(video.duration)) {
+                            video.currentTime = Math.max(0, video.currentTime - 10);
+                        }
+                        break;
+
+                    case 'arrowright':
+                        e.preventDefault();
+                        if (!isNaN(video.duration)) {
+                            video.currentTime = Math.min(video.duration, video.currentTime + 10);
+                        }
+                        break;
+
+                    case 'arrowup':
+                        e.preventDefault();
+                        video.volume = Math.min(1, video.volume + 0.1);
+                        break;
+
+                    case 'arrowdown':
+                        e.preventDefault();
+                        video.volume = Math.max(0, video.volume - 0.1);
+                        break;
+
+                    case '1':
+                    case '2':
+                    case '3':
+                        e.preventDefault();
+                        const streams = getAllStreams();
+                        const index = parseInt(key) - 1;
+                        if (streams[index]) {
+                            loadStream(streams[index]);
+                        }
+                        break;
+
+                    case '0':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        e.preventDefault();
+                        if (!isNaN(video.duration)) {
+                            const percentage = parseInt(key) / 10;
+                            video.currentTime = video.duration * percentage;
+                        }
+                        break;
+
+                    case '?':
+                        e.preventDefault();
+                        toggleShortcutsModal();
+                        break;
+                }
+            });
+
+            function toggleFullscreen() {
+                const video = document.getElementById('video');
+                if (!video) return;
+
+                if (!document.fullscreenElement) {
+                    if (video.requestFullscreen) {
+                        video.requestFullscreen();
+                    } else if (video.webkitRequestFullscreen) {
+                        video.webkitRequestFullscreen();
+                    } else if (video.mozRequestFullScreen) {
+                        video.mozRequestFullScreen();
+                    } else if (video.msRequestFullscreen) {
+                        video.msRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+            }
+        }
+
+        // Time Display
+        function initTimeDisplay() {
+            function updateTime() {
+                const timeElement = document.getElementById('currentTime');
+                if (timeElement) {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString([], { hour12: false });
+                    timeElement.textContent = timeString;
+                }
+            }
+
+            updateTime();
+            setInterval(updateTime, 1000);
+        }
+
+        // Shortcuts Modal
+        function initShortcutsModal() {
+            const modal = document.getElementById('shortcutsModal');
+            const closeBtn = document.getElementById('closeModal');
+            const keyboardHint = document.querySelector('.keyboard-hint');
+
+            if (!modal) return;
+
+            function toggleShortcutsModal() {
+                if (modal.style.display === 'none' || !modal.style.display) {
+                    modal.style.display = 'flex';
+                } else {
+                    modal.style.display = 'none';
+                }
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+            }
+
+            if (keyboardHint) {
+                keyboardHint.addEventListener('click', toggleShortcutsModal);
+            }
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            window.toggleShortcutsModal = toggleShortcutsModal;
         }
 
         // Initialize when Shaka Player is loaded
         if (window.shaka) {
-            init();
+            initPlayer();
         } else {
-            document.addEventListener('shaka-ui-loaded', init);
+            window.addEventListener('shaka-ui-loaded', initPlayer);
         }
+
+        // Export functions
+        window.loadStream = loadStream;
+        window.getCurrentStream = getCurrentStream;
+        window.getAllStreams = getAllStreams;
     </script>
 </body>
 </html>
+
