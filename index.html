@@ -5,11 +5,9 @@
     <title>TNT Streams | Premium Live TV</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Shaka Player -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.js"></script>
 
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -357,7 +355,7 @@
             overflow: hidden;
             background: #000;
             box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
-            border: 1px solid rgba(255, 107, 0, 0.2);
+            /* Removed orange border */
         }
 
         video {
@@ -861,7 +859,6 @@
 </head>
 <body>
 <div class="main-container">
-    <!-- HEADER -->
     <header class="header">
         <div class="header-left">
             <div class="logo-container">
@@ -900,7 +897,6 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
     <main class="content">
         <div class="video-shell" data-shaka-player-container>
             <div class="loading-indicator" id="loadingIndicator">
@@ -946,7 +942,6 @@
         </aside>
     </main>
 
-    <!-- FOOTER -->
     <footer class="footer">
         <div class="connection-status">
             <div class="connection-dot"></div>
@@ -958,7 +953,6 @@
     </footer>
 </div>
 
-<!-- Screenshot Modal -->
 <div class="screenshot-modal" id="screenshotModal">
     <div class="screenshot-content">
         <img id="screenshotPreview" class="screenshot-img" alt="Screenshot Preview">
@@ -975,7 +969,6 @@
     </div>
 </div>
 
-<!-- Toast Notification -->
 <div class="toast" id="toast">
     <i class="fas fa-check-circle"></i>
     <span id="toastMessage"></span>
@@ -1338,17 +1331,6 @@
                     break;
                 case '4':
                     if (tntStreams[3]) loadStream(tntStreams[3]);
-                    break;
-                case '0':
-                    case '5':
-                    case '6':
-                    case '7':
-                    case '8':
-                    case '9':
-                    if (!isNaN(video.duration)) {
-                        const percentage = parseInt(e.key, 10) / 10;
-                        video.currentTime = video.duration * percentage;
-                    }
                     break;
             }
         });
