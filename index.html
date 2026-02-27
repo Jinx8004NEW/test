@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Jinx — Live TV</title>
+<title>Jinx Kayo — Live TV</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.min.js"></script>
 <style>
@@ -15,8 +15,11 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:36px 36px}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:36px 36px}
 
+/* ══ HEADER ══ */
 header{position:sticky;top:0;z-index:100;background:var(--surf);border-bottom:1px solid var(--bdr);box-shadow:0 1px 4px var(--shadow)}
 .header-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;padding:0 28px;height:56px}
 .eyebrow-wrap{margin-right:32px}
@@ -31,7 +34,23 @@ header{position:sticky;top:0;z-index:100;background:var(--surf);border-bottom:1p
 @keyframes fadeUp{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-.wrap{max-width:1440px;margin:0 auto;padding:28px 28px 64px;position:relative;z-index:1}
+/* ══ AUS VPN NOTICE ══ */
+.aus-notice{max-width:1440px;margin:12px auto 0;padding:0 28px;position:relative;z-index:1}
+.aus-notice-inner{
+  display:flex;align-items:flex-start;gap:10px;
+  background:rgba(180,100,0,0.07);border:1px solid rgba(180,100,0,0.3);
+  border-radius:10px;padding:11px 14px;
+  font-size:11px;color:#6b3a00;line-height:1.55;
+}
+.aus-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.aus-notice-inner strong{font-weight:600}
+.aus-notice-inner a{color:var(--acc4);text-decoration:underline}
+.aus-close{margin-left:auto;flex-shrink:0;background:none;border:none;cursor:pointer;color:#a05000;font-size:18px;line-height:1;padding:0 2px;opacity:0.6;transition:opacity 0.15s}
+.aus-close:hover{opacity:1}
+@media(max-width:768px){.aus-notice{padding:0 14px}.aus-notice-inner{font-size:10px}}
+
+/* ══ LAYOUT ══ */
+.wrap{max-width:1440px;margin:0 auto;padding:20px 28px 64px;position:relative;z-index:1}
 .sdiv{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .sdiv::after{content:'';flex:1;height:1px;background:var(--bdr)}
 .sdiv-badge{font-family:'Barlow',sans-serif;font-size:9px;font-weight:400;letter-spacing:0.1em;color:var(--muted);background:var(--surf2);border:1px solid var(--bdr);border-radius:50px;padding:2px 10px}
@@ -54,10 +73,10 @@ video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
 .ps-txt{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.45)}
 .ps-idle-icon{width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:4px}
 .ps-idle-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.05em;color:rgba(255,255,255,0.8)}
-.ps-idle-sub{font-size:12px;color:rgba(255,255,255,0.35);letter-spacing:0.05em}
+.ps-idle-sub{font-size:12px;color:rgba(255,255,255,0.35);letter-spacing:0.04em}
 .ps-err-icon{font-size:32px}
 .ps-err-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.05em;color:#fff}
-.ps-err-msg{font-size:12px;color:rgba(255,255,255,0.45);text-align:center;max-width:280px;line-height:1.7}
+.ps-err-msg{font-size:12px;color:rgba(255,255,255,0.45);text-align:center;max-width:280px;line-height:1.7;white-space:pre-line}
 .ps-retry{background:var(--acc);border:none;border-radius:7px;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.1em;padding:10px 28px;cursor:pointer;transition:all 0.15s;margin-top:2px}
 .ps-retry:hover{opacity:0.85;transform:translateY(-1px)}
 
@@ -66,7 +85,7 @@ video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
 .video-wrap.show-ctrl .ctrl-wrap,
 .video-wrap.paused .ctrl-wrap{opacity:1;pointer-events:auto}
 
-/* ── DVR Progress Bar ── */
+/* DVR Progress */
 .prog-area{margin-bottom:8px;padding:6px 0;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
 .prog-track{height:4px;background:rgba(255,255,255,0.18);border-radius:3px;position:relative;transition:height 0.15s}
 .prog-area:hover .prog-track{height:6px}
@@ -80,90 +99,90 @@ video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
 
 /* ctrl bar */
 .ctrl-bar{display:flex;align-items:center;gap:4px}
-
 .live-edge-btn{display:flex;align-items:center;gap:5px;flex-shrink:0;background:rgba(212,43,43,0.18);border:1px solid rgba(212,43,43,0.4);border-radius:6px;padding:5px 11px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:0.1em;color:rgba(255,100,100,0.95);transition:all 0.15s;-webkit-tap-highlight-color:transparent}
 .live-edge-btn:hover{background:rgba(212,43,43,0.3);color:#fff;border-color:rgba(212,43,43,0.7)}
 .live-edge-btn.at-live{background:var(--acc2);border-color:var(--acc2);color:#fff}
 .live-edge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.4s ease-in-out infinite}
-
 .cbtn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.75);padding:6px;border-radius:7px;display:flex;align-items:center;transition:all 0.15s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
 .cbtn:hover{background:rgba(255,255,255,0.1);color:#fff}
 
-/* ── MODERN VOLUME SLIDER ── */
+/* Volume */
 .vol-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
-
-.vol-sl{
-  -webkit-appearance:none;
-  appearance:none;
-  width:80px;
-  height:22px; /* tall tap target */
-  background:transparent;
-  outline:none;
-  cursor:pointer;
-  padding:0;
-  margin:0;
-}
-/* Chrome/Safari track */
-.vol-sl::-webkit-slider-runnable-track{
-  height:5px;
-  border-radius:3px;
-  background:rgba(255,255,255,0.22);
-}
-/* Chrome/Safari thumb */
-.vol-sl::-webkit-slider-thumb{
-  -webkit-appearance:none;
-  width:16px;
-  height:16px;
-  border-radius:50%;
-  background:#fff;
-  margin-top:-5.5px; /* (5px track - 16px thumb) / 2 */
-  box-shadow:0 1px 5px rgba(0,0,0,0.5);
-  transition:transform 0.12s, box-shadow 0.12s;
-}
+.vol-sl{-webkit-appearance:none;appearance:none;width:80px;height:22px;background:transparent;outline:none;cursor:pointer;padding:0;margin:0}
+.vol-sl::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:rgba(255,255,255,0.22)}
+.vol-sl::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;margin-top:-5.5px;box-shadow:0 1px 5px rgba(0,0,0,0.5);transition:transform 0.12s,box-shadow 0.12s}
 .vol-sl:hover::-webkit-slider-thumb{transform:scale(1.3);box-shadow:0 2px 8px rgba(0,0,0,0.6)}
 .vol-sl:active::-webkit-slider-thumb{transform:scale(1.5)}
-
-/* Firefox track + thumb */
 .vol-sl::-moz-range-track{height:5px;border-radius:3px;background:rgba(255,255,255,0.22)}
 .vol-sl::-moz-range-progress{height:5px;border-radius:3px;background:rgba(255,255,255,0.7)}
 .vol-sl::-moz-range-thumb{width:16px;height:16px;border:none;border-radius:50%;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,0.5);transition:transform 0.12s}
 .vol-sl:hover::-moz-range-thumb{transform:scale(1.3)}
-
-/* Highlight played portion via inline gradient (set via JS) */
-.vol-sl.filled::-webkit-slider-runnable-track{
-  background:linear-gradient(to right,rgba(255,255,255,0.8) var(--vp,100%),rgba(255,255,255,0.22) var(--vp,100%));
-}
-
+.vol-sl.filled::-webkit-slider-runnable-track{background:linear-gradient(to right,rgba(255,255,255,0.8) var(--vp,100%),rgba(255,255,255,0.22) var(--vp,100%))}
 .c-spacer{flex:1;min-width:4px}
 
-/* quality */
+/* ══ QUALITY PANEL ══ */
 .qual-wrap{position:relative;display:inline-flex;flex-shrink:0}
 .qual-btn{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:0.08em;color:rgba(255,255,255,0.7);transition:all 0.15s;-webkit-tap-highlight-color:transparent}
 .qual-btn:hover{background:rgba(255,255,255,0.14);color:#fff;border-color:rgba(255,255,255,0.3)}
 .qual-btn.hd{color:rgba(100,180,255,0.9);border-color:rgba(100,180,255,0.35);background:rgba(100,180,255,0.1)}
 .qual-btn svg{width:11px;height:11px;flex-shrink:0}
-.qual-panel{position:absolute;bottom:calc(100% + 10px);right:0;background:var(--surf);border:1px solid var(--bdr);border-radius:12px;min-width:220px;overflow:hidden;z-index:60;box-shadow:0 -4px 24px rgba(0,0,0,0.15),0 8px 24px rgba(0,0,0,0.12);display:none;animation:fadeUp 0.15s ease}
+
+/*
+  Quality panel — on desktop it sits above the button (bottom:100%+10px, right:0).
+  On mobile (≤768px) it becomes position:fixed anchored to viewport bottom so it
+  never gets clipped by the player's overflow:hidden.
+*/
+.qual-panel{
+  position:absolute;
+  bottom:calc(100% + 10px);right:0;
+  background:var(--surf);border:1px solid var(--bdr);border-radius:12px;
+  min-width:230px;overflow:hidden;z-index:9999;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.18),0 8px 24px rgba(0,0,0,0.12);
+  display:none;animation:fadeUp 0.15s ease;
+}
 .qual-panel.open{display:block}
-.qual-panel-head{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:0.22em;color:var(--muted);padding:11px 14px 8px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+
+@media(max-width:768px){
+  .qual-panel{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    border-radius:16px 16px 0 0;
+    min-width:unset; width:100%;
+    max-height:75vh; overflow-y:auto;
+    box-shadow:0 -8px 32px rgba(0,0,0,0.22);
+    animation:slideUp 0.2s ease;
+  }
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+}
+
+.qual-panel-head{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:0.22em;color:var(--muted);padding:13px 16px 10px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
 .qual-panel-head span{font-family:'Barlow',sans-serif;font-size:9px;letter-spacing:0.06em}
-.qrow-auto{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--bdr);transition:background 0.12s}
-.qrow-auto:hover{background:var(--surf2)}
+/* drag handle for mobile sheet */
+.qual-panel-handle{display:none;width:36px;height:4px;border-radius:2px;background:var(--bdr2);margin:10px auto 0}
+@media(max-width:768px){.qual-panel-handle{display:block}}
+
+.qrow-auto{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--bdr);transition:background 0.12s}
+.qrow-auto:hover,.qrow-auto:active{background:var(--surf2)}
 .qrow-auto.sel{background:rgba(26,140,53,0.05)}
 .qrow-auto-left{display:flex;flex-direction:column;gap:2px}
-.qrow-auto-label{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:0.06em;color:var(--txt)}
+.qrow-auto-label{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:0.06em;color:var(--txt)}
 .qrow-auto.sel .qrow-auto-label{color:var(--acc)}
-.qrow-auto-sub{font-size:10px;color:var(--muted)}
-.qrow{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--bdr);transition:background 0.12s}
+.qrow-auto-sub{font-size:11px;color:var(--muted)}
+.qrow{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;border-bottom:1px solid var(--bdr);transition:background 0.12s}
 .qrow:last-child{border-bottom:none}
-.qrow:hover{background:var(--surf2)}
+.qrow:hover,.qrow:active{background:var(--surf2)}
 .qrow.sel{background:rgba(26,140,53,0.05)}
-.qrow-res{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.04em;color:var(--txt);min-width:52px}
+.qrow-res{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.04em;color:var(--txt);min-width:56px}
 .qrow.sel .qrow-res{color:var(--acc)}
-.qrow-fps{font-size:9px;letter-spacing:0.1em;color:var(--muted);background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:2px 6px;white-space:nowrap}
+.qrow-fps{font-size:10px;letter-spacing:0.1em;color:var(--muted);background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:3px 7px;white-space:nowrap}
 .qrow.sel .qrow-fps{color:var(--acc4);border-color:rgba(14,122,99,0.3);background:rgba(14,122,99,0.07)}
 .qrow-bw{font-size:10px;color:var(--muted);flex:1;text-align:right}
-.qrow-check{width:16px;height:16px;border-radius:50%;flex-shrink:0;background:var(--acc);display:flex;align-items:center;justify-content:center;visibility:hidden}
+.qrow-check{width:18px;height:18px;border-radius:50%;flex-shrink:0;background:var(--acc);display:flex;align-items:center;justify-content:center;visibility:hidden}
 .qrow.sel .qrow-check,.qrow-auto.sel .qrow-check{visibility:visible}
+
+/* mobile quality overlay backdrop */
+.qual-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:9998}
+.qual-backdrop.show{display:block}
 
 /* infobar */
 .player-infobar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--bdr);background:var(--surf2)}
@@ -206,7 +225,8 @@ video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
 .ch-row.active .now-playing-strip{display:flex}
 .now-playing-dot{width:3px;height:3px;border-radius:50%;background:var(--acc);animation:pulse 1.6s ease-in-out infinite}
 
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--txt);color:var(--bg);border-radius:50px;padding:10px 20px;font-size:12px;font-weight:400;letter-spacing:0.06em;z-index:200;pointer-events:none;opacity:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.15)}
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--txt);color:var(--bg);border-radius:50px;padding:10px 20px;font-size:12px;font-weight:400;letter-spacing:0.06em;z-index:10000;pointer-events:none;opacity:0;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.15)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ══ RESPONSIVE ══ */
@@ -240,20 +260,42 @@ video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
 </head>
 <body>
 
+<!-- ══ TOAST — in DOM first, before any script runs ══ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ Quality panel mobile backdrop ══ -->
+<div class="qual-backdrop" id="qual-backdrop" onclick="closeQualPanel()"></div>
+
+<!-- ══ HEADER ══ -->
 <header>
   <div class="header-inner">
     <div class="eyebrow-wrap">
       <div class="eyebrow">Live Streaming</div>
-      <div class="brand">PRISM<span>TV</span></div>
+      <!-- FIX: renamed from PRISM TV -->
+      <div class="brand">Jinx <span>Kayo</span></div>
     </div>
     <div class="h-spacer"></div>
     <div class="live-pill"><span class="live-dot"></span>ON AIR</div>
   </div>
 </header>
 
+<!-- ══ AUS VPN NOTICE ══ -->
+<div class="aus-notice" id="aus-notice">
+  <div class="aus-notice-inner">
+    <span class="aus-icon">🇦🇺</span>
+    <div>
+      <strong>Australia VPN Required</strong> — All streams are geo-locked to Australia.
+      If you're outside Australia, connect to an <strong>Australian server</strong> first
+      (e.g. NordVPN, ExpressVPN, Mullvad → select <em>Australia</em>) before loading a channel.
+    </div>
+    <button class="aus-close" onclick="document.getElementById('aus-notice').style.display='none'" title="Dismiss">✕</button>
+  </div>
+</div>
+
 <div class="wrap">
   <div class="live-layout">
 
+    <!-- ══ PLAYER ══ -->
     <div class="player-section">
       <div class="sdiv">Now Playing <span class="sdiv-badge" id="now-badge">DASH · ClearKey DRM</span></div>
       <div class="player-card">
@@ -261,22 +303,23 @@ video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
           <video id="vid" playsinline></video>
           <div class="vg-bot"></div>
 
+          <!-- State overlay -->
           <div class="ps-overlay" id="pso">
             <div class="ps-idle-icon">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)"><path d="M8 5v14l11-7z"/></svg>
             </div>
             <div class="ps-idle-title">Select a Channel</div>
-            <div class="ps-idle-sub">Choose from the list →</div>
+            <!-- FIX: removed "→" arrow -->
+            <div class="ps-idle-sub">Choose a channel to begin</div>
           </div>
 
+          <!-- Controls -->
           <div class="ctrl-wrap" id="ctrl-wrap">
-
-            <!-- DVR / Live progress bar -->
             <div class="prog-area" id="prog-area">
               <div class="prog-track" id="prog-track">
-                <div class="prog-buf"    id="prog-buf"    style="width:0%"></div>
-                <div class="prog-played" id="prog-played" style="width:100%"></div>
-                <div class="prog-thumb"  id="prog-thumb"  style="left:100%"></div>
+                <div class="prog-buf"     id="prog-buf"    style="width:0%"></div>
+                <div class="prog-played"  id="prog-played" style="width:100%"></div>
+                <div class="prog-thumb"   id="prog-thumb"  style="left:100%"></div>
                 <div class="prog-live-pip"></div>
               </div>
               <div class="prog-times">
@@ -289,28 +332,32 @@ video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
               <button class="live-edge-btn at-live" id="live-edge-btn" onclick="goToLiveEdge()">
                 <span class="live-edge-dot"></span>LIVE
               </button>
-
               <button class="cbtn" onclick="togglePlay()">
                 <svg id="play-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
               </button>
-
               <div class="vol-wrap">
                 <button class="cbtn" onclick="toggleMute()">
-                  <svg id="mute-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                  <svg id="mute-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                  </svg>
                 </button>
                 <input class="vol-sl filled" id="vol" type="range" min="0" max="100" step="1" value="100"
                        oninput="setVol(this.value)" style="--vp:100%">
               </div>
-
               <div class="c-spacer"></div>
 
+              <!-- Quality picker -->
               <div class="qual-wrap" id="qual-wrap">
                 <button class="qual-btn" id="qual-btn" onclick="toggleQualPanel(event)">
                   <span id="qual-label">AUTO</span>
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
                 </button>
+                <!-- Panel is in #qual-wrap on desktop; JS moves it to body on mobile -->
                 <div class="qual-panel" id="qual-panel">
-                  <div class="qual-panel-head">Quality<span id="qual-head-badge" style="color:var(--acc)">AUTO</span></div>
+                  <div class="qual-panel-handle"></div>
+                  <div class="qual-panel-head">
+                    Quality <span id="qual-head-badge" style="color:var(--acc)">AUTO</span>
+                  </div>
                   <div id="qual-rows"></div>
                 </div>
               </div>
@@ -318,7 +365,6 @@ video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
               <button class="cbtn" id="pip-btn" onclick="togglePiP()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-8v6h8V7zm2-4H3C1.9 3 1 3.9 1 5v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
               </button>
-
               <button class="cbtn" onclick="toggleFS()">
                 <svg id="fs-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
               </button>
@@ -337,89 +383,78 @@ video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
       </div>
     </div>
 
+    <!-- ══ CHANNELS ══ -->
     <div class="channels-section">
       <div class="ch-list-head">
         <span class="ch-list-title">Channels</span>
-        <!-- FIX 1: count badge is set dynamically from CHANNELS.length -->
         <span class="ch-list-count" id="ch-count">—</span>
       </div>
       <div class="ch-list" id="ch-list"></div>
     </div>
 
     <div class="sdiv-row">
-      <div class="sdiv" style="margin-bottom:0">Live TV <span class="sdiv-badge" id="footer-badge">DASH · Shaka Player</span></div>
+      <div class="sdiv" style="margin-bottom:0">
+        Live TV <span class="sdiv-badge" id="footer-badge">DASH · Shaka Player</span>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
-
 <script>
 // ════════════════════════════════════════════════
-//  CHANNEL CONFIG — add/remove freely, UI auto-updates
+//  TOAST — defined FIRST (hoisted) so it never
+//  throws "toast is not a function" from any
+//  error handler that runs during stream loading
+// ════════════════════════════════════════════════
+let _toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+// ════════════════════════════════════════════════
+//  CHANNEL CONFIG
 // ════════════════════════════════════════════════
 const CHANNELS = [
-  { 
-    id: 1, name: 'Fox Cricket 501', tag: 'Cricket · Live', emoji: '🏏', bg: '#d1fae5',
-    manifest: 'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/c1566607e84d4dd0bc7e53bc26943d14/index.mpd',
-    keys: { 'a2ba14ee5ef4440d8e56a8bb5403117d': 'b77a334fd7aff9c9960ca7785a20ea66' } 
-  },
-  { 
-    id: 2, name: 'Fox League 502', tag: 'Rugby · Live', emoji: '🏉', bg: '#e0e7ff',
-    manifest: 'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/1b1fd634090f495d9601183d3e42d35f/index.mpd',
-    keys: { '25448c35bd234a1c904c2c7d1b0365c5': '7a21d94f116a954134267e5276d2b9a1' } 
-  },
-  { 
-    id: 3, name: 'Fox Sports 503', tag: 'Sports · Live', emoji: '🏅', bg: '#fef3c7',
-    manifest: 'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/b548339e24424090b2b2f2b85dfbd6cd/index.mpd',
-    keys: { 'e73deecd50e5478b99c951ef7ede921c': '7aa6e26d6ef76602bbdb461f0c70fc7f' } 
-  },
-  { 
-    id: 4, name: 'Fox Footy 504', tag: 'AFL · Live', emoji: '🏈', bg: '#fce7f3',
-    manifest: 'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/25061f77ab8c49029d1fa61bf00a92da/index.mpd',
-    keys: { '51e2fd2deff941a1b0f2272851f09333': '6254a5e0dc82e3f929b5a12263694559' } 
-  },
-  { 
-    id: 5, name: 'Fox Sports 505', tag: 'Sports · Live', emoji: '🏐', bg: '#dcfce7',
-    manifest: 'https://fxtlgrp-live1-761f422bb93edb7b.akamaized.net/out/v1/8a2fd3b40a8a47dabae348940eeb4566/index.mpd',
-    keys: { '14b1d85c433147469bd0cece7539d53d': '15d1b4437c7007542c2ed36bf6278cfd' } 
-  },
-  { 
-    id: 6, name: 'Fox Sports 506', tag: 'Sports · Live', emoji: '🏄', bg: '#ede9fe',
-    manifest: 'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/8f734b06f2164c1c9db642b44143e68e/index.mpd',
-    keys: { 'f0a83834b29d4affa5f53637ff673219': '44d94245b6255a3fb440bb0dc0497d45' } 
-  },
-  { 
-    id: 7, name: 'Fox Sports 507', tag: 'Sports More+ · Live', emoji: '➕', bg: '#fff1f2',
-    manifest: 'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/58b864af439d4901867d3105b708aa3c/index.mpd',
-    keys: { '977f2ff16e4449d1bdb24533e441691b': '0a388a4115affcfad6eb5ff74c00c4c3' } 
-  },
-  { 
-    id: 8, name: 'ESPN', tag: 'US Sports · Live', emoji: '🏀', bg: '#fff7ed',
-    manifest: 'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/adbaa04bfe5441199a037b7a78e6e62a/index.mpd',
-    keys: { '4fd27d05c1bd43e88496c9c89770faaf': '1b53ff84f9fefe4266920ec38376b9c1' } 
-  },
-  { 
-    id: 9, name: 'ESPN 2', tag: 'US Sports · Live', emoji: '⚾', bg: '#f0fdf4',
-    manifest: 'https://live1-814bffb9b389f652-cf.foxtelgroupcdn.net.au/out/v1/4a34a24349314cc3a1e84ee31bf3d224/index.mpd',
-    keys: { 'ad04e6d2bdb54dc2a35237ab66e0f29e': '78d37cc16c351190ed202758adf417f3' } 
-  },
-  { 
-    id: 10, name: 'Fox Sports 4K', tag: 'Sports · 4K', emoji: '📺', bg: '#fef08a',
-    manifest: 'https://live1-814bffb9b389f652-cf.foxtelgroupcdn.net.au/out/v1/86966d5956d944f2b1e5b7dfa405353a/index.mpd',
-    keys: { 
-      'f1a5816f871e4817b41241b6017faadf': '0ab300bf80017380c00af6c750487be2',
-      '94bf80604e884243a689fd8c546b7c32': '38ba8fb5656ca2076778092615ab5f82'
-    } 
-  },
-  { 
-    id: 11, name: 'Fox F1 4K', tag: 'Motorsport · 4K', emoji: '🏎️', bg: '#fecdd3',
-    manifest: 'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/4bbc6fe6e52c4b40a33ccc7b338652e5/index.mpd',
-    keys: { 
-      '4a49e721dba048be8bebbab4f0410898': '709561f239d6700b7cd355358aa8e393',
-      '0a2e245949904599b668af49f29a4138': '5c69eb0b5ac27c4f9c07aa2640ef6adc'
-    } 
-  }
+  { id:1,  name:'Fox Cricket 501',  tag:'Cricket · Live',      emoji:'🏏', bg:'#d1fae5',
+    manifest:'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/c1566607e84d4dd0bc7e53bc26943d14/index.mpd',
+    keys:{'a2ba14ee5ef4440d8e56a8bb5403117d':'b77a334fd7aff9c9960ca7785a20ea66'} },
+  { id:2,  name:'Fox League 502',   tag:'Rugby · Live',         emoji:'🏉', bg:'#e0e7ff',
+    manifest:'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/1b1fd634090f495d9601183d3e42d35f/index.mpd',
+    keys:{'25448c35bd234a1c904c2c7d1b0365c5':'7a21d94f116a954134267e5276d2b9a1'} },
+  { id:3,  name:'Fox Sports 503',   tag:'Sports · Live',        emoji:'🏅', bg:'#fef3c7',
+    manifest:'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/b548339e24424090b2b2f2b85dfbd6cd/index.mpd',
+    keys:{'e73deecd50e5478b99c951ef7ede921c':'7aa6e26d6ef76602bbdb461f0c70fc7f'} },
+  { id:4,  name:'Fox Footy 504',    tag:'AFL · Live',            emoji:'🏈', bg:'#fce7f3',
+    manifest:'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/25061f77ab8c49029d1fa61bf00a92da/index.mpd',
+    keys:{'51e2fd2deff941a1b0f2272851f09333':'6254a5e0dc82e3f929b5a12263694559'} },
+  { id:5,  name:'Fox Sports 505',   tag:'Sports · Live',        emoji:'🏐', bg:'#dcfce7',
+    manifest:'https://fxtlgrp-live1-761f422bb93edb7b.akamaized.net/out/v1/8a2fd3b40a8a47dabae348940eeb4566/index.mpd',
+    keys:{'14b1d85c433147469bd0cece7539d53d':'15d1b4437c7007542c2ed36bf6278cfd'} },
+  { id:6,  name:'Fox Sports 506',   tag:'Sports · Live',        emoji:'🏄', bg:'#ede9fe',
+    manifest:'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/8f734b06f2164c1c9db642b44143e68e/index.mpd',
+    keys:{'f0a83834b29d4affa5f53637ff673219':'44d94245b6255a3fb440bb0dc0497d45'} },
+  { id:7,  name:'Fox Sports 507',   tag:'Sports More+ · Live',  emoji:'➕', bg:'#fff1f2',
+    manifest:'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/58b864af439d4901867d3105b708aa3c/index.mpd',
+    keys:{'977f2ff16e4449d1bdb24533e441691b':'0a388a4115affcfad6eb5ff74c00c4c3'} },
+  { id:8,  name:'ESPN',             tag:'US Sports · Live',     emoji:'🏀', bg:'#fff7ed',
+    manifest:'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/adbaa04bfe5441199a037b7a78e6e62a/index.mpd',
+    keys:{'4fd27d05c1bd43e88496c9c89770faaf':'1b53ff84f9fefe4266920ec38376b9c1'} },
+  { id:9,  name:'ESPN 2',           tag:'US Sports · Live',     emoji:'⚾', bg:'#f0fdf4',
+    manifest:'https://live1-814bffb9b389f652-cf.foxtelgroupcdn.net.au/out/v1/4a34a24349314cc3a1e84ee31bf3d224/index.mpd',
+    keys:{'ad04e6d2bdb54dc2a35237ab66e0f29e':'78d37cc16c351190ed202758adf417f3'} },
+  { id:10, name:'Fox Sports 4K',    tag:'Sports · 4K',          emoji:'📺', bg:'#fef08a',
+    manifest:'https://live1-814bffb9b389f652-cf.foxtelgroupcdn.net.au/out/v1/86966d5956d944f2b1e5b7dfa405353a/index.mpd',
+    keys:{'f1a5816f871e4817b41241b6017faadf':'0ab300bf80017380c00af6c750487be2',
+          '94bf80604e884243a689fd8c546b7c32':'38ba8fb5656ca2076778092615ab5f82'} },
+  { id:11, name:'Fox F1 4K',        tag:'Motorsport · 4K',      emoji:'🏎️', bg:'#fecdd3',
+    manifest:'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/4bbc6fe6e52c4b40a33ccc7b338652e5/index.mpd',
+    keys:{'4a49e721dba048be8bebbab4f0410898':'709561f239d6700b7cd355358aa8e393',
+          '0a2e245949904599b668af49f29a4138':'5c69eb0b5ac27c4f9c07aa2640ef6adc'} }
 ];
 
 // ════════════════════════════════════════════════
@@ -435,20 +470,16 @@ const vid = document.getElementById('vid');
 const vw  = document.getElementById('vw');
 
 // ════════════════════════════════════════════════
-//  FIX 1: Dynamic channel count — reads CHANNELS.length
+//  BUILD CHANNEL LIST (dynamic count)
 // ════════════════════════════════════════════════
 function buildList() {
   const list = document.getElementById('ch-list');
   list.innerHTML = '';
-
-  // Count badge auto-updates whenever CHANNELS array changes
-  document.getElementById('ch-count').textContent    = CHANNELS.length + ' LIVE';
+  document.getElementById('ch-count').textContent     = CHANNELS.length + ' LIVE';
   document.getElementById('footer-badge').textContent = 'DASH · ClearKey DRM · ' + CHANNELS.length + ' Channels';
-
   CHANNELS.forEach(ch => {
     const el = document.createElement('div');
-    el.className = 'ch-row';
-    el.id = 'row-' + ch.id;
+    el.className = 'ch-row'; el.id = 'row-' + ch.id;
     el.innerHTML = `
       <div class="ch-row-active-bar"></div>
       <div class="ch-row-art" style="background:${ch.bg}">${ch.emoji}</div>
@@ -470,7 +501,7 @@ function buildList() {
 
 function markActive(ch) {
   document.querySelectorAll('.ch-row').forEach(e => e.classList.remove('active'));
-  document.querySelectorAll('[id^="np-"]').forEach(e => e.style.display='none');
+  document.querySelectorAll('[id^="np-"]').forEach(e => e.style.display = 'none');
   const row = document.getElementById('row-' + ch.id);
   if (row) { row.classList.add('active'); row.scrollIntoView({behavior:'smooth',block:'nearest'}); }
   const np = document.getElementById('np-' + ch.id);
@@ -479,13 +510,13 @@ function markActive(ch) {
 }
 
 // ════════════════════════════════════════════════
-//  LOAD CHANNEL
+//  LOAD CHANNEL — tuned for fastest startup
 // ════════════════════════════════════════════════
 async function loadChannel(ch) {
   if (activeCh && activeCh.id === ch.id) return;
   activeCh = ch; qualIsAuto = true; qualLockId = null;
   markActive(ch);
-  showPSO('loading', 'Loading ' + ch.name + '…');
+  showPSO('loading', 'Connecting…');
   setQualBtn('AUTO', false);
   clearQualRows();
   document.getElementById('ib-qual').textContent = '—';
@@ -498,17 +529,49 @@ async function loadChannel(ch) {
     if (!shaka.Player.isBrowserSupported()) { showPSO('error','Browser not supported'); return; }
 
     player = new shaka.Player(vid);
-    player.addEventListener('error',    e  => showPSO('error','Stream error '+e.detail.code+'\n'+(e.detail.message||'')));
-    player.addEventListener('buffering',e  => { if(e.buffering) showPSO('loading','Buffering…'); else showPSO('hide'); });
-    player.addEventListener('adaptation',() => { if(qualIsAuto) refreshQualDisplay(); rebuildQualRows(); });
 
-    const cfg = {
-      abr:{enabled:true},
-      streaming:{bufferingGoal:12,rebufferingGoal:2,bufferBehind:30,
-        retryParameters:{maxAttempts:6,baseDelay:1000,backoffFactor:2,fuzzFactor:0.5}}
-    };
-    if (ch.keys && Object.keys(ch.keys).length) cfg.drm = {clearKeys:ch.keys};
-    player.configure(cfg);
+    player.addEventListener('error', ev => {
+      console.error('Shaka error', ev.detail);
+      // toast is always defined — no more "toast is not a function"
+      showPSO('error', 'Stream error ' + ev.detail.code + '\n' + (ev.detail.message || 'Check VPN or network.'));
+    });
+    player.addEventListener('buffering', ev => {
+      if (ev.buffering) showPSO('loading','Buffering…');
+      else              showPSO('hide');
+    });
+    player.addEventListener('adaptation', () => {
+      if (qualIsAuto) refreshQualDisplay();
+      rebuildQualRows();
+    });
+
+    // ── Fast-start config: small buffers, quick retry, low ABR start ──
+    player.configure({
+      abr: {
+        enabled: true,
+        defaultBandwidthEstimate: 500000, // start ABR at 500kbps then ramp up
+        bandwidthUpgradeTarget:   0.85,
+        bandwidthDowngradeTarget: 0.95
+      },
+      streaming: {
+        bufferingGoal:    6,   // only need 6s before playback starts
+        rebufferingGoal:  1,   // resume after 1s re-buffer
+        bufferBehind:     30,
+        stallEnabled:     true,
+        stallThreshold:   1,
+        stallSkip:        0.1,
+        jumpLargeGaps:    true,
+        retryParameters: {
+          maxAttempts:   8,
+          baseDelay:     500,
+          backoffFactor: 1.5,
+          fuzzFactor:    0.3
+        }
+      },
+      manifest: {
+        retryParameters: { maxAttempts:6, baseDelay:500, backoffFactor:1.5 }
+      },
+      ...(ch.keys && Object.keys(ch.keys).length ? {drm:{clearKeys:ch.keys}} : {})
+    });
 
     await player.load(ch.manifest);
     vid.play();
@@ -516,54 +579,44 @@ async function loadChannel(ch) {
     rebuildQualRows();
     refreshQualDisplay();
     toast('▶  ' + ch.name);
+
   } catch(e) {
-    console.error(e);
-    showPSO('error','Could not load stream.\n'+(e.message||'Unknown error'));
+    console.error('Load error', e);
+    showPSO('error', 'Could not load stream.\n' + (e.message || 'Check VPN / network.'));
   }
 }
 
 // ════════════════════════════════════════════════
-//  FIX 2: DVR / Live seekable progress bar
+//  DVR PROGRESS BAR
 // ════════════════════════════════════════════════
 function fmtSec(s) {
-  if (!isFinite(s)||s<0) return '—';
+  if (!isFinite(s) || s < 0) return '—';
   const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), ss=Math.floor(s%60);
   return h>0 ? `${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`
-              : `${m}:${String(ss).padStart(2,'0')}`;
+             : `${m}:${String(ss).padStart(2,'0')}`;
 }
-
 function resetProg() {
   document.getElementById('prog-played').style.width = '100%';
   document.getElementById('prog-thumb').style.left   = '100%';
   document.getElementById('prog-buf').style.width    = '0%';
   document.getElementById('prog-cur').textContent    = 'LIVE';
-  document.getElementById('prog-end').textContent    = '—';
+  document.getElementById('prog-end').textContent    = '–';
 }
-
 function updateProg() {
   if (!player || progDragging) return;
   try {
-    const range   = player.seekRange();
-    const span    = range.end - range.start;
+    const range = player.seekRange(), span = range.end - range.start;
     if (span <= 0) return;
-
-    const cur = vid.currentTime;
-    const pct = Math.max(0, Math.min(1, (cur - range.start) / span));
-
+    const cur = vid.currentTime, pct = Math.max(0,Math.min(1,(cur-range.start)/span));
     document.getElementById('prog-played').style.width = (pct*100)+'%';
     document.getElementById('prog-thumb').style.left   = (pct*100)+'%';
-
-    // Buffer
     if (vid.buffered.length) {
       const bEnd = vid.buffered.end(vid.buffered.length-1);
-      const bPct = Math.min(1,(bEnd-range.start)/span);
-      document.getElementById('prog-buf').style.width = (bPct*100)+'%';
+      document.getElementById('prog-buf').style.width = (Math.min(1,(bEnd-range.start)/span)*100)+'%';
     }
-
-    // Labels — show DVR time only when window > 90 seconds
     const behind = range.end - cur;
     if (span > 90) {
-      document.getElementById('prog-cur').textContent = fmtSec(cur - range.start);
+      document.getElementById('prog-cur').textContent = fmtSec(cur-range.start);
       document.getElementById('prog-end').textContent = fmtSec(span);
     } else {
       document.getElementById('prog-cur').textContent = behind < 8 ? 'LIVE' : '−'+fmtSec(behind);
@@ -572,33 +625,25 @@ function updateProg() {
     setLiveBtn(behind < 8);
   } catch(e) {}
 }
-
-// Seek on click/drag
 const progArea = document.getElementById('prog-area');
-
 function seekAt(e) {
   if (!player) return;
   try {
-    const rect   = document.getElementById('prog-track').getBoundingClientRect();
-    const cx     = e.touches ? e.touches[0].clientX : e.clientX;
-    const pct    = Math.max(0, Math.min(1, (cx-rect.left)/rect.width));
-    const range  = player.seekRange();
+    const rect  = document.getElementById('prog-track').getBoundingClientRect();
+    const cx    = e.touches ? e.touches[0].clientX : e.clientX;
+    const pct   = Math.max(0,Math.min(1,(cx-rect.left)/rect.width));
+    const range = player.seekRange();
     vid.currentTime = range.start + pct*(range.end-range.start);
   } catch(e) {}
 }
-
 progArea.addEventListener('mousedown', e => {
-  progDragging = true;
-  seekAt(e);
-  const mv = e2 => seekAt(e2);
-  const up = ()  => { progDragging=false; document.removeEventListener('mousemove',mv); document.removeEventListener('mouseup',up); };
-  document.addEventListener('mousemove', mv);
-  document.addEventListener('mouseup',   up);
+  progDragging=true; seekAt(e);
+  const mv=e2=>seekAt(e2), up=()=>{progDragging=false;document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up)};
+  document.addEventListener('mousemove',mv); document.addEventListener('mouseup',up);
 });
-progArea.addEventListener('touchstart', e => { e.stopPropagation(); progDragging=true; seekAt(e); }, {passive:true});
-progArea.addEventListener('touchmove',  e => { e.stopPropagation(); seekAt(e); },                   {passive:true});
-progArea.addEventListener('touchend',   ()=> { progDragging=false; },                               {passive:true});
-
+progArea.addEventListener('touchstart', e=>{e.stopPropagation();progDragging=true;seekAt(e);},{passive:true});
+progArea.addEventListener('touchmove',  e=>{e.stopPropagation();seekAt(e);},{passive:true});
+progArea.addEventListener('touchend',   ()=>{progDragging=false;},{passive:true});
 vid.addEventListener('timeupdate', updateProg);
 vid.addEventListener('progress',   updateProg);
 
@@ -607,95 +652,92 @@ vid.addEventListener('progress',   updateProg);
 // ════════════════════════════════════════════════
 function goToLiveEdge() {
   if (!player) return;
-  try {
-    const end = player.seekRange().end;
-    if (isFinite(end)) vid.currentTime = end;
-    if (vid.paused) vid.play();
-    setLiveBtn(true);
-    toast('⬤ Back to Live');
-  } catch(e) {}
+  try { const end=player.seekRange().end; if(isFinite(end)) vid.currentTime=end; if(vid.paused) vid.play(); setLiveBtn(true); toast('⬤ Back to Live'); } catch(e) {}
 }
-function setLiveBtn(live) {
-  document.getElementById('live-edge-btn').classList.toggle('at-live', live);
-}
+function setLiveBtn(live) { document.getElementById('live-edge-btn').classList.toggle('at-live',live); }
 
 // ════════════════════════════════════════════════
-//  QUALITY PICKER — FIX 4: no-pause on switch
+//  QUALITY PICKER
+//  Mobile: panel slides up from bottom as a sheet
+//  Desktop: panel floats above the button
 // ════════════════════════════════════════════════
-function fmtBw(b) {
-  if(!b) return '';
-  return b>=1e6 ? (b/1e6).toFixed(1)+' Mbps' : Math.round(b/1e3)+' kbps';
-}
+function isMobile() { return window.innerWidth <= 768; }
+
+function fmtBw(b) { return !b?'':(b>=1e6?(b/1e6).toFixed(1)+' Mbps':Math.round(b/1e3)+' kbps'); }
 function getUniqueTracks() {
   if (!player) return [];
-  const map = new Map();
-  player.getVariantTracks().forEach(t => {
-    const k = (t.height||0)+'_'+(t.frameRate?Math.round(t.frameRate):0);
-    if (!map.has(k)||t.bandwidth>map.get(k).bandwidth) map.set(k,t);
+  const map=new Map();
+  player.getVariantTracks().forEach(t=>{
+    const k=(t.height||0)+'_'+(t.frameRate?Math.round(t.frameRate):0);
+    if(!map.has(k)||t.bandwidth>map.get(k).bandwidth) map.set(k,t);
   });
-  return [...map.values()].sort((a,b)=>{
-    const h=(b.height||0)-(a.height||0);
-    return h!==0?h:(Math.round(b.frameRate)||0)-(Math.round(a.frameRate)||0);
-  });
+  return [...map.values()].sort((a,b)=>{const h=(b.height||0)-(a.height||0);return h!==0?h:(Math.round(b.frameRate)||0)-(Math.round(a.frameRate)||0);});
 }
 function getActiveTrack() { return player?player.getVariantTracks().find(t=>t.active)||null:null; }
-function setQualBtn(lbl,hd) {
-  document.getElementById('qual-label').textContent=lbl;
-  document.getElementById('qual-btn').className='qual-btn'+(hd?' hd':'');
-}
-function clearQualRows(){document.getElementById('qual-rows').innerHTML='';}
-function refreshQualDisplay(){
+function setQualBtn(lbl,hd) { document.getElementById('qual-label').textContent=lbl; document.getElementById('qual-btn').className='qual-btn'+(hd?' hd':''); }
+function clearQualRows() { document.getElementById('qual-rows').innerHTML=''; }
+function refreshQualDisplay() {
   const t=getActiveTrack(); if(!t) return;
-  const fps=t.frameRate?Math.round(t.frameRate):null;
-  const res=t.height?t.height+'p':'SD';
-  const lbl=fps?res+' '+fps+'fps':res;
-  const hd=(t.height||0)>=720;
+  const fps=t.frameRate?Math.round(t.frameRate):null, res=t.height?t.height+'p':'SD';
+  const lbl=fps?res+' '+fps+'fps':res, hd=(t.height||0)>=720;
   setQualBtn(lbl,hd);
   document.getElementById('ib-qual').textContent=lbl;
   document.getElementById('ib-qual').className='infobar-qual'+(hd?' hd':'');
   document.getElementById('qual-head-badge').textContent=qualIsAuto?'AUTO':'MANUAL';
 }
-function rebuildQualRows(){
-  if(!player) return;
+function rebuildQualRows() {
+  if (!player) return;
   const unique=getUniqueTracks(), active=getActiveTrack();
-  const c=document.getElementById('qual-rows');
-  c.innerHTML='';
+  const c=document.getElementById('qual-rows'); c.innerHTML='';
   const ar=document.createElement('div');
   ar.className='qrow-auto'+(qualIsAuto?' sel':'');
   ar.innerHTML=`<div class="qrow-auto-left"><div class="qrow-auto-label">Auto</div><div class="qrow-auto-sub">Matches your connection speed</div></div>
     <div class="qrow-check"><svg width="9" height="9" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>`;
   ar.onclick=()=>selectAuto(); c.appendChild(ar);
   unique.forEach(t=>{
-    const fps=t.frameRate?Math.round(t.frameRate):null;
-    const res=(t.height||0)?t.height+'p':'SD';
-    const isSel=!qualIsAuto&&qualLockId===t.id;
-    const isCur=qualIsAuto&&active&&active.id===t.id;
-    const row=document.createElement('div');
-    row.className='qrow'+(isSel?' sel':'');
-    row.innerHTML=`<span class="qrow-res">${res}</span>
-      ${fps?`<span class="qrow-fps">${fps} fps</span>`:''}
-      ${isCur&&!isSel?`<span class="qrow-fps" style="color:var(--acc);border-color:rgba(26,140,53,.3);background:rgba(26,140,53,.07)">▶ now</span>`:''}
-      <span class="qrow-bw">${fmtBw(t.bandwidth)}</span>
-      <div class="qrow-check"><svg width="9" height="9" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>`;
+    const fps=t.frameRate?Math.round(t.frameRate):null, res=(t.height||0)?t.height+'p':'SD';
+    const isSel=!qualIsAuto&&qualLockId===t.id, isCur=qualIsAuto&&active&&active.id===t.id;
+    const row=document.createElement('div'); row.className='qrow'+(isSel?' sel':'');
+    row.innerHTML=`<span class="qrow-res">${res}</span>${fps?`<span class="qrow-fps">${fps} fps</span>`:''}${isCur&&!isSel?`<span class="qrow-fps" style="color:var(--acc);border-color:rgba(26,140,53,.3);background:rgba(26,140,53,.07)">▶ now</span>`:''}<span class="qrow-bw">${fmtBw(t.bandwidth)}</span><div class="qrow-check"><svg width="9" height="9" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>`;
     row.onclick=()=>selectTrack(t); c.appendChild(row);
   });
 }
-function selectAuto(){
+function toggleQualPanel(e) {
+  e.stopPropagation();
+  const p=document.getElementById('qual-panel');
+  if (p.classList.contains('open')) { closeQualPanel(); return; }
+  rebuildQualRows();
+
+  if (isMobile()) {
+    // Move panel to body so it's not clipped by overflow:hidden on video-wrap
+    if (p.parentElement !== document.body) document.body.appendChild(p);
+    document.getElementById('qual-backdrop').classList.add('show');
+  } else {
+    // Put it back inside qual-wrap for desktop positioning
+    const qw = document.getElementById('qual-wrap');
+    if (p.parentElement !== qw) qw.appendChild(p);
+  }
+  p.classList.add('open');
+}
+function closeQualPanel() {
+  document.getElementById('qual-panel').classList.remove('open');
+  document.getElementById('qual-backdrop').classList.remove('show');
+}
+document.addEventListener('click', e => { if (!e.target.closest('#qual-wrap') && !e.target.closest('#qual-panel')) closeQualPanel(); });
+
+function selectAuto() {
   if(!player) return;
   qualIsAuto=true; qualLockId=null;
   player.configure({abr:{enabled:true}});
-  rebuildQualRows(); refreshQualDisplay(); closeQualPanel();
-  toast('Quality: Auto');
+  rebuildQualRows(); refreshQualDisplay(); closeQualPanel(); toast('Quality: Auto');
 }
-function selectTrack(track){
+function selectTrack(track) {
   if(!player) return;
   const wasPlaying=!vid.paused;
   qualIsAuto=false; qualLockId=track.id;
   player.configure({abr:{enabled:false}});
-  // FIX 4: pass false → clearBuffer=false → no pause/seek required
-  player.selectVariantTrack(track, false);
-  // Safety: resume if browser stalls
-  if (wasPlaying) setTimeout(()=>{ if(vid.paused) vid.play().catch(()=>{}); }, 400);
+  player.selectVariantTrack(track,false); // false = no buffer clear = no pause
+  if(wasPlaying) setTimeout(()=>{if(vid.paused)vid.play().catch(()=>{});},400);
   const fps=track.frameRate?Math.round(track.frameRate):null;
   const lbl=(track.height?track.height+'p':'SD')+(fps?' '+fps+'fps':'');
   setQualBtn(lbl,(track.height||0)>=720);
@@ -704,24 +746,16 @@ function selectTrack(track){
   document.getElementById('qual-head-badge').textContent='MANUAL';
   rebuildQualRows(); closeQualPanel(); toast('Quality: '+lbl);
 }
-function toggleQualPanel(e){
-  e.stopPropagation();
-  const p=document.getElementById('qual-panel');
-  if(p.classList.contains('open')) closeQualPanel();
-  else{rebuildQualRows(); p.classList.add('open');}
-}
-function closeQualPanel(){document.getElementById('qual-panel').classList.remove('open');}
-document.addEventListener('click',e=>{if(!e.target.closest('#qual-wrap'))closeQualPanel();});
 
 // ════════════════════════════════════════════════
 //  PiP
 // ════════════════════════════════════════════════
-async function togglePiP(){
-  try{
+async function togglePiP() {
+  try {
     if(document.pictureInPictureElement) await document.exitPictureInPicture();
-    else if(document.pictureInPictureEnabled&&vid.readyState>=2){ await vid.requestPictureInPicture(); toast('⧉  Picture in Picture'); }
+    else if(document.pictureInPictureEnabled&&vid.readyState>=2){await vid.requestPictureInPicture();toast('⧉  Picture in Picture');}
     else toast('PiP not supported or no stream');
-  }catch(e){toast('PiP unavailable');}
+  } catch(e){toast('PiP unavailable');}
 }
 vid.addEventListener('enterpictureinpicture',()=>document.getElementById('pip-btn').style.color='rgba(26,180,80,0.9)');
 vid.addEventListener('leavepictureinpicture', ()=>document.getElementById('pip-btn').style.color='');
@@ -729,12 +763,12 @@ vid.addEventListener('leavepictureinpicture', ()=>document.getElementById('pip-b
 // ════════════════════════════════════════════════
 //  STATE OVERLAY
 // ════════════════════════════════════════════════
-function showPSO(type,msg){
+function showPSO(type,msg) {
   const el=document.getElementById('pso');
   if(type==='hide'){el.classList.add('gone');return;}
   el.classList.remove('gone');
   if(type==='loading') el.innerHTML=`<div class="ps-spinner"></div><div class="ps-txt">${msg||'Loading…'}</div>`;
-  else if(type==='error') el.innerHTML=`<div class="ps-err-icon">⚠️</div><div class="ps-err-title">Stream Unavailable</div><div class="ps-err-msg">${msg||''}</div><button class="ps-retry" onclick="retryChannel()">↺  Retry</button>`;
+  else if(type==='error') el.innerHTML=`<div class="ps-err-icon">⚠️</div><div class="ps-err-title">Stream Unavailable</div><div class="ps-err-msg">${msg||''}</div><button class="ps-retry" onclick="retryChannel()">↺ &nbsp;Retry</button>`;
 }
 function retryChannel(){if(activeCh){const c=activeCh;activeCh=null;loadChannel(c);}}
 
@@ -742,77 +776,47 @@ function retryChannel(){if(activeCh){const c=activeCh;activeCh=null;loadChannel(
 //  PLAYBACK
 // ════════════════════════════════════════════════
 function togglePlay(){if(vid.paused)vid.play();else vid.pause();}
-vid.addEventListener('play', ()=>{ document.getElementById('play-icon').innerHTML='<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'; vw.classList.remove('paused'); });
-vid.addEventListener('pause',()=>{ document.getElementById('play-icon').innerHTML='<path d="M8 5v14l11-7z"/>'; vw.classList.add('paused'); });
+vid.addEventListener('play', ()=>{document.getElementById('play-icon').innerHTML='<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';vw.classList.remove('paused');});
+vid.addEventListener('pause',()=>{document.getElementById('play-icon').innerHTML='<path d="M8 5v14l11-7z"/>';vw.classList.add('paused');});
 
-// FIX 3: Modern volume slider with filled-track CSS variable
 function setVol(v){
-  const pct=parseInt(v);
-  vid.volume=pct/100;
-  vid.muted=(pct===0);
-  const el=document.getElementById('vol');
-  el.style.setProperty('--vp', pct+'%');
-  syncMuteIcon();
+  const pct=parseInt(v); vid.volume=pct/100; vid.muted=(pct===0);
+  document.getElementById('vol').style.setProperty('--vp',pct+'%'); syncMuteIcon();
 }
 function toggleMute(){
   vid.muted=!vid.muted;
-  const el=document.getElementById('vol');
-  el.style.setProperty('--vp', vid.muted?'0%': Math.round(vid.volume*100)+'%');
-  syncMuteIcon();
+  document.getElementById('vol').style.setProperty('--vp',vid.muted?'0%':Math.round(vid.volume*100)+'%'); syncMuteIcon();
 }
 function syncMuteIcon(){
   document.getElementById('mute-icon').innerHTML=(vid.muted||vid.volume===0)
     ?'<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
     :'<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
 }
-
 function toggleFS(){
-  if(!document.fullscreenElement){
-    vw.requestFullscreen&&vw.requestFullscreen();
-    document.getElementById('fs-icon').innerHTML='<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>';
-  } else {
-    document.exitFullscreen&&document.exitFullscreen();
-  }
+  if(!document.fullscreenElement){vw.requestFullscreen&&vw.requestFullscreen();document.getElementById('fs-icon').innerHTML='<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>';}
+  else{document.exitFullscreen&&document.exitFullscreen();}
 }
-document.addEventListener('fullscreenchange',()=>{
-  if(!document.fullscreenElement) document.getElementById('fs-icon').innerHTML='<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>';
-});
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)document.getElementById('fs-icon').innerHTML='<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>';});
 
 // ════════════════════════════════════════════════
-//  FIX 5: Touch = toggle controls only, NOT play/pause
-//  Mouse hover = show controls, mouse leave = hide
+//  TOUCH / MOUSE — tap = toggle controls only
 // ════════════════════════════════════════════════
 let ctrlTimer;
-
-function scheduleHide(ms=3500){
-  clearTimeout(ctrlTimer);
-  ctrlTimer=setTimeout(()=>{ if(!vid.paused) vw.classList.remove('show-ctrl'); }, ms);
-}
-
-// Desktop mouse
-vw.addEventListener('mouseenter', ()=>{ vw.classList.add('show-ctrl'); scheduleHide(); });
-vw.addEventListener('mousemove',  ()=>{ vw.classList.add('show-ctrl'); scheduleHide(); });
-vw.addEventListener('mouseleave', ()=>{ scheduleHide(800); });
-
-// Mobile touch — toggle controls visibility only, NEVER pause
-vw.addEventListener('touchstart', e => {
-  // If the touch is on an interactive control, let it through normally
-  if (e.target.closest('.ctrl-wrap') || e.target.closest('#pso')) return;
-  // Otherwise just toggle controls
-  if (vw.classList.contains('show-ctrl')) {
-    clearTimeout(ctrlTimer);
-    vw.classList.remove('show-ctrl');
-  } else {
-    vw.classList.add('show-ctrl');
-    scheduleHide();
-  }
-  e.preventDefault(); // prevent ghost click that could hit play button
-}, { passive: false });
+function scheduleHide(ms=3500){ clearTimeout(ctrlTimer); ctrlTimer=setTimeout(()=>{if(!vid.paused)vw.classList.remove('show-ctrl');},ms); }
+vw.addEventListener('mouseenter',()=>{vw.classList.add('show-ctrl');scheduleHide();});
+vw.addEventListener('mousemove', ()=>{vw.classList.add('show-ctrl');scheduleHide();});
+vw.addEventListener('mouseleave',()=>{scheduleHide(800);});
+vw.addEventListener('touchstart',e=>{
+  if(e.target.closest('.ctrl-wrap')||e.target.closest('#pso')) return;
+  if(vw.classList.contains('show-ctrl')){clearTimeout(ctrlTimer);vw.classList.remove('show-ctrl');}
+  else{vw.classList.add('show-ctrl');scheduleHide();}
+  e.preventDefault();
+},{passive:false});
 
 // ════════════════════════════════════════════════
-//  KEYBOARD — scales to any CHANNELS.length
+//  KEYBOARD
 // ════════════════════════════════════════════════
-document.addEventListener('keydown', e=>{
+document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
   if(e.code==='Space')    {e.preventDefault();if(activeCh)togglePlay();}
   if(e.code==='KeyM')      toggleMute();
@@ -821,7 +825,6 @@ document.addEventListener('keydown', e=>{
   if(e.code==='KeyL')      goToLiveEdge();
   if(e.code==='ArrowUp')  {vid.volume=Math.min(1,vid.volume+0.1);const v=document.getElementById('vol');v.value=Math.round(vid.volume*100);setVol(v.value);toast('🔊 '+Math.round(vid.volume*100)+'%');}
   if(e.code==='ArrowDown'){vid.volume=Math.max(0,vid.volume-0.1);const v=document.getElementById('vol');v.value=Math.round(vid.volume*100);setVol(v.value);toast('🔉 '+Math.round(vid.volume*100)+'%');}
-  // Channel switch by number — works for any array length
   const n=parseInt(e.key);
   if(n>=1&&n<=CHANNELS.length) loadChannel(CHANNELS[n-1]);
 });
