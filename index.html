@@ -553,30 +553,67 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
 //  CHANNEL CONFIG  — replace manifest/keys per channel
 // ════════════════════════════════════════════════
 const CHANNELS = [
-  { id:1, name:'Cric Life 2', tag:'Sports · HD',   emoji:'🏏', bg:'#d1fae5',
-    manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
-  { id:2, name:'Channel 2',   tag:'Entertainment', emoji:'🎬', bg:'#fce7f3',
-    manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
-  { id:3, name:'Channel 3',   tag:'News · Live',   emoji:'📡', bg:'#fef3c7',
-    manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
-  { id:4, name:'Channel 4',   tag:'Sports · Live', emoji:'⚽', bg:'#dcfce7',
-    manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
-  { id:5, name:'Channel 5',   tag:'Movies · HD',   emoji:'🎥', bg:'#ede9fe',
-    manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
-  { id:6, name:'Channel 6',   tag:'Music · Live',  emoji:'🎵', bg:'#fff1f2',
-    manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
-  { id:7, name:'Channel 7',   tag:'Kids · HD',     emoji:'🧸', bg:'#fff7ed',
-    manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
-  { id:8, name:'Channel 8',   tag:'Documentary',   emoji:'🌍', bg:'#f0fdf4',
-    manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} }
+  { 
+    id: 1, name: 'Fox Cricket 501', tag: 'Cricket · Live', emoji: '🏏', bg: '#d1fae5',
+    manifest: 'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/c1566607e84d4dd0bc7e53bc26943d14/index.mpd',
+    keys: { 'a2ba14ee5ef4440d8e56a8bb5403117d': 'b77a334fd7aff9c9960ca7785a20ea66' } 
+  },
+  { 
+    id: 2, name: 'Fox League 502', tag: 'Rugby · Live', emoji: '🏉', bg: '#e0e7ff',
+    manifest: 'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/1b1fd634090f495d9601183d3e42d35f/index.mpd',
+    keys: { '25448c35bd234a1c904c2c7d1b0365c5': '7a21d94f116a954134267e5276d2b9a1' } 
+  },
+  { 
+    id: 3, name: 'Fox Sports 503', tag: 'Sports · Live', emoji: '🏅', bg: '#fef3c7',
+    manifest: 'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/b548339e24424090b2b2f2b85dfbd6cd/index.mpd',
+    keys: { 'e73deecd50e5478b99c951ef7ede921c': '7aa6e26d6ef76602bbdb461f0c70fc7f' } 
+  },
+  { 
+    id: 4, name: 'Fox Footy 504', tag: 'AFL · Live', emoji: '🏈', bg: '#fce7f3',
+    manifest: 'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/25061f77ab8c49029d1fa61bf00a92da/index.mpd',
+    keys: { '51e2fd2deff941a1b0f2272851f09333': '6254a5e0dc82e3f929b5a12263694559' } 
+  },
+  { 
+    id: 5, name: 'Fox Sports 505', tag: 'Sports · Live', emoji: '🏐', bg: '#dcfce7',
+    manifest: 'https://fxtlgrp-live1-761f422bb93edb7b.akamaized.net/out/v1/8a2fd3b40a8a47dabae348940eeb4566/index.mpd',
+    keys: { '14b1d85c433147469bd0cece7539d53d': '15d1b4437c7007542c2ed36bf6278cfd' } 
+  },
+  { 
+    id: 6, name: 'Fox Sports 506', tag: 'Sports · Live', emoji: '🏄', bg: '#ede9fe',
+    manifest: 'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/8f734b06f2164c1c9db642b44143e68e/index.mpd',
+    keys: { 'f0a83834b29d4affa5f53637ff673219': '44d94245b6255a3fb440bb0dc0497d45' } 
+  },
+  { 
+    id: 7, name: 'Fox Sports 507', tag: 'Sports More+ · Live', emoji: '➕', bg: '#fff1f2',
+    manifest: 'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/58b864af439d4901867d3105b708aa3c/index.mpd',
+    keys: { '977f2ff16e4449d1bdb24533e441691b': '0a388a4115affcfad6eb5ff74c00c4c3' } 
+  },
+  { 
+    id: 8, name: 'ESPN', tag: 'US Sports · Live', emoji: '🏀', bg: '#fff7ed',
+    manifest: 'https://live1-761f422bb93edb7b.fastly.foxtelgroupcdn.net.au/out/v1/adbaa04bfe5441199a037b7a78e6e62a/index.mpd',
+    keys: { '4fd27d05c1bd43e88496c9c89770faaf': '1b53ff84f9fefe4266920ec38376b9c1' } 
+  },
+  { 
+    id: 9, name: 'ESPN 2', tag: 'US Sports · Live', emoji: '⚾', bg: '#f0fdf4',
+    manifest: 'https://live1-814bffb9b389f652-cf.foxtelgroupcdn.net.au/out/v1/4a34a24349314cc3a1e84ee31bf3d224/index.mpd',
+    keys: { 'ad04e6d2bdb54dc2a35237ab66e0f29e': '78d37cc16c351190ed202758adf417f3' } 
+  },
+  { 
+    id: 10, name: 'Fox Sports 4K', tag: 'Sports · 4K', emoji: '📺', bg: '#fef08a',
+    manifest: 'https://live1-814bffb9b389f652-cf.foxtelgroupcdn.net.au/out/v1/86966d5956d944f2b1e5b7dfa405353a/index.mpd',
+    keys: { 
+      'f1a5816f871e4817b41241b6017faadf': '0ab300bf80017380c00af6c750487be2',
+      '94bf80604e884243a689fd8c546b7c32': '38ba8fb5656ca2076778092615ab5f82'
+    } 
+  },
+  { 
+    id: 11, name: 'Fox F1 4K', tag: 'Motorsport · 4K', emoji: '🏎️', bg: '#fecdd3',
+    manifest: 'https://live1-814bffb9b389f652.fastly.foxtelgroupcdn.net.au/out/v1/4bbc6fe6e52c4b40a33ccc7b338652e5/index.mpd',
+    keys: { 
+      '4a49e721dba048be8bebbab4f0410898': '709561f239d6700b7cd355358aa8e393',
+      '0a2e245949904599b668af49f29a4138': '5c69eb0b5ac27c4f9c07aa2640ef6adc'
+    } 
+  }
 ];
 
 // ════════════════════════════════════════════════
