@@ -15,11 +15,9 @@
   --bdr2:   #9ab8a2;
   --acc:    #1a8c35;
   --acc2:   #d42b2b;
-  --acc3:   #c47a00;
   --acc4:   #0e7a63;
   --txt:    #172a1c;
   --muted:  #537a5c;
-  --lbl:    #2a5e38;
   --grid:   rgba(26,140,53,0.05);
   --shadow: rgba(0,0,0,0.07);
   --glow:   rgba(26,140,53,0.12);
@@ -46,37 +44,32 @@ header {
   box-shadow:0 1px 4px var(--shadow);
 }
 .header-inner {
-  max-width:1200px; margin:0 auto;
+  max-width:1440px; margin:0 auto;
   display:flex; align-items:center;
-  padding:0 24px; height:56px; gap:0;
+  padding:0 28px; height:56px; gap:0;
 }
 .eyebrow-wrap { margin-right:32px; }
-.eyebrow { font-size:9px; letter-spacing:0.32em; color:var(--acc); text-transform:uppercase; }
+.eyebrow { font-size:9px; letter-spacing:0.32em; color:var(--acc); text-transform:uppercase; line-height:1; }
 .brand { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:0.06em; color:var(--txt); line-height:1; }
 .brand span { color:var(--acc); }
-.nav-pills { display:flex; gap:2px; }
-.npill {
-  font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.1em;
-  padding:6px 14px; border-radius:50px; border:1px solid transparent;
-  background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s;
-  -webkit-tap-highlight-color:transparent;
-}
-.npill:hover { color:var(--acc); background:var(--surf2); border-color:var(--bdr); }
-.npill.on { background:var(--acc); border-color:var(--acc); color:#fff; }
 .h-spacer { flex:1; }
 .live-pill {
   display:flex; align-items:center; gap:6px;
   background:rgba(212,43,43,0.07); border:1px solid rgba(212,43,43,0.2);
-  border-radius:50px; padding:5px 12px;
+  border-radius:50px; padding:5px 14px;
   font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--acc2);
 }
 .live-dot { width:6px; height:6px; border-radius:50%; background:var(--acc2); animation:pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.75)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin   { to{transform:rotate(360deg)} }
 
-/* ══ LAYOUT ══ */
-.wrap { max-width:1200px; margin:0 auto; padding:28px 24px 64px; position:relative; z-index:1; }
-.page { display:none; }
-.page.active { display:block; }
+/* ══ MAIN LAYOUT ══ */
+.wrap {
+  max-width:1440px; margin:0 auto;
+  padding:28px 28px 64px;
+  position:relative; z-index:1;
+}
 .sdiv {
   font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:0.28em;
   text-transform:uppercase; color:var(--muted);
@@ -88,13 +81,23 @@ header {
   letter-spacing:0.1em; color:var(--muted); background:var(--surf2);
   border:1px solid var(--bdr); border-radius:50px; padding:2px 10px;
 }
-@keyframes fadeUp { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── Desktop: player left + channels right ── */
+.live-layout {
+  display:grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: auto auto;
+  gap:0 24px;
+  align-items:start;
+}
+.live-layout .player-section  { grid-column:1; grid-row:1; }
+.live-layout .channels-section { grid-column:2; grid-row:1 / 3; }
+.live-layout .sdiv-row          { grid-column:1; grid-row:2; margin-top:20px; }
 
 /* ══ PLAYER CARD ══ */
 .player-card {
   background:var(--surf); border:1px solid var(--bdr); border-radius:14px;
-  overflow:hidden; margin-bottom:28px;
-  box-shadow:0 2px 12px var(--shadow);
+  overflow:hidden; box-shadow:0 2px 16px var(--shadow);
   animation:fadeUp 0.25s ease;
 }
 .video-wrap {
@@ -102,46 +105,15 @@ header {
   background:#000; overflow:hidden; cursor:pointer;
 }
 video { width:100%; height:100%; display:block; object-fit:contain; background:#000; }
-.vg-top {
-  position:absolute; top:0; left:0; right:0; height:80px;
-  background:linear-gradient(to bottom,rgba(0,0,0,0.55),transparent);
-  pointer-events:none; z-index:2;
-}
+
+/* Gradient overlays — only bottom for controls */
 .vg-bot {
-  position:absolute; bottom:0; left:0; right:0; height:160px;
-  background:linear-gradient(to top,rgba(0,0,0,0.88),transparent);
+  position:absolute; bottom:0; left:0; right:0; height:140px;
+  background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);
   pointer-events:none; z-index:2;
 }
 
-/* Channel badge top-left */
-.ch-badge {
-  position:absolute; top:14px; left:16px; z-index:5;
-  display:flex; align-items:center; gap:8px;
-  background:rgba(255,255,255,0.1); backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,0.18); border-radius:8px; padding:7px 12px;
-  opacity:0; transition:opacity 0.3s; pointer-events:none;
-}
-.video-wrap:hover .ch-badge, .video-wrap.show-ctrl .ch-badge { opacity:1; }
-.ch-badge-num { font-size:9px; letter-spacing:0.2em; color:rgba(255,255,255,0.5); font-family:'Bebas Neue',sans-serif; }
-.ch-badge-name { font-size:13px; font-weight:600; color:#fff; }
-.ch-badge-live {
-  display:flex; align-items:center; gap:4px; font-size:9px; letter-spacing:0.15em;
-  color:var(--acc2); background:rgba(212,43,43,0.15); border-radius:50px; padding:2px 8px;
-}
-
-/* Kbd hints top-right */
-.kbd-row {
-  position:absolute; top:14px; right:16px; z-index:5;
-  display:flex; gap:5px; opacity:0; transition:opacity 0.3s; pointer-events:none;
-}
-.video-wrap:hover .kbd-row { opacity:1; }
-.kbd {
-  font-size:9px; letter-spacing:0.04em; color:rgba(255,255,255,0.3);
-  background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08);
-  border-radius:5px; padding:3px 7px;
-}
-
-/* Player state overlay */
+/* ── Player state overlay (idle/loading/error) ── */
 .ps-overlay {
   position:absolute; inset:0; z-index:10;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
@@ -154,7 +126,6 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
   border-top-color:var(--acc); border-radius:50%;
   animation:spin 0.75s linear infinite;
 }
-@keyframes spin { to{transform:rotate(360deg)} }
 .ps-txt { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.45); }
 .ps-idle-icon {
   width:64px; height:64px; border-radius:16px;
@@ -162,10 +133,10 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
   display:flex; align-items:center; justify-content:center; margin-bottom:4px;
 }
 .ps-idle-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.05em; color:rgba(255,255,255,0.8); }
-.ps-idle-sub { font-size:12px; color:rgba(255,255,255,0.35); letter-spacing:0.05em; }
-.ps-err-icon { font-size:32px; }
-.ps-err-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.05em; color:#fff; }
-.ps-err-msg { font-size:12px; color:rgba(255,255,255,0.45); text-align:center; max-width:280px; line-height:1.7; }
+.ps-idle-sub   { font-size:12px; color:rgba(255,255,255,0.35); letter-spacing:0.05em; }
+.ps-err-icon   { font-size:32px; }
+.ps-err-title  { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.05em; color:#fff; }
+.ps-err-msg    { font-size:12px; color:rgba(255,255,255,0.45); text-align:center; max-width:280px; line-height:1.7; }
 .ps-retry {
   background:var(--acc); border:none; border-radius:7px; color:#fff;
   font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.1em;
@@ -176,28 +147,46 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
 /* ══ PLAYER CONTROLS ══ */
 .ctrl-wrap {
   position:absolute; bottom:0; left:0; right:0; z-index:8;
-  padding:32px 18px 14px; opacity:0; transition:opacity 0.25s;
+  padding:28px 16px 13px; opacity:0; transition:opacity 0.25s;
 }
 .video-wrap:hover .ctrl-wrap,
 .video-wrap.paused .ctrl-wrap,
 .video-wrap.show-ctrl .ctrl-wrap { opacity:1; }
-.prog-area { padding:7px 0; cursor:pointer; margin-bottom:6px; }
+
+.prog-area { padding:6px 0; cursor:default; margin-bottom:5px; }
 .prog-track {
   height:3px; background:rgba(255,255,255,0.15); border-radius:2px;
   position:relative; transition:height 0.15s;
 }
-.prog-area:hover .prog-track { height:5px; }
 .prog-fill {
   position:absolute; inset:0; border-radius:2px;
-  background:linear-gradient(90deg,rgba(26,140,53,0.4) 0%,var(--acc) 80%,rgba(255,255,255,0.85) 100%);
+  background:linear-gradient(90deg,rgba(26,140,53,0.5) 0%,var(--acc) 80%,rgba(255,255,255,0.9) 100%);
 }
-.prog-thumb {
-  position:absolute; right:-5px; top:50%; transform:translateY(-50%);
-  width:11px; height:11px; border-radius:50%; background:#fff;
-  box-shadow:0 2px 6px rgba(0,0,0,0.4); opacity:0; transition:opacity 0.15s;
+/* live indicator dot at right end */
+.prog-live-dot {
+  position:absolute; right:0; top:50%; transform:translateY(-50%);
+  width:8px; height:8px; border-radius:50%; background:var(--acc2);
+  box-shadow:0 0 6px var(--acc2);
 }
-.prog-area:hover .prog-thumb { opacity:1; }
-.ctrl-bar { display:flex; align-items:center; gap:6px; }
+
+.ctrl-bar { display:flex; align-items:center; gap:4px; }
+
+/* ── LIVE button (far left, clickable to jump to edge) ── */
+.live-edge-btn {
+  display:flex; align-items:center; gap:5px;
+  background:rgba(212,43,43,0.18); border:1px solid rgba(212,43,43,0.4);
+  border-radius:6px; padding:4px 10px; cursor:pointer;
+  font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:0.1em;
+  color:rgba(255,100,100,0.95); transition:all 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.live-edge-btn:hover { background:rgba(212,43,43,0.3); color:#fff; border-color:rgba(212,43,43,0.7); }
+.live-edge-btn.at-live { background:var(--acc2); border-color:var(--acc2); color:#fff; }
+.live-edge-dot {
+  width:5px; height:5px; border-radius:50%; background:currentColor;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+
 .cbtn {
   background:none; border:none; cursor:pointer;
   color:rgba(255,255,255,0.75); padding:6px; border-radius:7px;
@@ -205,26 +194,23 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
   -webkit-tap-highlight-color:transparent;
 }
 .cbtn:hover { background:rgba(255,255,255,0.1); color:#fff; }
-.vol-wrap { display:flex; align-items:center; gap:4px; }
+.cbtn svg { display:block; }
+
+.vol-wrap { display:flex; align-items:center; gap:3px; }
 .vol-sl {
   -webkit-appearance:none; width:68px; height:3px;
   background:rgba(255,255,255,0.2); border-radius:2px; outline:none; cursor:pointer;
 }
 .vol-sl::-webkit-slider-thumb { -webkit-appearance:none; width:11px; height:11px; border-radius:50%; background:#fff; cursor:pointer; }
-.c-spacer { flex:1; }
-.c-chname { font-size:12px; font-weight:600; color:rgba(255,255,255,0.65); letter-spacing:0.02em; }
-.c-live {
-  font-size:9px; letter-spacing:0.15em;
-  color:var(--acc2); background:rgba(212,43,43,0.15); border:1px solid rgba(212,43,43,0.25);
-  border-radius:5px; padding:3px 8px;
-}
 
-/* ══ QUALITY MENU BUTTON ══ */
+.c-spacer { flex:1; }
+
+/* ── Quality picker button ── */
 .qual-wrap { position:relative; display:inline-flex; }
 .qual-btn {
-  display:flex; align-items:center; gap:5px;
+  display:flex; align-items:center; gap:4px;
   background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);
-  border-radius:6px; padding:4px 10px; cursor:pointer;
+  border-radius:6px; padding:4px 9px; cursor:pointer;
   font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:0.08em;
   color:rgba(255,255,255,0.7); transition:all 0.15s;
   -webkit-tap-highlight-color:transparent;
@@ -233,25 +219,21 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
 .qual-btn.hd { color:rgba(100,180,255,0.9); border-color:rgba(100,180,255,0.35); background:rgba(100,180,255,0.1); }
 .qual-btn svg { width:11px; height:11px; flex-shrink:0; }
 
-/* Dropdown panel — pops above controls */
+/* Quality dropdown panel */
 .qual-panel {
   position:absolute; bottom:calc(100% + 10px); right:0;
   background:var(--surf); border:1px solid var(--bdr); border-radius:12px;
   min-width:220px; overflow:hidden; z-index:60;
-  box-shadow:0 -4px 24px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.1);
-  display:none;
-  animation:fadeUp 0.15s ease;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.12);
+  display:none; animation:fadeUp 0.15s ease;
 }
 .qual-panel.open { display:block; }
 .qual-panel-head {
   font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:0.22em;
-  color:var(--muted); padding:11px 14px 8px;
-  border-bottom:1px solid var(--bdr);
+  color:var(--muted); padding:11px 14px 8px; border-bottom:1px solid var(--bdr);
   display:flex; align-items:center; justify-content:space-between;
 }
 .qual-panel-head span { font-family:'Barlow',sans-serif; font-size:9px; letter-spacing:0.06em; }
-
-/* Auto row */
 .qrow-auto {
   display:flex; align-items:center; justify-content:space-between;
   padding:10px 14px; cursor:pointer; border-bottom:1px solid var(--bdr);
@@ -263,8 +245,6 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
 .qrow-auto-label { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:0.06em; color:var(--txt); }
 .qrow-auto.sel .qrow-auto-label { color:var(--acc); }
 .qrow-auto-sub { font-size:10px; color:var(--muted); }
-
-/* Track rows */
 .qrow {
   display:flex; align-items:center; gap:10px;
   padding:9px 14px; cursor:pointer; border-bottom:1px solid var(--bdr);
@@ -273,22 +253,15 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
 .qrow:last-child { border-bottom:none; }
 .qrow:hover { background:var(--surf2); }
 .qrow.sel { background:rgba(26,140,53,0.05); }
-
-.qrow-res {
-  font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.04em;
-  color:var(--txt); min-width:52px;
-}
+.qrow-res { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.04em; color:var(--txt); min-width:52px; }
 .qrow.sel .qrow-res { color:var(--acc); }
-
 .qrow-fps {
   font-size:9px; letter-spacing:0.1em; color:var(--muted);
   background:var(--surf2); border:1px solid var(--bdr);
   border-radius:4px; padding:2px 6px; white-space:nowrap;
 }
 .qrow.sel .qrow-fps { color:var(--acc4); border-color:rgba(14,122,99,0.3); background:rgba(14,122,99,0.07); }
-
 .qrow-bw { font-size:10px; color:var(--muted); flex:1; text-align:right; }
-
 .qrow-check {
   width:16px; height:16px; border-radius:50%; flex-shrink:0;
   background:var(--acc); display:flex; align-items:center; justify-content:center;
@@ -298,8 +271,8 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
 
 /* ══ PLAYER INFO BAR ══ */
 .player-infobar {
-  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-  padding:13px 18px; border-top:1px solid var(--bdr);
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:12px 16px; border-top:1px solid var(--bdr);
   background:var(--surf2);
 }
 .infobar-ch { font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:0.06em; color:var(--txt); }
@@ -314,81 +287,81 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
 .infobar-qual { font-size:10px; color:var(--muted); letter-spacing:0.06em; }
 .infobar-qual.hd { color:var(--acc4); font-weight:600; }
 
-/* ══ CHANNEL GRID ══ */
-.ch-grid {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
+/* ══ CHANNEL GRID — desktop: vertical list in sidebar ══ */
+.channels-section {
+  background:var(--surf); border:1px solid var(--bdr); border-radius:14px;
+  overflow:hidden; box-shadow:0 2px 12px var(--shadow);
 }
-.ch-card {
-  background:var(--surf); border:1.5px solid var(--bdr); border-radius:12px;
-  overflow:hidden; cursor:pointer; transition:all 0.18s cubic-bezier(0.4,0,0.2,1);
+.ch-list-head {
+  padding:14px 16px 10px; border-bottom:1px solid var(--bdr);
+  background:var(--surf2);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.ch-list-title { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.2em; color:var(--muted); }
+.ch-list-count {
+  font-family:'Barlow',sans-serif; font-size:9px; font-weight:400; letter-spacing:0.1em;
+  color:var(--muted); background:var(--bg); border:1px solid var(--bdr);
+  border-radius:50px; padding:2px 9px;
+}
+.ch-list { overflow-y:auto; max-height:calc(100vh - 200px); }
+
+/* Scrollbar styling */
+.ch-list::-webkit-scrollbar { width:4px; }
+.ch-list::-webkit-scrollbar-track { background:transparent; }
+.ch-list::-webkit-scrollbar-thumb { background:var(--bdr); border-radius:2px; }
+
+.ch-row {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px; border-bottom:1px solid var(--bdr);
+  cursor:pointer; transition:all 0.15s;
+  position:relative; overflow:hidden;
+}
+.ch-row:last-child { border-bottom:none; }
+.ch-row:hover { background:var(--surf2); }
+.ch-row.active { background:rgba(26,140,53,0.05); }
+.ch-row-active-bar {
+  position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:var(--acc); transform:scaleY(0); transition:transform 0.25s; transform-origin:top;
+}
+.ch-row.active .ch-row-active-bar { transform:scaleY(1); }
+
+.ch-row-art {
+  width:52px; height:40px; border-radius:8px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; overflow:hidden; transition:transform 0.2s;
   position:relative;
 }
-.ch-card:hover { border-color:var(--bdr2); transform:translateY(-2px); box-shadow:0 6px 20px var(--shadow); }
-.ch-card.active { border-color:var(--acc); box-shadow:0 0 0 3px var(--glow),0 6px 20px var(--shadow); transform:translateY(-2px); }
-.ch-art {
-  height:80px; display:flex; align-items:center; justify-content:center;
-  font-size:30px; position:relative; overflow:hidden; transition:transform 0.2s;
-}
-.ch-card:hover .ch-art { transform:scale(1.04); }
-.ch-art-num {
-  position:absolute; top:8px; left:10px;
-  font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.1em; color:rgba(0,0,0,0.22);
-}
-.ch-art-live {
-  position:absolute; top:8px; right:8px;
-  display:flex; align-items:center; gap:4px;
-  font-size:8px; letter-spacing:0.14em; text-transform:uppercase;
-  color:var(--acc2); background:rgba(255,255,255,0.82);
-  border:1px solid rgba(212,43,43,0.2); border-radius:50px; padding:2px 7px;
-}
-.ch-art-live-dot { width:4px; height:4px; border-radius:50%; background:var(--acc2); animation:pulse 1.6s ease-in-out infinite; }
-.ch-playing-bar {
-  position:absolute; bottom:0; left:0; right:0; height:3px;
-  background:var(--acc); transform:scaleX(0); transition:transform 0.3s; transform-origin:left;
-  z-index:2;
-}
-.ch-card.active .ch-playing-bar { transform:scaleX(1); }
-.ch-info { padding:10px 12px 12px; border-top:1px solid var(--bdr); background:var(--surf); }
-.ch-name {
-  font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.06em;
-  color:var(--txt); margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.ch-card.active .ch-name { color:var(--acc); }
-.ch-meta { font-size:10px; color:var(--muted); letter-spacing:0.04em; display:flex; align-items:center; gap:5px; }
-.ch-meta-dot { width:3px; height:3px; border-radius:50%; background:var(--bdr); }
-.now-playing {
-  display:inline-flex; align-items:center; gap:4px;
-  font-size:9px; letter-spacing:0.12em; text-transform:uppercase;
-  color:var(--acc); background:rgba(26,140,53,0.08);
-  border:1px solid rgba(26,140,53,0.2); border-radius:50px; padding:2px 8px;
-  margin-top:5px;
-}
-.now-playing-dot { width:4px; height:4px; border-radius:50%; background:var(--acc); animation:pulse 1.6s ease-in-out infinite; }
+.ch-row:hover .ch-row-art { transform:scale(1.06); }
 
-/* ══ SECTION PAGES (Sports / News / Movies) ══ */
-.section-grid {
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:14px;
+.ch-row-info { flex:1; min-width:0; }
+.ch-row-name {
+  font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:0.04em; color:var(--txt);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px;
 }
-.sec-card {
-  background:var(--surf); border:1px solid var(--bdr); border-radius:12px;
-  overflow:hidden; cursor:pointer; transition:all 0.18s cubic-bezier(0.4,0,0.2,1);
+.ch-row.active .ch-row-name { color:var(--acc); }
+.ch-row-meta { font-size:10px; color:var(--muted); letter-spacing:0.03em; }
+
+.ch-row-right { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
+.ch-row-num {
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:0.1em; color:var(--muted);
 }
-.sec-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px var(--shadow); border-color:var(--bdr2); }
-.sec-card-art {
-  height:110px; display:flex; align-items:center; justify-content:center;
-  font-size:40px; position:relative;
+.ch-row.active .ch-row-num { color:var(--acc); }
+.ch-row-live {
+  display:flex; align-items:center; gap:3px;
+  font-size:7px; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--acc2); background:rgba(212,43,43,0.07);
+  border:1px solid rgba(212,43,43,0.18); border-radius:50px; padding:2px 6px;
 }
-.sec-card-tag {
-  position:absolute; top:10px; right:10px;
-  font-size:8px; letter-spacing:0.14em; text-transform:uppercase;
-  background:rgba(0,0,0,0.35); color:#fff; border-radius:50px; padding:2px 8px;
+.ch-row-live-dot { width:3px; height:3px; border-radius:50%; background:var(--acc2); animation:pulse 1.6s ease-in-out infinite; }
+
+.now-playing-strip {
+  display:none; align-items:center; gap:4px;
+  font-size:8px; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--acc); background:rgba(26,140,53,0.08);
+  border:1px solid rgba(26,140,53,0.2); border-radius:50px; padding:2px 7px;
 }
-.sec-card-body { padding:12px 14px; border-top:1px solid var(--bdr); }
-.sec-card-title { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.04em; color:var(--txt); margin-bottom:3px; }
-.sec-card-sub { font-size:10px; color:var(--muted); letter-spacing:0.04em; }
+.ch-row.active .now-playing-strip { display:flex; }
+.now-playing-dot { width:3px; height:3px; border-radius:50%; background:var(--acc); animation:pulse 1.6s ease-in-out infinite; }
 
 /* ══ TOAST ══ */
 .toast {
@@ -404,25 +377,49 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
 /* ══ RESPONSIVE ══ */
-@media (max-width:900px) {
-  .ch-grid { grid-template-columns:repeat(3,1fr); gap:10px; }
-  .nav-pills { display:none; }
-  .section-grid { grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
+
+/* Large desktop: wider sidebar */
+@media (min-width:1400px) {
+  .live-layout { grid-template-columns:1fr 380px; }
 }
-@media (max-width:600px) {
+
+/* Small desktop / large tablet: collapse sidebar below */
+@media (max-width:1024px) {
+  .live-layout {
+    display:block;
+  }
+  .channels-section {
+    margin-top:24px;
+    border-radius:14px;
+  }
+  .ch-list { max-height:none; }
+  /* Switch back to grid layout for channels on tablet */
+  .ch-list { display:grid; grid-template-columns:repeat(3,1fr); }
+  .ch-row { border-bottom:none; border-right:1px solid var(--bdr); }
+  .ch-row:nth-child(3n) { border-right:none; }
+  .ch-row { flex-direction:column; align-items:flex-start; padding:14px 14px 12px; gap:8px; }
+  .ch-row-right { flex-direction:row; align-items:center; width:100%; justify-content:space-between; }
+  .ch-row-active-bar { left:0; top:0; right:0; bottom:auto; width:auto; height:3px; transform:scaleX(0); transform-origin:left; }
+  .ch-row.active .ch-row-active-bar { transform:scaleX(1); }
+  .ch-row-art { width:100%; height:60px; border-radius:8px; }
+  .ch-list-head { border-radius:0; }
+}
+
+@media (max-width:768px) {
   .wrap { padding:18px 14px 48px; }
-  .header-inner { padding:0 14px; }
-  .ch-grid { grid-template-columns:repeat(2,1fr); gap:9px; }
-  .ch-art { height:64px; font-size:24px; }
-  .vol-wrap { display:none; }
-  .kbd-row { display:none; }
-  .player-infobar { padding:10px 14px; gap:10px; }
+  .header-inner { padding:0 16px; }
+  .ch-list { grid-template-columns:repeat(2,1fr); }
+  .ch-row:nth-child(3n) { border-right:1px solid var(--bdr); }
+  .ch-row:nth-child(2n) { border-right:none; }
+  .vol-sl { width:52px; }
+  .player-infobar { padding:10px 14px; gap:9px; }
   .infobar-qual { display:none; }
-  .section-grid { grid-template-columns:repeat(2,1fr); }
 }
-@media (max-width:380px) {
-  .ch-grid { grid-template-columns:repeat(2,1fr); gap:7px; }
-  .ch-art { height:52px; }
+
+@media (max-width:480px) {
+  .ch-list { grid-template-columns:repeat(2,1fr); }
+  .vol-wrap { display:none; }
+  .live-layout .sdiv-row { display:none; }
 }
 </style>
 </head>
@@ -435,256 +432,119 @@ video { width:100%; height:100%; display:block; object-fit:contain; background:#
       <div class="eyebrow">Live Streaming</div>
       <div class="brand">PRISM<span>TV</span></div>
     </div>
-    <div class="nav-pills">
-      <button class="npill on"  onclick="switchPage('live',this)">Live TV</button>
-      <button class="npill"     onclick="switchPage('sports',this)">Sports</button>
-      <button class="npill"     onclick="switchPage('news',this)">News</button>
-      <button class="npill"     onclick="switchPage('movies',this)">Movies</button>
-    </div>
     <div class="h-spacer"></div>
     <div class="live-pill"><span class="live-dot"></span>ON AIR</div>
   </div>
 </header>
 
 <div class="wrap">
+  <div class="live-layout">
 
-<!-- ═══════════════════════════════════════════
-     LIVE TV PAGE
-═══════════════════════════════════════════ -->
-<div class="page active" id="page-live">
+    <!-- ══ PLAYER SECTION ══ -->
+    <div class="player-section">
+      <div class="sdiv">Now Playing <span class="sdiv-badge">DASH · ClearKey DRM</span></div>
 
-  <div class="sdiv">Now Playing <span class="sdiv-badge">DASH · ClearKey DRM</span></div>
+      <div class="player-card">
+        <div class="video-wrap" id="vw">
+          <video id="vid" playsinline></video>
+          <div class="vg-bot"></div>
 
-  <div class="player-card">
-    <div class="video-wrap" id="vw">
-      <video id="vid" playsinline></video>
-      <div class="vg-top"></div>
-      <div class="vg-bot"></div>
-
-      <!-- Top-left channel badge -->
-      <div class="ch-badge" id="ch-badge">
-        <span class="ch-badge-num" id="badge-num">CH 01</span>
-        <span class="ch-badge-name" id="badge-name">—</span>
-        <div class="ch-badge-live"><span class="live-dot"></span>LIVE</div>
-      </div>
-
-      <!-- Top-right kbd hints -->
-      <div class="kbd-row">
-        <span class="kbd">SPACE</span>
-        <span class="kbd">M mute</span>
-        <span class="kbd">F full</span>
-        <span class="kbd">1–8</span>
-      </div>
-
-      <!-- State overlay (idle / loading / error) -->
-      <div class="ps-overlay" id="pso">
-        <div class="ps-idle-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <div class="ps-idle-title">Select a Channel</div>
-        <div class="ps-idle-sub">Choose from the grid below</div>
-      </div>
-
-      <!-- Controls -->
-      <div class="ctrl-wrap">
-        <div class="prog-area">
-          <div class="prog-track">
-            <div class="prog-fill"></div>
-            <div class="prog-thumb"></div>
+          <!-- State overlay -->
+          <div class="ps-overlay" id="pso">
+            <div class="ps-idle-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <div class="ps-idle-title">Select a Channel</div>
+            <div class="ps-idle-sub">Choose from the list →</div>
           </div>
-        </div>
-        <div class="ctrl-bar">
-          <!-- Play/pause -->
-          <button class="cbtn" onclick="togglePlay()">
-            <svg id="play-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </button>
-          <!-- Volume -->
-          <div class="vol-wrap">
-            <button class="cbtn" onclick="toggleMute()">
-              <svg id="mute-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-            </button>
-            <input class="vol-sl" id="vol" type="range" min="0" max="1" step="0.02" value="1" oninput="setVol(this.value)">
-          </div>
-          <span class="c-chname" id="c-chname"></span>
-          <div class="c-spacer"></div>
-          <span class="c-live">● LIVE</span>
 
-          <!-- ── QUALITY PICKER ── -->
-          <div class="qual-wrap" id="qual-wrap">
-            <button class="qual-btn" id="qual-btn" onclick="toggleQualPanel(event)">
-              <span id="qual-label">AUTO</span>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
-            </button>
-            <div class="qual-panel" id="qual-panel">
-              <div class="qual-panel-head">
-                Quality
-                <span id="qual-head-badge" style="color:var(--acc)">AUTO</span>
+          <!-- Controls -->
+          <div class="ctrl-wrap" id="ctrl-wrap">
+            <!-- Progress bar (live = always full, decorative) -->
+            <div class="prog-area">
+              <div class="prog-track">
+                <div class="prog-fill"></div>
+                <div class="prog-live-dot"></div>
               </div>
-              <div id="qual-rows"></div>
+            </div>
+
+            <div class="ctrl-bar">
+              <!-- LIVE edge button — leftmost -->
+              <button class="live-edge-btn at-live" id="live-edge-btn" onclick="goToLiveEdge()" title="Jump to live">
+                <span class="live-edge-dot"></span>LIVE
+              </button>
+
+              <!-- Play/Pause -->
+              <button class="cbtn" onclick="togglePlay()" title="Play / Pause (Space)">
+                <svg id="play-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+
+              <!-- Volume -->
+              <div class="vol-wrap">
+                <button class="cbtn" onclick="toggleMute()" title="Mute (M)">
+                  <svg id="mute-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                </button>
+                <input class="vol-sl" id="vol" type="range" min="0" max="1" step="0.02" value="1" oninput="setVol(this.value)" title="Volume">
+              </div>
+
+              <div class="c-spacer"></div>
+
+              <!-- Quality picker -->
+              <div class="qual-wrap" id="qual-wrap">
+                <button class="qual-btn" id="qual-btn" onclick="toggleQualPanel(event)" title="Quality">
+                  <span id="qual-label">AUTO</span>
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                </button>
+                <div class="qual-panel" id="qual-panel">
+                  <div class="qual-panel-head">
+                    Quality
+                    <span id="qual-head-badge" style="color:var(--acc)">AUTO</span>
+                  </div>
+                  <div id="qual-rows"></div>
+                </div>
+              </div>
+
+              <!-- PiP -->
+              <button class="cbtn" id="pip-btn" onclick="togglePiP()" title="Picture in Picture (P)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-8v6h8V7zm2-4H3C1.9 3 1 3.9 1 5v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
+              </button>
+
+              <!-- Fullscreen -->
+              <button class="cbtn" onclick="toggleFS()" title="Fullscreen (F)">
+                <svg id="fs-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+              </button>
             </div>
           </div>
+        </div>
 
-          <!-- Fullscreen -->
-          <button class="cbtn" onclick="toggleFS()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-          </button>
+        <!-- Info bar -->
+        <div class="player-infobar">
+          <span class="infobar-ch" id="ib-ch">Select a channel</span>
+          <div class="infobar-sep"></div>
+          <span class="infobar-tag live">● LIVE</span>
+          <span class="infobar-tag dash">DASH</span>
+          <div class="infobar-spacer"></div>
+          <span class="infobar-qual" id="ib-qual">—</span>
         </div>
       </div>
     </div>
 
-    <!-- Info bar below video -->
-    <div class="player-infobar">
-      <span class="infobar-ch" id="ib-ch">Select a channel to begin</span>
-      <div class="infobar-sep"></div>
-      <span class="infobar-tag live">● LIVE</span>
-      <span class="infobar-tag dash">DASH</span>
-      <div class="infobar-spacer"></div>
-      <span class="infobar-qual" id="ib-qual">—</span>
+    <!-- ══ CHANNELS SIDEBAR ══ -->
+    <div class="channels-section">
+      <div class="ch-list-head">
+        <span class="ch-list-title">Channels</span>
+        <span class="ch-list-count" id="ch-count">8 LIVE</span>
+      </div>
+      <div class="ch-list" id="ch-list"></div>
     </div>
+
+    <!-- sdiv below player on desktop (hidden on mobile) -->
+    <div class="sdiv-row">
+      <div class="sdiv" style="margin-bottom:0">Live TV <span class="sdiv-badge">DASH · ClearKey DRM · Shaka Player</span></div>
+    </div>
+
   </div>
-
-  <div class="sdiv">All Channels <span class="sdiv-badge">8 CHANNELS</span></div>
-  <div class="ch-grid" id="ch-grid"></div>
-
-</div><!-- /page-live -->
-
-
-<!-- ═══════════════════════════════════════════
-     SPORTS PAGE
-═══════════════════════════════════════════ -->
-<div class="page" id="page-sports">
-
-  <div class="sdiv">Cricket &amp; Football <span class="sdiv-badge">2 LIVE</span></div>
-  <div class="section-grid" style="margin-bottom:28px">
-    <div class="sec-card" onclick="goLive(1)">
-      <div class="sec-card-art" style="background:#d1fae5">🏏<span class="sec-card-tag">● LIVE</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Cric Life 2</div><div class="sec-card-sub">Cricket · HD · DASH</div></div>
-    </div>
-    <div class="sec-card" onclick="goLive(4)">
-      <div class="sec-card-art" style="background:#dcfce7">⚽<span class="sec-card-tag">● LIVE</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Channel 4</div><div class="sec-card-sub">Football · Live · DASH</div></div>
-    </div>
-  </div>
-
-  <div class="sdiv">Coming Soon <span class="sdiv-badge">MORE SPORTS</span></div>
-  <div class="section-grid">
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#fef3c7">🏀<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Hoops Live</div><div class="sec-card-sub">Basketball · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#ffe4e6">🏎️<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Race Channel</div><div class="sec-card-sub">Motorsport · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#e0f2fe">🎾<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Tennis Live</div><div class="sec-card-sub">Tennis · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#faf5ff">🥊<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Fight Zone</div><div class="sec-card-sub">MMA · Boxing · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#f0fdf4">🏊<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Aquatics HD</div><div class="sec-card-sub">Swimming · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#fff7ed">🏑<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Field Sports</div><div class="sec-card-sub">Hockey · Rugby · Coming Soon</div></div>
-    </div>
-  </div>
-
-</div><!-- /page-sports -->
-
-
-<!-- ═══════════════════════════════════════════
-     NEWS PAGE
-═══════════════════════════════════════════ -->
-<div class="page" id="page-news">
-
-  <div class="sdiv">Live News <span class="sdiv-badge">1 LIVE</span></div>
-  <div class="section-grid" style="margin-bottom:28px">
-    <div class="sec-card" onclick="goLive(3)">
-      <div class="sec-card-art" style="background:#fef3c7">📡<span class="sec-card-tag">● LIVE</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Channel 3</div><div class="sec-card-sub">News · Live 24/7 · DASH</div></div>
-    </div>
-    <div class="sec-card" onclick="goLive(8)">
-      <div class="sec-card-art" style="background:#f0fdf4">🌍<span class="sec-card-tag">● LIVE</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Channel 8</div><div class="sec-card-sub">Documentary · DASH</div></div>
-    </div>
-  </div>
-
-  <div class="sdiv">Coming Soon</div>
-  <div class="section-grid">
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#f0f9ff">📰<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">World News 24</div><div class="sec-card-sub">International · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#fff7ed">💹<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Business Today</div><div class="sec-card-sub">Finance · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#fef2f2">🔬<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Science Now</div><div class="sec-card-sub">Science · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#faf5ff">🌐<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Tech Report</div><div class="sec-card-sub">Technology · Coming Soon</div></div>
-    </div>
-  </div>
-
-</div><!-- /page-news -->
-
-
-<!-- ═══════════════════════════════════════════
-     MOVIES PAGE
-═══════════════════════════════════════════ -->
-<div class="page" id="page-movies">
-
-  <div class="sdiv">Entertainment &amp; Movies <span class="sdiv-badge">4 LIVE</span></div>
-  <div class="section-grid" style="margin-bottom:28px">
-    <div class="sec-card" onclick="goLive(2)">
-      <div class="sec-card-art" style="background:#fce7f3">🎬<span class="sec-card-tag">● LIVE</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Channel 2</div><div class="sec-card-sub">Entertainment · DASH</div></div>
-    </div>
-    <div class="sec-card" onclick="goLive(5)">
-      <div class="sec-card-art" style="background:#ede9fe">🎥<span class="sec-card-tag">● LIVE</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Channel 5</div><div class="sec-card-sub">Movies · HD · DASH</div></div>
-    </div>
-    <div class="sec-card" onclick="goLive(6)">
-      <div class="sec-card-art" style="background:#fff1f2">🎵<span class="sec-card-tag">● LIVE</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Channel 6</div><div class="sec-card-sub">Music · Live · DASH</div></div>
-    </div>
-    <div class="sec-card" onclick="goLive(7)">
-      <div class="sec-card-art" style="background:#fff7ed">🧸<span class="sec-card-tag">● LIVE</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Channel 7</div><div class="sec-card-sub">Kids · HD · DASH</div></div>
-    </div>
-  </div>
-
-  <div class="sdiv">Coming Soon</div>
-  <div class="section-grid">
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#f5f3ff">🎭<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Drama Plus</div><div class="sec-card-sub">Drama Series · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#fef2f2">😂<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Comedy Zone</div><div class="sec-card-sub">Stand-up & Comedy · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#f0fdf4">🌙<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Late Night</div><div class="sec-card-sub">Talk Shows · Coming Soon</div></div>
-    </div>
-    <div class="sec-card">
-      <div class="sec-card-art" style="background:#fff7ed">🍿<span class="sec-card-tag">SOON</span></div>
-      <div class="sec-card-body"><div class="sec-card-title">Blockbuster HD</div><div class="sec-card-sub">Hollywood Films · Coming Soon</div></div>
-    </div>
-  </div>
-
-</div><!-- /page-movies -->
-
-</div><!-- /wrap -->
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -722,75 +582,50 @@ const CHANNELS = [
 // ════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════
-let shakaPlayer = null;   // renamed to avoid conflict
+let shakaPlayer = null;
 let activeCh    = null;
-let qualIsAuto  = true;   // true = ABR on; false = manual lock
-let qualLockId  = null;   // locked track id when manual
+let qualIsAuto  = true;
+let qualLockId  = null;
 
 const vid = document.getElementById('vid');
 const vw  = document.getElementById('vw');
 
 // ════════════════════════════════════════════════
-//  PAGE NAVIGATION
+//  BUILD CHANNEL LIST
 // ════════════════════════════════════════════════
-function switchPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.npill').forEach(b => b.classList.remove('on'));
-  document.getElementById('page-' + id).classList.add('active');
-  if (btn) btn.classList.add('on');
-  window.scrollTo({ top:0, behavior:'smooth' });
-}
-
-// Navigate to live page and load a channel by id
-function goLive(id) {
-  const liveBtn = document.querySelector('.npill');
-  switchPage('live', liveBtn);
-  setTimeout(() => loadChannelById(id), 80);
-}
-function loadChannelById(id) {
-  const ch = CHANNELS.find(c => c.id === id);
-  if (ch) loadChannel(ch);
-}
-
-// ════════════════════════════════════════════════
-//  CHANNEL GRID (Live TV page)
-// ════════════════════════════════════════════════
-function buildGrid() {
-  const grid = document.getElementById('ch-grid');
+function buildList() {
+  const list = document.getElementById('ch-list');
   CHANNELS.forEach(ch => {
     const el = document.createElement('div');
-    el.className = 'ch-card';
-    el.id = 'card-' + ch.id;
+    el.className = 'ch-row';
+    el.id = 'row-' + ch.id;
     el.innerHTML = `
-      <div class="ch-art" style="background:${ch.bg}">
-        <span class="ch-art-num">CH ${String(ch.id).padStart(2,'0')}</span>
-        ${ch.emoji}
-        <div class="ch-art-live"><span class="ch-art-live-dot"></span>LIVE</div>
-      </div>
-      <div class="ch-playing-bar"></div>
-      <div class="ch-info">
-        <div class="ch-name">${ch.name}</div>
-        <div class="ch-meta">${ch.tag}<span class="ch-meta-dot"></span>DASH</div>
-        <div class="now-playing" id="np-${ch.id}" style="display:none">
+      <div class="ch-row-active-bar"></div>
+      <div class="ch-row-art" style="background:${ch.bg}">${ch.emoji}</div>
+      <div class="ch-row-info">
+        <div class="ch-row-name">${ch.name}</div>
+        <div class="ch-row-meta">${ch.tag}</div>
+        <div class="now-playing-strip" id="np-${ch.id}">
           <span class="now-playing-dot"></span>Now Playing
         </div>
+      </div>
+      <div class="ch-row-right">
+        <span class="ch-row-num">CH&nbsp;${String(ch.id).padStart(2,'0')}</span>
+        <div class="ch-row-live"><span class="ch-row-live-dot"></span>LIVE</div>
       </div>`;
     el.onclick = () => loadChannel(ch);
-    grid.appendChild(el);
+    list.appendChild(el);
   });
 }
 
 function markActive(ch) {
-  document.querySelectorAll('.ch-card').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.ch-row').forEach(e => e.classList.remove('active'));
   document.querySelectorAll('[id^="np-"]').forEach(e => e.style.display = 'none');
-  const card = document.getElementById('card-' + ch.id);
-  if (card) { card.classList.add('active'); card.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+  const row = document.getElementById('row-' + ch.id);
+  if (row) { row.classList.add('active'); row.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
   const np = document.getElementById('np-' + ch.id);
-  if (np) np.style.display = 'inline-flex';
-  document.getElementById('badge-num').textContent  = 'CH ' + String(ch.id).padStart(2,'0');
-  document.getElementById('badge-name').textContent = ch.name;
-  document.getElementById('c-chname').textContent   = ch.name;
-  document.getElementById('ib-ch').textContent      = ch.name;
+  if (np) np.style.display = 'flex';
+  document.getElementById('ib-ch').textContent = ch.name;
 }
 
 // ════════════════════════════════════════════════
@@ -807,10 +642,10 @@ async function loadChannel(ch) {
   setQualBtn('AUTO', false);
   clearQualRows();
   document.getElementById('ib-qual').textContent = '—';
+  setLiveBtnState(true);
 
   try {
     if (shakaPlayer) { await shakaPlayer.destroy(); shakaPlayer = null; }
-
     shaka.polyfill.installAll();
     if (!shaka.Player.isBrowserSupported()) {
       showPSO('error', 'Browser does not support DASH/EME.'); return;
@@ -822,16 +657,13 @@ async function loadChannel(ch) {
       console.error('Shaka error:', e.detail);
       showPSO('error', 'Stream error ' + e.detail.code + '\n' + (e.detail.message || 'Check network.'));
     });
-
     shakaPlayer.addEventListener('buffering', e => {
       if (e.buffering) showPSO('loading', 'Buffering…');
-      else             showPSO('hide');
+      else showPSO('hide');
     });
-
-    // When ABR switches track — refresh quality button & menu
     shakaPlayer.addEventListener('adaptation', () => {
       if (qualIsAuto) refreshQualDisplay();
-      rebuildQualRows(); // keep checkmark in sync
+      rebuildQualRows();
     });
 
     const cfg = {
@@ -847,8 +679,6 @@ async function loadChannel(ch) {
     await shakaPlayer.load(ch.manifest);
     vid.play();
     showPSO('hide');
-
-    // Build quality menu from real MPD tracks
     rebuildQualRows();
     refreshQualDisplay();
     toast('▶  ' + ch.name);
@@ -859,11 +689,54 @@ async function loadChannel(ch) {
   }
 }
 
-// ════════════════════════════════════════════════
-//  QUALITY PICKER — reads real MPD variant tracks
-// ════════════════════════════════════════════════
+function loadChannelById(id) {
+  const ch = CHANNELS.find(c => c.id === id);
+  if (ch) loadChannel(ch);
+}
 
-// Format bandwidth: e.g. 2.4 Mbps or 800 kbps
+// ════════════════════════════════════════════════
+//  LIVE EDGE BUTTON
+// ════════════════════════════════════════════════
+function goToLiveEdge() {
+  if (!shakaPlayer) return;
+  try {
+    // For live streams: seek to the live edge
+    const liveTime = shakaPlayer.seekRange().end;
+    if (liveTime && isFinite(liveTime)) vid.currentTime = liveTime;
+    else vid.currentTime = vid.duration || vid.currentTime;
+    if (vid.paused) vid.play();
+    setLiveBtnState(true);
+    toast('⬤ Back to Live');
+  } catch(e) { console.warn('seekToLive:', e); }
+}
+
+function setLiveBtnState(isLive) {
+  const btn = document.getElementById('live-edge-btn');
+  if (isLive) btn.classList.add('at-live');
+  else btn.classList.remove('at-live');
+}
+
+// Track if user drifts from live
+vid.addEventListener('seeking', () => {
+  if (!shakaPlayer) return;
+  try {
+    const range = shakaPlayer.seekRange();
+    const diff  = range.end - vid.currentTime;
+    setLiveBtnState(diff < 8); // within 8s = still "live"
+  } catch(e) {}
+});
+vid.addEventListener('timeupdate', () => {
+  if (!shakaPlayer) return;
+  try {
+    const range = shakaPlayer.seekRange();
+    const diff  = range.end - vid.currentTime;
+    setLiveBtnState(diff < 8);
+  } catch(e) {}
+});
+
+// ════════════════════════════════════════════════
+//  QUALITY PICKER
+// ════════════════════════════════════════════════
 function fmtBw(bps) {
   if (!bps) return '';
   return bps >= 1_000_000
@@ -871,23 +744,17 @@ function fmtBw(bps) {
     : Math.round(bps / 1000) + ' kbps';
 }
 
-// Deduplicate tracks: keep highest-bandwidth representative per (height × fps) combo
 function getUniqueVideoTracks() {
   if (!shakaPlayer) return [];
-  const tracks = shakaPlayer.getVariantTracks();
-
   const map = new Map();
-  tracks.forEach(t => {
+  shakaPlayer.getVariantTracks().forEach(t => {
     const fps = t.frameRate ? Math.round(t.frameRate) : 0;
     const key = (t.height || 0) + '_' + fps;
     if (!map.has(key) || t.bandwidth > map.get(key).bandwidth) map.set(key, t);
   });
-
-  // Sort highest resolution first, then highest fps
   return Array.from(map.values()).sort((a, b) => {
-    const hd = (b.height || 0) - (a.height || 0);
-    if (hd !== 0) return hd;
-    return (Math.round(b.frameRate) || 0) - (Math.round(a.frameRate) || 0);
+    const h = (b.height||0) - (a.height||0);
+    return h !== 0 ? h : (Math.round(b.frameRate)||0) - (Math.round(a.frameRate)||0);
   });
 }
 
@@ -896,39 +763,33 @@ function getActiveTrack() {
   return shakaPlayer.getVariantTracks().find(t => t.active) || null;
 }
 
-// Update the small button label inside the controls bar
 function setQualBtn(label, isHD) {
   document.getElementById('qual-label').textContent = label;
   document.getElementById('qual-btn').className = 'qual-btn' + (isHD ? ' hd' : '');
 }
+function clearQualRows() { document.getElementById('qual-rows').innerHTML = ''; }
 
-function clearQualRows() {
-  document.getElementById('qual-rows').innerHTML = '';
-}
-
-// Sync the button text + info bar to current active track
 function refreshQualDisplay() {
   const t = getActiveTrack();
   if (!t) return;
   const fps   = t.frameRate ? Math.round(t.frameRate) : null;
   const res   = t.height ? t.height + 'p' : 'SD';
   const label = fps ? res + ' ' + fps + 'fps' : res;
-  const isHD  = (t.height || 0) >= 720;
-  setQualBtn(qualIsAuto ? label : label, isHD);
+  const isHD  = (t.height||0) >= 720;
+  setQualBtn(label, isHD);
   document.getElementById('ib-qual').textContent = label;
   document.getElementById('ib-qual').className   = 'infobar-qual' + (isHD ? ' hd' : '');
   document.getElementById('qual-head-badge').textContent = qualIsAuto ? 'AUTO' : 'MANUAL';
 }
 
-// Rebuild the dropdown rows from real MPD tracks
 function rebuildQualRows() {
   if (!shakaPlayer) return;
-  const unique  = getUniqueVideoTracks();
-  const active  = getActiveTrack();
+  const unique    = getUniqueVideoTracks();
+  const active    = getActiveTrack();
   const container = document.getElementById('qual-rows');
   container.innerHTML = '';
 
-  // ── AUTO row ──
+  // Auto row
   const autoRow = document.createElement('div');
   autoRow.className = 'qrow-auto' + (qualIsAuto ? ' sel' : '');
   autoRow.innerHTML = `
@@ -942,20 +803,18 @@ function rebuildQualRows() {
   autoRow.onclick = () => selectAuto();
   container.appendChild(autoRow);
 
-  // ── Per-resolution rows ──
+  // Track rows
   unique.forEach(t => {
-    const fps    = t.frameRate ? Math.round(t.frameRate) : null;
-    const height = t.height || 0;
-    const res    = height ? height + 'p' : 'SD';
-    const isSel  = !qualIsAuto && qualLockId === t.id;
-    const isCurr = qualIsAuto && active && active.id === t.id;
-
-    const row = document.createElement('div');
+    const fps   = t.frameRate ? Math.round(t.frameRate) : null;
+    const res   = (t.height || 0) ? t.height + 'p' : 'SD';
+    const isSel = !qualIsAuto && qualLockId === t.id;
+    const isCur = qualIsAuto && active && active.id === t.id;
+    const row   = document.createElement('div');
     row.className = 'qrow' + (isSel ? ' sel' : '');
     row.innerHTML = `
       <span class="qrow-res">${res}</span>
       ${fps ? `<span class="qrow-fps">${fps} fps</span>` : ''}
-      ${isCurr && !isSel ? `<span class="qrow-fps" style="color:var(--acc);border-color:rgba(26,140,53,.3);background:rgba(26,140,53,.07)">▶ current</span>` : ''}
+      ${isCur && !isSel ? `<span class="qrow-fps" style="color:var(--acc);border-color:rgba(26,140,53,.3);background:rgba(26,140,53,.07)">▶ now</span>` : ''}
       <span class="qrow-bw">${fmtBw(t.bandwidth)}</span>
       <div class="qrow-check">
         <svg width="9" height="9" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -965,54 +824,61 @@ function rebuildQualRows() {
   });
 }
 
-// Select Auto (re-enable ABR)
 function selectAuto() {
   if (!shakaPlayer) return;
-  qualIsAuto = true;
-  qualLockId = null;
-  shakaPlayer.configure({ abr: { enabled: true } });
-  rebuildQualRows();
-  refreshQualDisplay();
-  closeQualPanel();
+  qualIsAuto = true; qualLockId = null;
+  shakaPlayer.configure({ abr:{ enabled:true } });
+  rebuildQualRows(); refreshQualDisplay(); closeQualPanel();
   toast('Quality: Auto');
 }
-
-// Lock to a specific track
 function selectTrack(track) {
   if (!shakaPlayer) return;
-  qualIsAuto = false;
-  qualLockId = track.id;
-  shakaPlayer.configure({ abr: { enabled: false } });
-  shakaPlayer.selectVariantTrack(track, /* clearBuffer */ true);
-
+  qualIsAuto = false; qualLockId = track.id;
+  shakaPlayer.configure({ abr:{ enabled:false } });
+  shakaPlayer.selectVariantTrack(track, true);
   const fps   = track.frameRate ? Math.round(track.frameRate) : null;
   const label = (track.height ? track.height + 'p' : 'SD') + (fps ? ' ' + fps + 'fps' : '');
-  setQualBtn(label, (track.height || 0) >= 720);
+  setQualBtn(label, (track.height||0) >= 720);
   document.getElementById('ib-qual').textContent = label;
-  document.getElementById('ib-qual').className   = 'infobar-qual' + ((track.height || 0) >= 720 ? ' hd' : '');
+  document.getElementById('ib-qual').className   = 'infobar-qual' + ((track.height||0) >= 720 ? ' hd' : '');
   document.getElementById('qual-head-badge').textContent = 'MANUAL';
-
-  rebuildQualRows();
-  closeQualPanel();
+  rebuildQualRows(); closeQualPanel();
   toast('Quality: ' + label);
 }
-
 function toggleQualPanel(e) {
   e.stopPropagation();
   const p = document.getElementById('qual-panel');
-  if (p.classList.contains('open')) {
-    closeQualPanel();
-  } else {
-    rebuildQualRows(); // always fresh when opening
-    p.classList.add('open');
+  if (p.classList.contains('open')) closeQualPanel();
+  else { rebuildQualRows(); p.classList.add('open'); }
+}
+function closeQualPanel() { document.getElementById('qual-panel').classList.remove('open'); }
+document.addEventListener('click', e => { if (!e.target.closest('#qual-wrap')) closeQualPanel(); });
+
+// ════════════════════════════════════════════════
+//  PICTURE-IN-PICTURE
+// ════════════════════════════════════════════════
+async function togglePiP() {
+  try {
+    if (document.pictureInPictureElement) {
+      await document.exitPictureInPicture();
+    } else if (document.pictureInPictureEnabled && vid.readyState >= 2) {
+      await vid.requestPictureInPicture();
+      toast('⧉  Picture in Picture');
+    } else {
+      toast('PiP not supported or no stream loaded');
+    }
+  } catch(e) {
+    console.warn('PiP error:', e);
+    toast('PiP unavailable');
   }
 }
-function closeQualPanel() {
-  document.getElementById('qual-panel').classList.remove('open');
-}
-// Close on outside click
-document.addEventListener('click', e => {
-  if (!e.target.closest('#qual-wrap')) closeQualPanel();
+
+// Update PiP button icon when entering/leaving PiP
+vid.addEventListener('enterpictureinpicture', () => {
+  document.getElementById('pip-btn').style.color = 'rgba(26,180,80,0.9)';
+});
+vid.addEventListener('leavepictureinpicture', () => {
+  document.getElementById('pip-btn').style.color = '';
 });
 
 // ════════════════════════════════════════════════
@@ -1057,20 +923,34 @@ function syncMuteIcon() {
 }
 
 function toggleFS() {
-  if (!document.fullscreenElement) vw.requestFullscreen && vw.requestFullscreen();
-  else document.exitFullscreen && document.exitFullscreen();
+  if (!document.fullscreenElement) {
+    vw.requestFullscreen && vw.requestFullscreen();
+    document.getElementById('fs-icon').innerHTML = '<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>';
+  } else {
+    document.exitFullscreen && document.exitFullscreen();
+    document.getElementById('fs-icon').innerHTML = '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>';
+  }
 }
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement)
+    document.getElementById('fs-icon').innerHTML = '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>';
+});
 
 // Auto-hide controls
 let ctrlTimer;
 vw.addEventListener('mousemove', () => {
   vw.classList.add('show-ctrl');
   clearTimeout(ctrlTimer);
-  ctrlTimer = setTimeout(() => vw.classList.remove('show-ctrl'), 3000);
+  ctrlTimer = setTimeout(() => vw.classList.remove('show-ctrl'), 3200);
+});
+vw.addEventListener('mouseleave', () => {
+  clearTimeout(ctrlTimer);
+  ctrlTimer = setTimeout(() => vw.classList.remove('show-ctrl'), 800);
 });
 vw.addEventListener('touchstart', () => vw.classList.toggle('show-ctrl'), { passive:true });
 vw.addEventListener('click', e => {
-  if (e.target.closest('.cbtn') || e.target.closest('.vol-sl') || e.target.closest('#qual-wrap')) return;
+  if (e.target.closest('.cbtn') || e.target.closest('.vol-sl') ||
+      e.target.closest('#qual-wrap') || e.target.closest('.live-edge-btn')) return;
   if (activeCh) togglePlay();
 });
 
@@ -1093,6 +973,8 @@ document.addEventListener('keydown', e => {
   if (e.code === 'Space')     { e.preventDefault(); if (activeCh) togglePlay(); }
   if (e.code === 'KeyM')      toggleMute();
   if (e.code === 'KeyF')      toggleFS();
+  if (e.code === 'KeyP')      togglePiP();
+  if (e.code === 'KeyL')      goToLiveEdge();
   if (e.code === 'ArrowUp')   { vid.volume = Math.min(1, vid.volume + 0.1); document.getElementById('vol').value = vid.volume; toast('🔊  ' + Math.round(vid.volume * 100) + '%'); }
   if (e.code === 'ArrowDown') { vid.volume = Math.max(0, vid.volume - 0.1); document.getElementById('vol').value = vid.volume; toast('🔉  ' + Math.round(vid.volume * 100) + '%'); }
   const n = parseInt(e.key);
@@ -1102,7 +984,7 @@ document.addEventListener('keydown', e => {
 // ════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════
-buildGrid();
+buildList();
 </script>
 </body>
 </html>
