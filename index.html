@@ -7,384 +7,423 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.min.js"></script>
 <style>
-  /* ══ VARIABLES ══ */
-  :root {
-    --bg:     #f0f5f1;
-    --surf:   #ffffff;
-    --surf2:  #e6f0e8;
-    --bdr:    #bdd4c2;
-    --acc:    #1a8c35;
-    --acc2:   #d42b2b;
-    --acc3:   #c47a00;
-    --acc4:   #0e7a63;
-    --txt:    #172a1c;
-    --muted:  #537a5c;
-    --lbl:    #2a5e38;
-    --grid:   rgba(26,140,53,0.05);
-    --inp:    #ffffff;
-    --shadow: rgba(0,0,0,0.07);
-    --glow:   rgba(26,140,53,0.12);
-  }
+:root {
+  --bg:     #f0f5f1;
+  --surf:   #ffffff;
+  --surf2:  #e6f0e8;
+  --bdr:    #bdd4c2;
+  --bdr2:   #9ab8a2;
+  --acc:    #1a8c35;
+  --acc2:   #d42b2b;
+  --acc3:   #c47a00;
+  --acc4:   #0e7a63;
+  --txt:    #172a1c;
+  --muted:  #537a5c;
+  --lbl:    #2a5e38;
+  --grid:   rgba(26,140,53,0.05);
+  --shadow: rgba(0,0,0,0.07);
+  --glow:   rgba(26,140,53,0.12);
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+body {
+  background:var(--bg); color:var(--txt);
+  font-family:'Barlow',sans-serif; font-weight:300;
+  min-height:100vh; overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:36px 36px;
+}
 
-  /* ══ RESET ══ */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  body {
-    background: var(--bg); color: var(--txt);
-    font-family: 'Barlow', sans-serif; font-weight: 300;
-    min-height: 100vh; overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image: linear-gradient(var(--grid) 1px,transparent 1px),
-                      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-    background-size: 36px 36px;
-  }
+/* ══ HEADER ══ */
+header {
+  position:sticky; top:0; z-index:100;
+  background:var(--surf); border-bottom:1px solid var(--bdr);
+  box-shadow:0 1px 4px var(--shadow);
+}
+.header-inner {
+  max-width:1200px; margin:0 auto;
+  display:flex; align-items:center;
+  padding:0 24px; height:56px; gap:0;
+}
+.eyebrow-wrap { margin-right:32px; }
+.eyebrow { font-size:9px; letter-spacing:0.32em; color:var(--acc); text-transform:uppercase; }
+.brand { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:0.06em; color:var(--txt); line-height:1; }
+.brand span { color:var(--acc); }
+.nav-pills { display:flex; gap:2px; }
+.npill {
+  font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.1em;
+  padding:6px 14px; border-radius:50px; border:1px solid transparent;
+  background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.npill:hover { color:var(--acc); background:var(--surf2); border-color:var(--bdr); }
+.npill.on { background:var(--acc); border-color:var(--acc); color:#fff; }
+.h-spacer { flex:1; }
+.live-pill {
+  display:flex; align-items:center; gap:6px;
+  background:rgba(212,43,43,0.07); border:1px solid rgba(212,43,43,0.2);
+  border-radius:50px; padding:5px 12px;
+  font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--acc2);
+}
+.live-dot { width:6px; height:6px; border-radius:50%; background:var(--acc2); animation:pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.75)} }
 
-  /* ══ HEADER ══ */
-  header {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--surf); border-bottom: 1px solid var(--bdr);
-    box-shadow: 0 1px 4px var(--shadow);
-  }
-  .header-inner {
-    max-width: 1200px; margin: 0 auto;
-    display: flex; align-items: center; gap: 0;
-    padding: 0 24px; height: 56px;
-  }
-  .eyebrow-wrap { margin-right: 32px; }
-  .eyebrow { font-size: 9px; letter-spacing: 0.32em; color: var(--acc); text-transform: uppercase; }
-  .brand {
-    font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.06em;
-    color: var(--txt); line-height: 1;
-  }
-  .brand span { color: var(--acc); }
+/* ══ LAYOUT ══ */
+.wrap { max-width:1200px; margin:0 auto; padding:28px 24px 64px; position:relative; z-index:1; }
+.page { display:none; }
+.page.active { display:block; }
+.sdiv {
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:0.28em;
+  text-transform:uppercase; color:var(--muted);
+  display:flex; align-items:center; gap:10px; margin-bottom:14px;
+}
+.sdiv::after { content:''; flex:1; height:1px; background:var(--bdr); }
+.sdiv-badge {
+  font-family:'Barlow',sans-serif; font-size:9px; font-weight:400;
+  letter-spacing:0.1em; color:var(--muted); background:var(--surf2);
+  border:1px solid var(--bdr); border-radius:50px; padding:2px 10px;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
 
-  .nav-pills { display: flex; gap: 2px; }
-  .npill {
-    font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.1em;
-    padding: 6px 14px; border-radius: 50px; border: 1px solid transparent;
-    background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .npill:hover { color: var(--acc); background: var(--surf2); border-color: var(--bdr); }
-  .npill.on { background: var(--acc); border-color: var(--acc); color: #fff; }
+/* ══ PLAYER CARD ══ */
+.player-card {
+  background:var(--surf); border:1px solid var(--bdr); border-radius:14px;
+  overflow:hidden; margin-bottom:28px;
+  box-shadow:0 2px 12px var(--shadow);
+  animation:fadeUp 0.25s ease;
+}
+.video-wrap {
+  position:relative; width:100%; aspect-ratio:16/9;
+  background:#000; overflow:hidden; cursor:pointer;
+}
+video { width:100%; height:100%; display:block; object-fit:contain; background:#000; }
+.vg-top {
+  position:absolute; top:0; left:0; right:0; height:80px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.55),transparent);
+  pointer-events:none; z-index:2;
+}
+.vg-bot {
+  position:absolute; bottom:0; left:0; right:0; height:160px;
+  background:linear-gradient(to top,rgba(0,0,0,0.88),transparent);
+  pointer-events:none; z-index:2;
+}
 
-  .h-spacer { flex: 1; }
+/* Channel badge top-left */
+.ch-badge {
+  position:absolute; top:14px; left:16px; z-index:5;
+  display:flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,0.1); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.18); border-radius:8px; padding:7px 12px;
+  opacity:0; transition:opacity 0.3s; pointer-events:none;
+}
+.video-wrap:hover .ch-badge, .video-wrap.show-ctrl .ch-badge { opacity:1; }
+.ch-badge-num { font-size:9px; letter-spacing:0.2em; color:rgba(255,255,255,0.5); font-family:'Bebas Neue',sans-serif; }
+.ch-badge-name { font-size:13px; font-weight:600; color:#fff; }
+.ch-badge-live {
+  display:flex; align-items:center; gap:4px; font-size:9px; letter-spacing:0.15em;
+  color:var(--acc2); background:rgba(212,43,43,0.15); border-radius:50px; padding:2px 8px;
+}
 
-  .live-pill {
-    display: flex; align-items: center; gap: 6px;
-    background: rgba(212,43,43,0.07); border: 1px solid rgba(212,43,43,0.2);
-    border-radius: 50px; padding: 5px 12px; margin-right: 14px;
-    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--acc2);
-  }
-  .live-dot {
-    width: 6px; height: 6px; border-radius: 50%; background: var(--acc2);
-    animation: pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.75)} }
+/* Kbd hints top-right */
+.kbd-row {
+  position:absolute; top:14px; right:16px; z-index:5;
+  display:flex; gap:5px; opacity:0; transition:opacity 0.3s; pointer-events:none;
+}
+.video-wrap:hover .kbd-row { opacity:1; }
+.kbd {
+  font-size:9px; letter-spacing:0.04em; color:rgba(255,255,255,0.3);
+  background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08);
+  border-radius:5px; padding:3px 7px;
+}
 
-  /* ══ WRAP ══ */
-  .wrap { max-width: 1200px; margin: 0 auto; padding: 28px 24px 64px; position: relative; z-index: 1; }
+/* Player state overlay */
+.ps-overlay {
+  position:absolute; inset:0; z-index:10;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  background:rgba(0,0,0,0.5); transition:opacity 0.3s;
+}
+.ps-overlay.gone { opacity:0; pointer-events:none; }
+.ps-spinner {
+  width:46px; height:46px;
+  border:2px solid rgba(255,255,255,0.08);
+  border-top-color:var(--acc); border-radius:50%;
+  animation:spin 0.75s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+.ps-txt { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.45); }
+.ps-idle-icon {
+  width:64px; height:64px; border-radius:16px;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12);
+  display:flex; align-items:center; justify-content:center; margin-bottom:4px;
+}
+.ps-idle-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.05em; color:rgba(255,255,255,0.8); }
+.ps-idle-sub { font-size:12px; color:rgba(255,255,255,0.35); letter-spacing:0.05em; }
+.ps-err-icon { font-size:32px; }
+.ps-err-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.05em; color:#fff; }
+.ps-err-msg { font-size:12px; color:rgba(255,255,255,0.45); text-align:center; max-width:280px; line-height:1.7; }
+.ps-retry {
+  background:var(--acc); border:none; border-radius:7px; color:#fff;
+  font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.1em;
+  padding:10px 28px; cursor:pointer; transition:all 0.15s; margin-top:2px;
+}
+.ps-retry:hover { opacity:0.85; transform:translateY(-1px); }
 
-  /* ══ PLAYER SECTION ══ */
-  .sdiv {
-    font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 0.28em;
-    text-transform: uppercase; color: var(--muted);
-    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
-  }
-  .sdiv::after { content: ''; flex: 1; height: 1px; background: var(--bdr); }
-  .sdiv-badge {
-    font-family: 'Barlow', sans-serif; font-size: 9px; font-weight: 400;
-    letter-spacing: 0.1em; color: var(--muted); background: var(--surf2);
-    border: 1px solid var(--bdr); border-radius: 50px; padding: 2px 10px;
-  }
+/* ══ PLAYER CONTROLS ══ */
+.ctrl-wrap {
+  position:absolute; bottom:0; left:0; right:0; z-index:8;
+  padding:32px 18px 14px; opacity:0; transition:opacity 0.25s;
+}
+.video-wrap:hover .ctrl-wrap,
+.video-wrap.paused .ctrl-wrap,
+.video-wrap.show-ctrl .ctrl-wrap { opacity:1; }
+.prog-area { padding:7px 0; cursor:pointer; margin-bottom:6px; }
+.prog-track {
+  height:3px; background:rgba(255,255,255,0.15); border-radius:2px;
+  position:relative; transition:height 0.15s;
+}
+.prog-area:hover .prog-track { height:5px; }
+.prog-fill {
+  position:absolute; inset:0; border-radius:2px;
+  background:linear-gradient(90deg,rgba(26,140,53,0.4) 0%,var(--acc) 80%,rgba(255,255,255,0.85) 100%);
+}
+.prog-thumb {
+  position:absolute; right:-5px; top:50%; transform:translateY(-50%);
+  width:11px; height:11px; border-radius:50%; background:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,0.4); opacity:0; transition:opacity 0.15s;
+}
+.prog-area:hover .prog-thumb { opacity:1; }
+.ctrl-bar { display:flex; align-items:center; gap:6px; }
+.cbtn {
+  background:none; border:none; cursor:pointer;
+  color:rgba(255,255,255,0.75); padding:6px; border-radius:7px;
+  display:flex; align-items:center; transition:all 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.cbtn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+.vol-wrap { display:flex; align-items:center; gap:4px; }
+.vol-sl {
+  -webkit-appearance:none; width:68px; height:3px;
+  background:rgba(255,255,255,0.2); border-radius:2px; outline:none; cursor:pointer;
+}
+.vol-sl::-webkit-slider-thumb { -webkit-appearance:none; width:11px; height:11px; border-radius:50%; background:#fff; cursor:pointer; }
+.c-spacer { flex:1; }
+.c-chname { font-size:12px; font-weight:600; color:rgba(255,255,255,0.65); letter-spacing:0.02em; }
+.c-live {
+  font-size:9px; letter-spacing:0.15em;
+  color:var(--acc2); background:rgba(212,43,43,0.15); border:1px solid rgba(212,43,43,0.25);
+  border-radius:5px; padding:3px 8px;
+}
 
-  /* Player card */
-  .player-card {
-    background: var(--surf); border: 1px solid var(--bdr); border-radius: 14px;
-    overflow: hidden; margin-bottom: 28px;
-    box-shadow: 0 2px 12px var(--shadow);
-    animation: fadeUp 0.25s ease;
-  }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+/* ══ QUALITY MENU BUTTON ══ */
+.qual-wrap { position:relative; display:inline-flex; }
+.qual-btn {
+  display:flex; align-items:center; gap:5px;
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);
+  border-radius:6px; padding:4px 10px; cursor:pointer;
+  font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:0.08em;
+  color:rgba(255,255,255,0.7); transition:all 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.qual-btn:hover { background:rgba(255,255,255,0.14); color:#fff; border-color:rgba(255,255,255,0.3); }
+.qual-btn.hd { color:rgba(100,180,255,0.9); border-color:rgba(100,180,255,0.35); background:rgba(100,180,255,0.1); }
+.qual-btn svg { width:11px; height:11px; flex-shrink:0; }
 
-  /* Video wrapper */
-  .video-wrap {
-    position: relative;
-    width: 100%; aspect-ratio: 16/9;
-    background: #000; overflow: hidden;
-    cursor: pointer;
-  }
-  video { width:100%; height:100%; display:block; object-fit:contain; background:#000; }
+/* Dropdown panel — pops above controls */
+.qual-panel {
+  position:absolute; bottom:calc(100% + 10px); right:0;
+  background:var(--surf); border:1px solid var(--bdr); border-radius:12px;
+  min-width:220px; overflow:hidden; z-index:60;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.1);
+  display:none;
+  animation:fadeUp 0.15s ease;
+}
+.qual-panel.open { display:block; }
+.qual-panel-head {
+  font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:0.22em;
+  color:var(--muted); padding:11px 14px 8px;
+  border-bottom:1px solid var(--bdr);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.qual-panel-head span { font-family:'Barlow',sans-serif; font-size:9px; letter-spacing:0.06em; }
 
-  /* Gradients */
-  .vg-top {
-    position: absolute; top:0; left:0; right:0; height:80px;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent);
-    pointer-events: none; z-index: 2;
-  }
-  .vg-bot {
-    position: absolute; bottom:0; left:0; right:0; height:160px;
-    background: linear-gradient(to top, rgba(0,0,0,0.88), transparent);
-    pointer-events: none; z-index: 2;
-  }
+/* Auto row */
+.qrow-auto {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 14px; cursor:pointer; border-bottom:1px solid var(--bdr);
+  transition:background 0.12s;
+}
+.qrow-auto:hover { background:var(--surf2); }
+.qrow-auto.sel { background:rgba(26,140,53,0.05); }
+.qrow-auto-left { display:flex; flex-direction:column; gap:2px; }
+.qrow-auto-label { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:0.06em; color:var(--txt); }
+.qrow-auto.sel .qrow-auto-label { color:var(--acc); }
+.qrow-auto-sub { font-size:10px; color:var(--muted); }
 
-  /* Channel badge (top-left) */
-  .ch-badge {
-    position: absolute; top:14px; left:16px; z-index:5;
-    display: flex; align-items: center; gap:8px;
-    background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.18); border-radius: 8px;
-    padding: 7px 12px;
-    opacity:0; transition:opacity 0.3s; pointer-events:none;
-  }
-  .video-wrap:hover .ch-badge,
-  .video-wrap.show-ctrl .ch-badge { opacity:1; }
-  .ch-badge-num {
-    font-size: 9px; letter-spacing: 0.2em; color: rgba(255,255,255,0.5);
-    font-family: 'Bebas Neue', sans-serif;
-  }
-  .ch-badge-name { font-size: 13px; font-weight: 600; color: #fff; }
-  .ch-badge-live {
-    display: flex; align-items: center; gap:4px; font-size:9px; letter-spacing:0.15em;
-    color: var(--acc2); background: rgba(212,43,43,0.15); border-radius:50px; padding:2px 8px;
-  }
+/* Track rows */
+.qrow {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 14px; cursor:pointer; border-bottom:1px solid var(--bdr);
+  transition:background 0.12s;
+}
+.qrow:last-child { border-bottom:none; }
+.qrow:hover { background:var(--surf2); }
+.qrow.sel { background:rgba(26,140,53,0.05); }
 
-  /* Kbd hints top-right */
-  .kbd-row {
-    position: absolute; top:14px; right:16px; z-index:5;
-    display: flex; gap:5px;
-    opacity:0; transition:opacity 0.3s; pointer-events:none;
-  }
-  .video-wrap:hover .kbd-row { opacity:1; }
-  .kbd {
-    font-size:9px; letter-spacing:0.04em; color:rgba(255,255,255,0.3);
-    background: rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08);
-    border-radius:5px; padding:3px 7px;
-  }
+.qrow-res {
+  font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.04em;
+  color:var(--txt); min-width:52px;
+}
+.qrow.sel .qrow-res { color:var(--acc); }
 
-  /* Player state overlay */
-  .ps-overlay {
-    position:absolute; inset:0; z-index:10;
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
-    background: rgba(0,0,0,0.5); transition:opacity 0.3s;
-  }
-  .ps-overlay.gone { opacity:0; pointer-events:none; }
-  .ps-spinner {
-    width:46px; height:46px;
-    border: 2px solid rgba(255,255,255,0.08);
-    border-top-color: var(--acc); border-radius:50%;
-    animation: spin 0.75s linear infinite;
-  }
-  @keyframes spin { to{transform:rotate(360deg)} }
-  .ps-txt {
-    font-size:10px; letter-spacing:0.2em; text-transform:uppercase;
-    color:rgba(255,255,255,0.45);
-  }
-  .ps-idle-icon {
-    width:64px; height:64px; border-radius:16px;
-    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12);
-    display:flex; align-items:center; justify-content:center; margin-bottom:4px;
-  }
-  .ps-idle-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.05em; color:rgba(255,255,255,0.8); }
-  .ps-idle-sub { font-size:12px; color:rgba(255,255,255,0.35); letter-spacing:0.05em; }
-  .ps-err-icon { font-size:32px; }
-  .ps-err-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.05em; color:#fff; }
-  .ps-err-msg { font-size:12px; color:rgba(255,255,255,0.45); text-align:center; max-width:280px; line-height:1.7; }
-  .ps-retry {
-    background: var(--acc); border:none; border-radius:7px; color:#fff;
-    font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.1em;
-    padding:10px 28px; cursor:pointer; transition:all 0.15s; margin-top:2px;
-  }
-  .ps-retry:hover { opacity:0.85; transform:translateY(-1px); }
+.qrow-fps {
+  font-size:9px; letter-spacing:0.1em; color:var(--muted);
+  background:var(--surf2); border:1px solid var(--bdr);
+  border-radius:4px; padding:2px 6px; white-space:nowrap;
+}
+.qrow.sel .qrow-fps { color:var(--acc4); border-color:rgba(14,122,99,0.3); background:rgba(14,122,99,0.07); }
 
-  /* Controls */
-  .ctrl-wrap {
-    position:absolute; bottom:0; left:0; right:0; z-index:8;
-    padding:32px 18px 14px;
-    opacity:0; transition:opacity 0.25s;
-  }
-  .video-wrap:hover .ctrl-wrap,
-  .video-wrap.paused .ctrl-wrap,
-  .video-wrap.show-ctrl .ctrl-wrap { opacity:1; }
+.qrow-bw { font-size:10px; color:var(--muted); flex:1; text-align:right; }
 
-  .prog-area { padding:7px 0; cursor:pointer; margin-bottom:6px; }
-  .prog-track {
-    height:3px; background:rgba(255,255,255,0.15); border-radius:2px;
-    position:relative; transition:height 0.15s;
-  }
-  .prog-area:hover .prog-track { height:5px; }
-  .prog-fill {
-    position:absolute; inset:0; border-radius:2px;
-    background: linear-gradient(90deg, rgba(26,140,53,0.4) 0%, var(--acc) 80%, rgba(255,255,255,0.85) 100%);
-  }
-  .prog-thumb {
-    position:absolute; right:-5px; top:50%; transform:translateY(-50%);
-    width:11px; height:11px; border-radius:50%; background:#fff;
-    box-shadow:0 2px 6px rgba(0,0,0,0.4); opacity:0; transition:opacity 0.15s;
-  }
-  .prog-area:hover .prog-thumb { opacity:1; }
+.qrow-check {
+  width:16px; height:16px; border-radius:50%; flex-shrink:0;
+  background:var(--acc); display:flex; align-items:center; justify-content:center;
+  visibility:hidden;
+}
+.qrow.sel .qrow-check, .qrow-auto.sel .qrow-check { visibility:visible; }
 
-  .ctrl-bar { display:flex; align-items:center; gap:6px; }
-  .cbtn {
-    background:none; border:none; cursor:pointer;
-    color:rgba(255,255,255,0.75); padding:6px; border-radius:7px;
-    display:flex; align-items:center; transition:all 0.15s;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .cbtn:hover { background:rgba(255,255,255,0.1); color:#fff; }
-  .vol-wrap { display:flex; align-items:center; gap:4px; }
-  .vol-sl {
-    -webkit-appearance:none; width:68px; height:3px;
-    background:rgba(255,255,255,0.2); border-radius:2px; outline:none; cursor:pointer;
-  }
-  .vol-sl::-webkit-slider-thumb { -webkit-appearance:none; width:11px; height:11px; border-radius:50%; background:#fff; cursor:pointer; }
-  .c-spacer { flex:1; }
-  .c-chname { font-size:12px; font-weight:600; color:rgba(255,255,255,0.65); letter-spacing:0.02em; }
-  .c-live {
-    font-size:9px; letter-spacing:0.15em;
-    color: var(--acc2); background:rgba(212,43,43,0.15); border:1px solid rgba(212,43,43,0.25);
-    border-radius:5px; padding:3px 8px;
-  }
-  .c-qual {
-    font-size:9px; letter-spacing:0.1em;
-    color:rgba(255,255,255,0.4); background:rgba(255,255,255,0.07);
-    border:1px solid rgba(255,255,255,0.1); border-radius:5px; padding:3px 8px;
-    transition:all 0.3s;
-  }
-  .c-qual.hd { color:rgba(100,160,255,0.9); background:rgba(100,160,255,0.1); border-color:rgba(100,160,255,0.25); }
+/* ══ PLAYER INFO BAR ══ */
+.player-infobar {
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding:13px 18px; border-top:1px solid var(--bdr);
+  background:var(--surf2);
+}
+.infobar-ch { font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:0.06em; color:var(--txt); }
+.infobar-sep { width:1px; height:16px; background:var(--bdr); flex-shrink:0; }
+.infobar-tag {
+  font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+  border:1px solid var(--bdr); border-radius:50px; padding:3px 10px; color:var(--muted);
+}
+.infobar-tag.live { color:var(--acc2); border-color:rgba(212,43,43,0.3); background:rgba(212,43,43,0.05); }
+.infobar-tag.dash { color:var(--acc); border-color:rgba(26,140,53,0.3); background:rgba(26,140,53,0.05); }
+.infobar-spacer { flex:1; }
+.infobar-qual { font-size:10px; color:var(--muted); letter-spacing:0.06em; }
+.infobar-qual.hd { color:var(--acc4); font-weight:600; }
 
-  /* Player info bar */
-  .player-infobar {
-    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-    padding:13px 18px; border-top:1px solid var(--bdr);
-    background: var(--surf2);
-  }
-  .infobar-ch { font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:0.06em; color:var(--txt); }
-  .infobar-sep { width:1px; height:16px; background:var(--bdr); }
-  .infobar-tag {
-    font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
-    border:1px solid var(--bdr); border-radius:50px; padding:3px 10px; color:var(--muted);
-  }
-  .infobar-tag.live { color:var(--acc2); border-color:rgba(212,43,43,0.3); background:rgba(212,43,43,0.05); }
-  .infobar-tag.dash { color:var(--acc); border-color:rgba(26,140,53,0.3); background:rgba(26,140,53,0.05); }
-  .infobar-spacer { flex:1; }
-  .infobar-qual {
-    font-size:10px; letter-spacing:0.1em; color:var(--muted);
-  }
-  .infobar-qual.hd { color:var(--acc4); font-weight:600; }
+/* ══ CHANNEL GRID ══ */
+.ch-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.ch-card {
+  background:var(--surf); border:1.5px solid var(--bdr); border-radius:12px;
+  overflow:hidden; cursor:pointer; transition:all 0.18s cubic-bezier(0.4,0,0.2,1);
+  position:relative;
+}
+.ch-card:hover { border-color:var(--bdr2); transform:translateY(-2px); box-shadow:0 6px 20px var(--shadow); }
+.ch-card.active { border-color:var(--acc); box-shadow:0 0 0 3px var(--glow),0 6px 20px var(--shadow); transform:translateY(-2px); }
+.ch-art {
+  height:80px; display:flex; align-items:center; justify-content:center;
+  font-size:30px; position:relative; overflow:hidden; transition:transform 0.2s;
+}
+.ch-card:hover .ch-art { transform:scale(1.04); }
+.ch-art-num {
+  position:absolute; top:8px; left:10px;
+  font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.1em; color:rgba(0,0,0,0.22);
+}
+.ch-art-live {
+  position:absolute; top:8px; right:8px;
+  display:flex; align-items:center; gap:4px;
+  font-size:8px; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--acc2); background:rgba(255,255,255,0.82);
+  border:1px solid rgba(212,43,43,0.2); border-radius:50px; padding:2px 7px;
+}
+.ch-art-live-dot { width:4px; height:4px; border-radius:50%; background:var(--acc2); animation:pulse 1.6s ease-in-out infinite; }
+.ch-playing-bar {
+  position:absolute; bottom:0; left:0; right:0; height:3px;
+  background:var(--acc); transform:scaleX(0); transition:transform 0.3s; transform-origin:left;
+  z-index:2;
+}
+.ch-card.active .ch-playing-bar { transform:scaleX(1); }
+.ch-info { padding:10px 12px 12px; border-top:1px solid var(--bdr); background:var(--surf); }
+.ch-name {
+  font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.06em;
+  color:var(--txt); margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.ch-card.active .ch-name { color:var(--acc); }
+.ch-meta { font-size:10px; color:var(--muted); letter-spacing:0.04em; display:flex; align-items:center; gap:5px; }
+.ch-meta-dot { width:3px; height:3px; border-radius:50%; background:var(--bdr); }
+.now-playing {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:9px; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--acc); background:rgba(26,140,53,0.08);
+  border:1px solid rgba(26,140,53,0.2); border-radius:50px; padding:2px 8px;
+  margin-top:5px;
+}
+.now-playing-dot { width:4px; height:4px; border-radius:50%; background:var(--acc); animation:pulse 1.6s ease-in-out infinite; }
 
-  /* ══ CHANNEL GRID ══ */
-  .ch-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-  }
+/* ══ SECTION PAGES (Sports / News / Movies) ══ */
+.section-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:14px;
+}
+.sec-card {
+  background:var(--surf); border:1px solid var(--bdr); border-radius:12px;
+  overflow:hidden; cursor:pointer; transition:all 0.18s cubic-bezier(0.4,0,0.2,1);
+}
+.sec-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px var(--shadow); border-color:var(--bdr2); }
+.sec-card-art {
+  height:110px; display:flex; align-items:center; justify-content:center;
+  font-size:40px; position:relative;
+}
+.sec-card-tag {
+  position:absolute; top:10px; right:10px;
+  font-size:8px; letter-spacing:0.14em; text-transform:uppercase;
+  background:rgba(0,0,0,0.35); color:#fff; border-radius:50px; padding:2px 8px;
+}
+.sec-card-body { padding:12px 14px; border-top:1px solid var(--bdr); }
+.sec-card-title { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.04em; color:var(--txt); margin-bottom:3px; }
+.sec-card-sub { font-size:10px; color:var(--muted); letter-spacing:0.04em; }
 
-  .ch-card {
-    background: var(--surf); border: 1px solid var(--bdr); border-radius: 12px;
-    padding: 0; cursor: pointer; overflow: hidden;
-    transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
-    position: relative;
-  }
-  .ch-card:hover {
-    border-color: var(--acc); transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--shadow);
-  }
-  .ch-card.active {
-    border-color: var(--acc);
-    box-shadow: 0 0 0 3px var(--glow), 0 6px 20px var(--shadow);
-    transform: translateY(-2px);
-  }
+/* ══ TOAST ══ */
+.toast {
+  position:fixed; bottom:28px; left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:var(--txt); color:var(--bg);
+  border-radius:50px; padding:10px 20px;
+  font-size:12px; font-weight:400; letter-spacing:0.06em;
+  z-index:200; pointer-events:none; opacity:0;
+  transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+  white-space:nowrap; box-shadow:0 8px 32px rgba(0,0,0,0.15);
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-  /* Art area */
-  .ch-art {
-    height: 80px; display:flex; align-items:center; justify-content:center;
-    font-size: 30px; position:relative; overflow:hidden;
-    transition: transform 0.2s;
-  }
-  .ch-card:hover .ch-art { transform: scale(1.04); }
-  .ch-art-num {
-    position:absolute; top:8px; left:10px;
-    font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.1em;
-    color:rgba(0,0,0,0.25);
-  }
-  .ch-art-live {
-    position:absolute; top:8px; right:8px;
-    display:flex; align-items:center; gap:4px;
-    font-size:8px; letter-spacing:0.14em; text-transform:uppercase;
-    color:var(--acc2); background:rgba(255,255,255,0.82);
-    border:1px solid rgba(212,43,43,0.2); border-radius:50px; padding:2px 7px;
-  }
-  .ch-art-live-dot { width:4px; height:4px; border-radius:50%; background:var(--acc2); animation:pulse 1.6s ease-in-out infinite; }
-
-  /* Active play indicator */
-  .ch-playing-bar {
-    position:absolute; bottom:0; left:0; right:0; height:3px;
-    background: var(--acc); transform:scaleX(0); transition:transform 0.3s; transform-origin:left;
-  }
-  .ch-card.active .ch-playing-bar { transform:scaleX(1); }
-
-  /* Info area */
-  .ch-info {
-    padding: 10px 12px 12px; border-top:1px solid var(--bdr);
-    background: var(--surf);
-  }
-  .ch-name {
-    font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.06em;
-    color:var(--txt); margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
-  .ch-card.active .ch-name { color:var(--acc); }
-  .ch-meta {
-    font-size:10px; color:var(--muted); letter-spacing:0.04em;
-    display:flex; align-items:center; gap:5px;
-  }
-  .ch-meta-dot { width:3px; height:3px; border-radius:50%; background:var(--bdr); }
-
-  /* Now playing chip */
-  .now-playing {
-    display:inline-flex; align-items:center; gap:4px;
-    font-size:9px; letter-spacing:0.12em; text-transform:uppercase;
-    color:var(--acc); background:rgba(26,140,53,0.08);
-    border:1px solid rgba(26,140,53,0.2); border-radius:50px; padding:2px 8px;
-    margin-top:5px;
-  }
-  .now-playing-dot { width:4px; height:4px; border-radius:50%; background:var(--acc); animation:pulse 1.6s ease-in-out infinite; }
-
-  /* ══ TOAST ══ */
-  .toast {
-    position:fixed; bottom:28px; left:50%;
-    transform:translateX(-50%) translateY(16px);
-    background:var(--txt); color:var(--bg);
-    border-radius:50px; padding:10px 20px;
-    font-size:12px; font-weight:400; letter-spacing:0.06em;
-    z-index:200; pointer-events:none; opacity:0;
-    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
-    white-space:nowrap; box-shadow:0 8px 32px rgba(0,0,0,0.15);
-  }
-  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-  /* ══ RESPONSIVE ══ */
-  @media (max-width:900px) {
-    .ch-grid { grid-template-columns: repeat(3,1fr); gap:10px; }
-    .nav-pills { display:none; }
-  }
-  @media (max-width:600px) {
-    .wrap { padding:18px 14px 48px; }
-    .header-inner { padding:0 14px; }
-    .ch-grid { grid-template-columns: repeat(2,1fr); gap:9px; }
-    .ch-art { height:64px; font-size:24px; }
-    .vol-wrap { display:none; }
-    .kbd-row { display:none; }
-    .player-infobar { padding:10px 14px; gap:10px; }
-    .infobar-qual { display:none; }
-  }
-  @media (max-width:380px) {
-    .ch-grid { grid-template-columns: repeat(2,1fr); gap:7px; }
-    .ch-art { height:52px; }
-  }
+/* ══ RESPONSIVE ══ */
+@media (max-width:900px) {
+  .ch-grid { grid-template-columns:repeat(3,1fr); gap:10px; }
+  .nav-pills { display:none; }
+  .section-grid { grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
+}
+@media (max-width:600px) {
+  .wrap { padding:18px 14px 48px; }
+  .header-inner { padding:0 14px; }
+  .ch-grid { grid-template-columns:repeat(2,1fr); gap:9px; }
+  .ch-art { height:64px; font-size:24px; }
+  .vol-wrap { display:none; }
+  .kbd-row { display:none; }
+  .player-infobar { padding:10px 14px; gap:10px; }
+  .infobar-qual { display:none; }
+  .section-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:380px) {
+  .ch-grid { grid-template-columns:repeat(2,1fr); gap:7px; }
+  .ch-art { height:52px; }
+}
 </style>
 </head>
 <body>
@@ -397,10 +436,10 @@
       <div class="brand">PRISM<span>TV</span></div>
     </div>
     <div class="nav-pills">
-      <button class="npill on">Live TV</button>
-      <button class="npill">Sports</button>
-      <button class="npill">News</button>
-      <button class="npill">Movies</button>
+      <button class="npill on"  onclick="switchPage('live',this)">Live TV</button>
+      <button class="npill"     onclick="switchPage('sports',this)">Sports</button>
+      <button class="npill"     onclick="switchPage('news',this)">News</button>
+      <button class="npill"     onclick="switchPage('movies',this)">Movies</button>
     </div>
     <div class="h-spacer"></div>
     <div class="live-pill"><span class="live-dot"></span>ON AIR</div>
@@ -409,34 +448,35 @@
 
 <div class="wrap">
 
-  <!-- ══ PLAYER ══ -->
-  <div class="sdiv">
-    Now Playing
-    <span class="sdiv-badge">DASH · ClearKey DRM</span>
-  </div>
+<!-- ═══════════════════════════════════════════
+     LIVE TV PAGE
+═══════════════════════════════════════════ -->
+<div class="page active" id="page-live">
 
-  <div class="player-card" id="player-card">
+  <div class="sdiv">Now Playing <span class="sdiv-badge">DASH · ClearKey DRM</span></div>
+
+  <div class="player-card">
     <div class="video-wrap" id="vw">
       <video id="vid" playsinline></video>
       <div class="vg-top"></div>
       <div class="vg-bot"></div>
 
-      <!-- Channel badge -->
+      <!-- Top-left channel badge -->
       <div class="ch-badge" id="ch-badge">
         <span class="ch-badge-num" id="badge-num">CH 01</span>
         <span class="ch-badge-name" id="badge-name">—</span>
         <div class="ch-badge-live"><span class="live-dot"></span>LIVE</div>
       </div>
 
-      <!-- Keyboard hints -->
+      <!-- Top-right kbd hints -->
       <div class="kbd-row">
         <span class="kbd">SPACE</span>
         <span class="kbd">M mute</span>
-        <span class="kbd">F fullscreen</span>
+        <span class="kbd">F full</span>
         <span class="kbd">1–8</span>
       </div>
 
-      <!-- State overlay -->
+      <!-- State overlay (idle / loading / error) -->
       <div class="ps-overlay" id="pso">
         <div class="ps-idle-icon">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)"><path d="M8 5v14l11-7z"/></svg>
@@ -454,19 +494,37 @@
           </div>
         </div>
         <div class="ctrl-bar">
+          <!-- Play/pause -->
           <button class="cbtn" onclick="togglePlay()">
             <svg id="play-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           </button>
+          <!-- Volume -->
           <div class="vol-wrap">
             <button class="cbtn" onclick="toggleMute()">
               <svg id="mute-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
             </button>
             <input class="vol-sl" id="vol" type="range" min="0" max="1" step="0.02" value="1" oninput="setVol(this.value)">
           </div>
-          <div class="c-spacer"></div>
           <span class="c-chname" id="c-chname"></span>
+          <div class="c-spacer"></div>
           <span class="c-live">● LIVE</span>
-          <span class="c-qual" id="c-qual">—</span>
+
+          <!-- ── QUALITY PICKER ── -->
+          <div class="qual-wrap" id="qual-wrap">
+            <button class="qual-btn" id="qual-btn" onclick="toggleQualPanel(event)">
+              <span id="qual-label">AUTO</span>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+            </button>
+            <div class="qual-panel" id="qual-panel">
+              <div class="qual-panel-head">
+                Quality
+                <span id="qual-head-badge" style="color:var(--acc)">AUTO</span>
+              </div>
+              <div id="qual-rows"></div>
+            </div>
+          </div>
+
+          <!-- Fullscreen -->
           <button class="cbtn" onclick="toggleFS()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
           </button>
@@ -474,7 +532,7 @@
       </div>
     </div>
 
-    <!-- Info bar below player -->
+    <!-- Info bar below video -->
     <div class="player-infobar">
       <span class="infobar-ch" id="ib-ch">Select a channel to begin</span>
       <div class="infobar-sep"></div>
@@ -485,80 +543,218 @@
     </div>
   </div>
 
-  <!-- ══ CHANNELS ══ -->
-  <div class="sdiv">
-    All Channels
-    <span class="sdiv-badge" id="ch-count-badge">8 CHANNELS</span>
-  </div>
-
+  <div class="sdiv">All Channels <span class="sdiv-badge">8 CHANNELS</span></div>
   <div class="ch-grid" id="ch-grid"></div>
 
-</div>
+</div><!-- /page-live -->
+
+
+<!-- ═══════════════════════════════════════════
+     SPORTS PAGE
+═══════════════════════════════════════════ -->
+<div class="page" id="page-sports">
+
+  <div class="sdiv">Cricket &amp; Football <span class="sdiv-badge">2 LIVE</span></div>
+  <div class="section-grid" style="margin-bottom:28px">
+    <div class="sec-card" onclick="goLive(1)">
+      <div class="sec-card-art" style="background:#d1fae5">🏏<span class="sec-card-tag">● LIVE</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Cric Life 2</div><div class="sec-card-sub">Cricket · HD · DASH</div></div>
+    </div>
+    <div class="sec-card" onclick="goLive(4)">
+      <div class="sec-card-art" style="background:#dcfce7">⚽<span class="sec-card-tag">● LIVE</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Channel 4</div><div class="sec-card-sub">Football · Live · DASH</div></div>
+    </div>
+  </div>
+
+  <div class="sdiv">Coming Soon <span class="sdiv-badge">MORE SPORTS</span></div>
+  <div class="section-grid">
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#fef3c7">🏀<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Hoops Live</div><div class="sec-card-sub">Basketball · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#ffe4e6">🏎️<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Race Channel</div><div class="sec-card-sub">Motorsport · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#e0f2fe">🎾<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Tennis Live</div><div class="sec-card-sub">Tennis · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#faf5ff">🥊<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Fight Zone</div><div class="sec-card-sub">MMA · Boxing · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#f0fdf4">🏊<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Aquatics HD</div><div class="sec-card-sub">Swimming · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#fff7ed">🏑<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Field Sports</div><div class="sec-card-sub">Hockey · Rugby · Coming Soon</div></div>
+    </div>
+  </div>
+
+</div><!-- /page-sports -->
+
+
+<!-- ═══════════════════════════════════════════
+     NEWS PAGE
+═══════════════════════════════════════════ -->
+<div class="page" id="page-news">
+
+  <div class="sdiv">Live News <span class="sdiv-badge">1 LIVE</span></div>
+  <div class="section-grid" style="margin-bottom:28px">
+    <div class="sec-card" onclick="goLive(3)">
+      <div class="sec-card-art" style="background:#fef3c7">📡<span class="sec-card-tag">● LIVE</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Channel 3</div><div class="sec-card-sub">News · Live 24/7 · DASH</div></div>
+    </div>
+    <div class="sec-card" onclick="goLive(8)">
+      <div class="sec-card-art" style="background:#f0fdf4">🌍<span class="sec-card-tag">● LIVE</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Channel 8</div><div class="sec-card-sub">Documentary · DASH</div></div>
+    </div>
+  </div>
+
+  <div class="sdiv">Coming Soon</div>
+  <div class="section-grid">
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#f0f9ff">📰<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">World News 24</div><div class="sec-card-sub">International · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#fff7ed">💹<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Business Today</div><div class="sec-card-sub">Finance · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#fef2f2">🔬<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Science Now</div><div class="sec-card-sub">Science · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#faf5ff">🌐<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Tech Report</div><div class="sec-card-sub">Technology · Coming Soon</div></div>
+    </div>
+  </div>
+
+</div><!-- /page-news -->
+
+
+<!-- ═══════════════════════════════════════════
+     MOVIES PAGE
+═══════════════════════════════════════════ -->
+<div class="page" id="page-movies">
+
+  <div class="sdiv">Entertainment &amp; Movies <span class="sdiv-badge">4 LIVE</span></div>
+  <div class="section-grid" style="margin-bottom:28px">
+    <div class="sec-card" onclick="goLive(2)">
+      <div class="sec-card-art" style="background:#fce7f3">🎬<span class="sec-card-tag">● LIVE</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Channel 2</div><div class="sec-card-sub">Entertainment · DASH</div></div>
+    </div>
+    <div class="sec-card" onclick="goLive(5)">
+      <div class="sec-card-art" style="background:#ede9fe">🎥<span class="sec-card-tag">● LIVE</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Channel 5</div><div class="sec-card-sub">Movies · HD · DASH</div></div>
+    </div>
+    <div class="sec-card" onclick="goLive(6)">
+      <div class="sec-card-art" style="background:#fff1f2">🎵<span class="sec-card-tag">● LIVE</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Channel 6</div><div class="sec-card-sub">Music · Live · DASH</div></div>
+    </div>
+    <div class="sec-card" onclick="goLive(7)">
+      <div class="sec-card-art" style="background:#fff7ed">🧸<span class="sec-card-tag">● LIVE</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Channel 7</div><div class="sec-card-sub">Kids · HD · DASH</div></div>
+    </div>
+  </div>
+
+  <div class="sdiv">Coming Soon</div>
+  <div class="section-grid">
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#f5f3ff">🎭<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Drama Plus</div><div class="sec-card-sub">Drama Series · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#fef2f2">😂<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Comedy Zone</div><div class="sec-card-sub">Stand-up & Comedy · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#f0fdf4">🌙<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Late Night</div><div class="sec-card-sub">Talk Shows · Coming Soon</div></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-art" style="background:#fff7ed">🍿<span class="sec-card-tag">SOON</span></div>
+      <div class="sec-card-body"><div class="sec-card-title">Blockbuster HD</div><div class="sec-card-sub">Hollywood Films · Coming Soon</div></div>
+    </div>
+  </div>
+
+</div><!-- /page-movies -->
+
+</div><!-- /wrap -->
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════
-//  CHANNELS CONFIG
-//  Replace manifest + keys per channel
-// ══════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  CHANNEL CONFIG  — replace manifest/keys per channel
+// ════════════════════════════════════════════════
 const CHANNELS = [
-  {
-    id:1, name:'Cric Life 2', tag:'Sports · HD', emoji:'🏏',
-    bg:'#d1fae5', // art background color
+  { id:1, name:'Cric Life 2', tag:'Sports · HD',   emoji:'🏏', bg:'#d1fae5',
     manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'}
-  },
-  {
-    id:2, name:'Channel 2', tag:'Entertainment', emoji:'🎬',
-    bg:'#fce7f3',
+    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
+  { id:2, name:'Channel 2',   tag:'Entertainment', emoji:'🎬', bg:'#fce7f3',
     manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'}
-  },
-  {
-    id:3, name:'Channel 3', tag:'News · Live', emoji:'📡',
-    bg:'#fef3c7',
+    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
+  { id:3, name:'Channel 3',   tag:'News · Live',   emoji:'📡', bg:'#fef3c7',
     manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'}
-  },
-  {
-    id:4, name:'Channel 4', tag:'Sports · Live', emoji:'⚽',
-    bg:'#dcfce7',
+    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
+  { id:4, name:'Channel 4',   tag:'Sports · Live', emoji:'⚽', bg:'#dcfce7',
     manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'}
-  },
-  {
-    id:5, name:'Channel 5', tag:'Movies · HD', emoji:'🎥',
-    bg:'#ede9fe',
+    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
+  { id:5, name:'Channel 5',   tag:'Movies · HD',   emoji:'🎥', bg:'#ede9fe',
     manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'}
-  },
-  {
-    id:6, name:'Channel 6', tag:'Music · Live', emoji:'🎵',
-    bg:'#fff1f2',
+    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
+  { id:6, name:'Channel 6',   tag:'Music · Live',  emoji:'🎵', bg:'#fff1f2',
     manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'}
-  },
-  {
-    id:7, name:'Channel 7', tag:'Kids · HD', emoji:'🧸',
-    bg:'#fff7ed',
+    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
+  { id:7, name:'Channel 7',   tag:'Kids · HD',     emoji:'🧸', bg:'#fff7ed',
     manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'}
-  },
-  {
-    id:8, name:'Channel 8', tag:'Documentary', emoji:'🌍',
-    bg:'#f0fdf4',
+    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} },
+  { id:8, name:'Channel 8',   tag:'Documentary',   emoji:'🌍', bg:'#f0fdf4',
     manifest:'https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLife2/DASH/CricLife2.mpd',
-    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'}
-  }
+    keys:{'48bef83b4c6a3c5189b01b0126210da4':'bd085230b7b09e50954fe0af111a8a9f'} }
 ];
 
-// ── STATE ──
-let player = null, activeCh = null;
+// ════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════
+let shakaPlayer = null;   // renamed to avoid conflict
+let activeCh    = null;
+let qualIsAuto  = true;   // true = ABR on; false = manual lock
+let qualLockId  = null;   // locked track id when manual
+
 const vid = document.getElementById('vid');
 const vw  = document.getElementById('vw');
 
-// ── BUILD CHANNEL GRID ──
+// ════════════════════════════════════════════════
+//  PAGE NAVIGATION
+// ════════════════════════════════════════════════
+function switchPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.npill').forEach(b => b.classList.remove('on'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('on');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+// Navigate to live page and load a channel by id
+function goLive(id) {
+  const liveBtn = document.querySelector('.npill');
+  switchPage('live', liveBtn);
+  setTimeout(() => loadChannelById(id), 80);
+}
+function loadChannelById(id) {
+  const ch = CHANNELS.find(c => c.id === id);
+  if (ch) loadChannel(ch);
+}
+
+// ════════════════════════════════════════════════
+//  CHANNEL GRID (Live TV page)
+// ════════════════════════════════════════════════
 function buildGrid() {
   const grid = document.getElementById('ch-grid');
   CHANNELS.forEach(ch => {
@@ -584,75 +780,245 @@ function buildGrid() {
   });
 }
 
-// ── SET ACTIVE ──
-function setActive(ch) {
+function markActive(ch) {
   document.querySelectorAll('.ch-card').forEach(e => e.classList.remove('active'));
   document.querySelectorAll('[id^="np-"]').forEach(e => e.style.display = 'none');
   const card = document.getElementById('card-' + ch.id);
-  if (card) {
-    card.classList.add('active');
-    card.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  }
+  if (card) { card.classList.add('active'); card.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
   const np = document.getElementById('np-' + ch.id);
   if (np) np.style.display = 'inline-flex';
-  // Update overlays & info bar
   document.getElementById('badge-num').textContent  = 'CH ' + String(ch.id).padStart(2,'0');
   document.getElementById('badge-name').textContent = ch.name;
   document.getElementById('c-chname').textContent   = ch.name;
   document.getElementById('ib-ch').textContent      = ch.name;
 }
 
-// ── LOAD CHANNEL ──
+// ════════════════════════════════════════════════
+//  LOAD CHANNEL
+// ════════════════════════════════════════════════
 async function loadChannel(ch) {
   if (activeCh && activeCh.id === ch.id) return;
-  activeCh = ch;
-  setActive(ch);
-  setPSO('loading', 'Loading ' + ch.name + '…');
-  setQual('…', false);
+  activeCh   = ch;
+  qualIsAuto = true;
+  qualLockId = null;
+
+  markActive(ch);
+  showPSO('loading', 'Loading ' + ch.name + '…');
+  setQualBtn('AUTO', false);
+  clearQualRows();
+  document.getElementById('ib-qual').textContent = '—';
 
   try {
-    if (player) { await player.destroy(); player = null; }
+    if (shakaPlayer) { await shakaPlayer.destroy(); shakaPlayer = null; }
 
     shaka.polyfill.installAll();
     if (!shaka.Player.isBrowserSupported()) {
-      setPSO('error', 'Browser does not support DASH/EME playback.'); return;
+      showPSO('error', 'Browser does not support DASH/EME.'); return;
     }
 
-    player = new shaka.Player(vid);
+    shakaPlayer = new shaka.Player(vid);
 
-    player.addEventListener('error', e => {
-      console.error(e.detail);
-      setPSO('error', 'Error ' + e.detail.code + ' — ' + (e.detail.message || 'Check network and try again.'));
+    shakaPlayer.addEventListener('error', e => {
+      console.error('Shaka error:', e.detail);
+      showPSO('error', 'Stream error ' + e.detail.code + '\n' + (e.detail.message || 'Check network.'));
     });
-    player.addEventListener('buffering', e => {
-      if (e.buffering) setPSO('loading', 'Buffering…');
-      else setPSO('hide');
+
+    shakaPlayer.addEventListener('buffering', e => {
+      if (e.buffering) showPSO('loading', 'Buffering…');
+      else             showPSO('hide');
     });
-    player.addEventListener('adaptation', updateQual);
+
+    // When ABR switches track — refresh quality button & menu
+    shakaPlayer.addEventListener('adaptation', () => {
+      if (qualIsAuto) refreshQualDisplay();
+      rebuildQualRows(); // keep checkmark in sync
+    });
 
     const cfg = {
+      abr: { enabled: true },
       streaming: {
         bufferingGoal: 12, rebufferingGoal: 2, bufferBehind: 30,
         retryParameters: { maxAttempts: 6, baseDelay: 1000, backoffFactor: 2, fuzzFactor: 0.5 }
       }
     };
     if (ch.keys && Object.keys(ch.keys).length) cfg.drm = { clearKeys: ch.keys };
-    player.configure(cfg);
+    shakaPlayer.configure(cfg);
 
-    await player.load(ch.manifest);
+    await shakaPlayer.load(ch.manifest);
     vid.play();
-    setPSO('hide');
-    updateQual();
-    showToast('▶  ' + ch.name);
+    showPSO('hide');
+
+    // Build quality menu from real MPD tracks
+    rebuildQualRows();
+    refreshQualDisplay();
+    toast('▶  ' + ch.name);
 
   } catch(e) {
-    console.error(e);
-    setPSO('error', 'Could not load stream.\n' + (e.message || 'Unknown error'));
+    console.error('Load error:', e);
+    showPSO('error', 'Could not load stream.\n' + (e.message || 'Unknown error'));
   }
 }
 
-// ── PLAYER STATE OVERLAY ──
-function setPSO(type, msg) {
+// ════════════════════════════════════════════════
+//  QUALITY PICKER — reads real MPD variant tracks
+// ════════════════════════════════════════════════
+
+// Format bandwidth: e.g. 2.4 Mbps or 800 kbps
+function fmtBw(bps) {
+  if (!bps) return '';
+  return bps >= 1_000_000
+    ? (bps / 1_000_000).toFixed(1) + ' Mbps'
+    : Math.round(bps / 1000) + ' kbps';
+}
+
+// Deduplicate tracks: keep highest-bandwidth representative per (height × fps) combo
+function getUniqueVideoTracks() {
+  if (!shakaPlayer) return [];
+  const tracks = shakaPlayer.getVariantTracks();
+
+  const map = new Map();
+  tracks.forEach(t => {
+    const fps = t.frameRate ? Math.round(t.frameRate) : 0;
+    const key = (t.height || 0) + '_' + fps;
+    if (!map.has(key) || t.bandwidth > map.get(key).bandwidth) map.set(key, t);
+  });
+
+  // Sort highest resolution first, then highest fps
+  return Array.from(map.values()).sort((a, b) => {
+    const hd = (b.height || 0) - (a.height || 0);
+    if (hd !== 0) return hd;
+    return (Math.round(b.frameRate) || 0) - (Math.round(a.frameRate) || 0);
+  });
+}
+
+function getActiveTrack() {
+  if (!shakaPlayer) return null;
+  return shakaPlayer.getVariantTracks().find(t => t.active) || null;
+}
+
+// Update the small button label inside the controls bar
+function setQualBtn(label, isHD) {
+  document.getElementById('qual-label').textContent = label;
+  document.getElementById('qual-btn').className = 'qual-btn' + (isHD ? ' hd' : '');
+}
+
+function clearQualRows() {
+  document.getElementById('qual-rows').innerHTML = '';
+}
+
+// Sync the button text + info bar to current active track
+function refreshQualDisplay() {
+  const t = getActiveTrack();
+  if (!t) return;
+  const fps   = t.frameRate ? Math.round(t.frameRate) : null;
+  const res   = t.height ? t.height + 'p' : 'SD';
+  const label = fps ? res + ' ' + fps + 'fps' : res;
+  const isHD  = (t.height || 0) >= 720;
+  setQualBtn(qualIsAuto ? label : label, isHD);
+  document.getElementById('ib-qual').textContent = label;
+  document.getElementById('ib-qual').className   = 'infobar-qual' + (isHD ? ' hd' : '');
+  document.getElementById('qual-head-badge').textContent = qualIsAuto ? 'AUTO' : 'MANUAL';
+}
+
+// Rebuild the dropdown rows from real MPD tracks
+function rebuildQualRows() {
+  if (!shakaPlayer) return;
+  const unique  = getUniqueVideoTracks();
+  const active  = getActiveTrack();
+  const container = document.getElementById('qual-rows');
+  container.innerHTML = '';
+
+  // ── AUTO row ──
+  const autoRow = document.createElement('div');
+  autoRow.className = 'qrow-auto' + (qualIsAuto ? ' sel' : '');
+  autoRow.innerHTML = `
+    <div class="qrow-auto-left">
+      <div class="qrow-auto-label">Auto</div>
+      <div class="qrow-auto-sub">Matches your connection speed</div>
+    </div>
+    <div class="qrow-check">
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    </div>`;
+  autoRow.onclick = () => selectAuto();
+  container.appendChild(autoRow);
+
+  // ── Per-resolution rows ──
+  unique.forEach(t => {
+    const fps    = t.frameRate ? Math.round(t.frameRate) : null;
+    const height = t.height || 0;
+    const res    = height ? height + 'p' : 'SD';
+    const isSel  = !qualIsAuto && qualLockId === t.id;
+    const isCurr = qualIsAuto && active && active.id === t.id;
+
+    const row = document.createElement('div');
+    row.className = 'qrow' + (isSel ? ' sel' : '');
+    row.innerHTML = `
+      <span class="qrow-res">${res}</span>
+      ${fps ? `<span class="qrow-fps">${fps} fps</span>` : ''}
+      ${isCurr && !isSel ? `<span class="qrow-fps" style="color:var(--acc);border-color:rgba(26,140,53,.3);background:rgba(26,140,53,.07)">▶ current</span>` : ''}
+      <span class="qrow-bw">${fmtBw(t.bandwidth)}</span>
+      <div class="qrow-check">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </div>`;
+    row.onclick = () => selectTrack(t);
+    container.appendChild(row);
+  });
+}
+
+// Select Auto (re-enable ABR)
+function selectAuto() {
+  if (!shakaPlayer) return;
+  qualIsAuto = true;
+  qualLockId = null;
+  shakaPlayer.configure({ abr: { enabled: true } });
+  rebuildQualRows();
+  refreshQualDisplay();
+  closeQualPanel();
+  toast('Quality: Auto');
+}
+
+// Lock to a specific track
+function selectTrack(track) {
+  if (!shakaPlayer) return;
+  qualIsAuto = false;
+  qualLockId = track.id;
+  shakaPlayer.configure({ abr: { enabled: false } });
+  shakaPlayer.selectVariantTrack(track, /* clearBuffer */ true);
+
+  const fps   = track.frameRate ? Math.round(track.frameRate) : null;
+  const label = (track.height ? track.height + 'p' : 'SD') + (fps ? ' ' + fps + 'fps' : '');
+  setQualBtn(label, (track.height || 0) >= 720);
+  document.getElementById('ib-qual').textContent = label;
+  document.getElementById('ib-qual').className   = 'infobar-qual' + ((track.height || 0) >= 720 ? ' hd' : '');
+  document.getElementById('qual-head-badge').textContent = 'MANUAL';
+
+  rebuildQualRows();
+  closeQualPanel();
+  toast('Quality: ' + label);
+}
+
+function toggleQualPanel(e) {
+  e.stopPropagation();
+  const p = document.getElementById('qual-panel');
+  if (p.classList.contains('open')) {
+    closeQualPanel();
+  } else {
+    rebuildQualRows(); // always fresh when opening
+    p.classList.add('open');
+  }
+}
+function closeQualPanel() {
+  document.getElementById('qual-panel').classList.remove('open');
+}
+// Close on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('#qual-wrap')) closeQualPanel();
+});
+
+// ════════════════════════════════════════════════
+//  PLAYER STATE OVERLAY
+// ════════════════════════════════════════════════
+function showPSO(type, msg) {
   const el = document.getElementById('pso');
   if (type === 'hide') { el.classList.add('gone'); return; }
   el.classList.remove('gone');
@@ -666,31 +1032,11 @@ function setPSO(type, msg) {
       <button class="ps-retry" onclick="retryChannel()">↺  Retry</button>`;
   }
 }
-function retryChannel() {
-  if (activeCh) { const c = activeCh; activeCh = null; loadChannel(c); }
-}
+function retryChannel() { if (activeCh) { const c = activeCh; activeCh = null; loadChannel(c); } }
 
-// ── QUALITY ──
-function updateQual() {
-  if (!player) return;
-  try {
-    const t = player.getVariantTracks().find(t => t.active);
-    if (t) {
-      const h = t.height || 0;
-      const label = h >= 1080 ? 'FHD' : h >= 720 ? 'HD' : h > 0 ? h + 'p' : 'SD';
-      const bw = t.bandwidth ? '  ·  ' + Math.round(t.bandwidth / 1000) + ' kbps' : '';
-      setQual(label + bw, h >= 720);
-    }
-  } catch(e) {}
-}
-function setQual(txt, isHD) {
-  document.getElementById('c-qual').textContent = txt;
-  document.getElementById('c-qual').className = 'c-qual' + (isHD ? ' hd' : '');
-  document.getElementById('ib-qual').textContent = txt;
-  document.getElementById('ib-qual').className = 'infobar-qual' + (isHD ? ' hd' : '');
-}
-
-// ── CONTROLS ──
+// ════════════════════════════════════════════════
+//  PLAYBACK CONTROLS
+// ════════════════════════════════════════════════
 function togglePlay() { if (vid.paused) vid.play(); else vid.pause(); }
 
 vid.addEventListener('play', () => {
@@ -702,9 +1048,9 @@ vid.addEventListener('pause', () => {
   vw.classList.add('paused');
 });
 
-function setVol(v) { vid.volume = parseFloat(v); updateMuteIcon(); }
-function toggleMute() { vid.muted = !vid.muted; updateMuteIcon(); }
-function updateMuteIcon() {
+function setVol(v) { vid.volume = parseFloat(v); syncMuteIcon(); }
+function toggleMute() { vid.muted = !vid.muted; syncMuteIcon(); }
+function syncMuteIcon() {
   document.getElementById('mute-icon').innerHTML = (vid.muted || vid.volume === 0)
     ? '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
     : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
@@ -722,36 +1068,40 @@ vw.addEventListener('mousemove', () => {
   clearTimeout(ctrlTimer);
   ctrlTimer = setTimeout(() => vw.classList.remove('show-ctrl'), 3000);
 });
-vw.addEventListener('touchstart', () => vw.classList.toggle('show-ctrl'));
-
-// Click to play/pause
+vw.addEventListener('touchstart', () => vw.classList.toggle('show-ctrl'), { passive:true });
 vw.addEventListener('click', e => {
-  if (e.target.closest('.cbtn') || e.target.closest('.vol-sl')) return;
+  if (e.target.closest('.cbtn') || e.target.closest('.vol-sl') || e.target.closest('#qual-wrap')) return;
   if (activeCh) togglePlay();
 });
 
-// ── TOAST ──
-let toastTimer;
-function showToast(msg) {
+// ════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════
+let toastT;
+function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-// ── KEYBOARD ──
+// ════════════════════════════════════════════════
+//  KEYBOARD
+// ════════════════════════════════════════════════
 document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'INPUT') return;
-  if (e.code === 'Space')     { e.preventDefault(); if(activeCh) togglePlay(); }
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.code === 'Space')     { e.preventDefault(); if (activeCh) togglePlay(); }
   if (e.code === 'KeyM')      toggleMute();
   if (e.code === 'KeyF')      toggleFS();
-  if (e.code === 'ArrowUp')   { vid.volume = Math.min(1, vid.volume + 0.1); document.getElementById('vol').value = vid.volume; showToast('🔊  ' + Math.round(vid.volume * 100) + '%'); }
-  if (e.code === 'ArrowDown') { vid.volume = Math.max(0, vid.volume - 0.1); document.getElementById('vol').value = vid.volume; showToast('🔉  ' + Math.round(vid.volume * 100) + '%'); }
+  if (e.code === 'ArrowUp')   { vid.volume = Math.min(1, vid.volume + 0.1); document.getElementById('vol').value = vid.volume; toast('🔊  ' + Math.round(vid.volume * 100) + '%'); }
+  if (e.code === 'ArrowDown') { vid.volume = Math.max(0, vid.volume - 0.1); document.getElementById('vol').value = vid.volume; toast('🔉  ' + Math.round(vid.volume * 100) + '%'); }
   const n = parseInt(e.key);
   if (n >= 1 && n <= CHANNELS.length) loadChannel(CHANNELS[n - 1]);
 });
 
-// ── INIT ──
+// ════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════
 buildGrid();
 </script>
 </body>
